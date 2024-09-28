@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:habit_app/ui/pages/habits.dart';
 
 class CancelButton extends StatelessWidget {
   final String label;
@@ -17,7 +18,7 @@ class CancelButton extends StatelessWidget {
       alignment: Alignment.bottomLeft,
       child: ElevatedButton(
         onPressed: onPressed ?? () {
-          Get.back();  // Si no se pasa una función, vuelve a la página anterior
+          Get.off(const HabitPage()); // Elimina el 
         },
         style: ElevatedButton.styleFrom(
           backgroundColor: Colors.red[100],  // Fondo rojo claro
@@ -63,6 +64,37 @@ class BackButtonWidget extends StatelessWidget {
         style: Theme.of(context).textTheme.labelLarge?.copyWith(
               color: Theme.of(context).colorScheme.primary,  // Color primario
             ),
+      ),
+    );
+  }
+}
+
+class NavigateButton extends StatelessWidget {
+  final String text;
+  final VoidCallback onPressed;
+  final bool isEnabled;  // Esto permitirá habilitar o deshabilitar el botón
+  
+  const NavigateButton({
+    super.key,
+    required this.text,
+    required this.onPressed,
+    this.isEnabled = true, // Por defecto el botón está habilitado
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return ElevatedButton(
+      onPressed: isEnabled ? onPressed : null,  // Ejecuta la función pasada o desactiva el botón
+      style: ElevatedButton.styleFrom(
+        foregroundColor: Theme.of(context).colorScheme.onPrimary, 
+        backgroundColor: Theme.of(context).colorScheme.primary,  // Color del texto en el botón
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10),
+        ),
+      ),
+      child: Text(
+        text,
+        style: const TextStyle(fontWeight: FontWeight.bold),
       ),
     );
   }

@@ -44,8 +44,12 @@ class HabitTypeSelectionPage extends StatelessWidget {
                 Get.to(() => CreateHabitPage());  // Navegar a la página de creación del hábito
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFFE6E6E6),  // Color del botón (#E6E6E6)
+                backgroundColor: Theme.of(context).colorScheme.onPrimary,  // Color del botón (#E6E6E6)
                 minimumSize: const Size(double.infinity, 60),  // Ocupa todo el ancho de la pantalla
+                side: BorderSide(
+                  color: Theme.of(context).colorScheme.primary,
+                  width: 2,
+                ),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(20),  // Esquinas redondeadas
                 ),
@@ -75,8 +79,12 @@ class HabitTypeSelectionPage extends StatelessWidget {
                 Get.to(() => CreateHabitPage());  // Navegar a la página de creación del hábito
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFFE6E6E6),  // Color del botón (#E6E6E6)
                 minimumSize: const Size(double.infinity, 60),  // Ocupa todo el ancho de la pantalla
+                backgroundColor: Theme.of(context).colorScheme.onPrimary,
+                side: BorderSide(
+                  color: Theme.of(context).colorScheme.primary,
+                  width: 2,
+                ),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(20),  // Esquinas redondeadas
                 ),

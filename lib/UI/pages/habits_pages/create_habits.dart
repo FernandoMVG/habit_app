@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import 'package:habit_app/ui/widgets/text_field.dart';
 import 'package:habit_app/ui/widgets/buttons.dart';
 import 'package:habit_app/ui/controller/habit_controller.dart';  // Controlador de hábitos
-//import 'next_habit_creation_step_page.dart';  // La página a la que navegará cuando presione continuar
+import 'package:habit_app/ui/pages/habits_pages/choose_category.dart';  // La página a la que navegará cuando presione continuar
 
 class CreateHabitPage extends StatelessWidget {
   final HabitController habitController = Get.find<HabitController>();  // Controlador de hábitos
@@ -78,15 +78,15 @@ class CreateHabitPage extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 // Botón de Atrás
-                BackButtonWidget(),
+                const BackButtonWidget(),
                 
                 // Botón de Continuar
-                ElevatedButton(
-                  onPressed: () {
+                NavigateButton(text: "Continuar", 
+                onPressed: () {
                     if (nameController.text.isNotEmpty) {
                       // Añadir lógica para continuar solo si el nombre no está vacío
                       habitController.addHabit(nameController.text);  // Añadir el hábito al controlador
-                      //Get.to(() => NextHabitCreationStepPage());  // Navegar a la siguiente página del proceso
+                      Get.to(() => const ChooseCategoryPage());  // Navegar a la siguiente página del proceso
                     } else {
                       // Mostrar un mensaje de error si el nombre está vacío
                       Get.snackbar(
@@ -97,20 +97,7 @@ class CreateHabitPage extends StatelessWidget {
                         colorText: Colors.white,
                       );
                     }
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF2980B9),  // Fondo azul claro
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                  ),
-                  child: const Text(
-                    'Continuar',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,  // Texto en blanco
-                    ),
-                  ),
+                  }
                 ),
               ],
             ),
