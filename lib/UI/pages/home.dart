@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:habit_app/UI/widgets/calendar.dart';
-import 'package:habit_app/UI/widgets/progress_bar.dart';
-import 'package:habit_app/UI/widgets/app_bar.dart';
-import 'package:habit_app/UI/widgets/Empty_message.dart';
-import 'package:habit_app/UI/widgets/navigation_bar.dart';
+import 'package:get/get.dart';
+import 'package:habit_app/ui/widgets/calendar.dart';
+import 'package:habit_app/ui/widgets/progress_bar.dart';
+import 'package:habit_app/ui/widgets/app_bar.dart';
+import 'package:habit_app/ui/widgets/Empty_message.dart';
+import 'package:habit_app/ui/widgets/navigation_bar.dart';
+import 'package:habit_app/ui/pages/habits.dart';
 //import 'package:habit_app/UI/widgets/habit_list.dart';
 
 class HomePage extends StatefulWidget {
@@ -69,6 +71,15 @@ class _HomePageState extends State<HomePage> {
             _currentIndex = index;  // Actualiza el índice cuando cambies de pantalla
           });
           // Lógica de navegación (opcional, dependiendo de cómo manejes las rutas)
+          if (index == 1) {
+            Get.to(() => HabitPage());  // Navegar a la pantalla de crear hábito
+          } else if (index == 2) {
+            // Navegar a la pantalla de categorías
+          } else if (index == 3) {
+            // Navegar a la pantalla de logros
+          } else if (index == 4) {
+            // Navegar a la pantalla de retos
+          }
         },
       ),
     );
