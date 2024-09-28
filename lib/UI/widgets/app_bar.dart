@@ -6,13 +6,15 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      backgroundColor: const Color(0xFF2C3E50),
+      backgroundColor: Theme.of(context).colorScheme.surface,
       automaticallyImplyLeading: false,
       title: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           IconButton(
-            icon: const Icon(Icons.menu, color: Colors.white),
+            icon: Icon(Icons.menu, 
+            color: Theme.of(context).colorScheme.onSurface
+            ),
             onPressed: () {}, // Funcionalidad del menú
           ),
           Row(
@@ -25,7 +27,9 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                   color: Colors.white.withOpacity(0.2),
                   borderRadius: BorderRadius.circular(10),
                 ),
-                child: const Text('Lvl. 0', style: TextStyle(color: Colors.white)),
+                child: const Text('Lvl. 0', //Aqui debería actualizar el valor del nivel más adelante
+                style: TextStyle(color: Colors.white)
+                ), 
               ),
               const SizedBox(width: 10),
               Container(
@@ -34,7 +38,9 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                   color: Colors.white.withOpacity(0.2),
                   borderRadius: BorderRadius.circular(10),
                 ),
-                child: const Text('EXP 0', style: TextStyle(color: Colors.white)),
+                child: const Text('EXP 0', 
+                style: TextStyle(color: Colors.white)
+                ),
               ),
             ],
           ),

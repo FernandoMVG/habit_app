@@ -20,7 +20,7 @@ class ProgressBarWidget extends StatelessWidget {
           const SizedBox(height: 10),
           LinearProgressIndicator(
             value: progress,
-            backgroundColor: Colors.grey[300],
+            backgroundColor: Theme.of(context).colorScheme.surface,
             color: Colors.blue,
             minHeight: 10,
           ),

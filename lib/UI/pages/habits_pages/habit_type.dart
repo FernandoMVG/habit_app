@@ -2,15 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:habit_app/ui/controller/habit_controller.dart';
 import 'package:habit_app/ui/pages/habits_pages/create_habits.dart';
+import 'package:habit_app/ui/widgets/buttons.dart';
 
 class HabitTypeSelectionPage extends StatelessWidget {
   final HabitController habitTypeController = Get.put(HabitController());
+
+  HabitTypeSelectionPage({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: const Color(0xFF2C3E50),
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         automaticallyImplyLeading: false,  // Cambiamos el color del AppBar a azul (#2980B9)
         elevation: 0,  // Sin sombra
       ),
@@ -41,30 +44,31 @@ class HabitTypeSelectionPage extends StatelessWidget {
                 Get.to(() => CreateHabitPage());  // Navegar a la página de creación del hábito
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFFE6E6E6),  // Color del botón (#E6E6E6)
+                backgroundColor: Theme.of(context).colorScheme.onPrimary,  // Color del botón (#E6E6E6)
                 minimumSize: const Size(double.infinity, 60),  // Ocupa todo el ancho de la pantalla
+                side: BorderSide(
+                  color: Theme.of(context).colorScheme.primary,
+                  width: 2,
+                ),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(20),  // Esquinas redondeadas
                 ),
               ),
-              child: const Text(
+              child: Text(
                 'Sí o No',
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
-                  color: Color(0xFF2980B9),  // Color de las letras (#2980B9)
+                  color: Theme.of(context).primaryColor,  // Color de las letras (#2980B9)
                 ),
               ),
             ),
             const SizedBox(height: 10),
             // Texto explicativo de "Sí o No"
-            const Text(
+            Text(
               'Bastará con tocar la actividad para marcarla como completada. Toca otra vez para desmarcarla.',
               textAlign: TextAlign.center,
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                color: Colors.black,
-              ),
+              style: Theme.of(context).textTheme.bodyLarge,
             ),
             const SizedBox(height: 40),  // Espacio entre los botones
 
@@ -75,55 +79,36 @@ class HabitTypeSelectionPage extends StatelessWidget {
                 Get.to(() => CreateHabitPage());  // Navegar a la página de creación del hábito
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFFE6E6E6),  // Color del botón (#E6E6E6)
                 minimumSize: const Size(double.infinity, 60),  // Ocupa todo el ancho de la pantalla
+                backgroundColor: Theme.of(context).colorScheme.onPrimary,
+                side: BorderSide(
+                  color: Theme.of(context).colorScheme.primary,
+                  width: 2,
+                ),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(20),  // Esquinas redondeadas
                 ),
               ),
-              child: const Text(
+              child: Text(
                 'Con una cantidad',
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
-                  color: Color(0xFF2980B9),  // Color de las letras (#2980B9)
+                    color: Theme.of(context).primaryColor,  // Color de las letras parametrizado
                 ),
               ),
             ),
             const SizedBox(height: 10),
             // Texto explicativo de "Con una cantidad"
-            const Text(
+            Text(
               'Elige la cantidad de veces que vas a realizar la actividad para considerarla completada. Podrás asignar la unidad acorde a la actividad.',
               textAlign: TextAlign.center,
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                color: Colors.black,
-              ),
+              style: Theme.of(context).textTheme.bodyLarge,
             ),
             const Spacer(),  // Empuja el botón "Cancelar" hacia abajo
 
             // Botón "Cancelar" cuadrado con esquinas redondeadas en rojo
-            Align(
-              alignment: Alignment.bottomLeft,
-              child: ElevatedButton(
-                onPressed: () {
-                  Get.back();  // Volver a la página anterior
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.red[100],  // Fondo rojo claro
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),  // Esquinas redondeadas
-                  ),
-                ),
-                child: const Text(
-                  'Cancelar',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color: Colors.red,  // Texto rojo fuerte
-                  ),
-                ),
-              ),
-            ),
+            const CancelButton()
           ],
         ),
       ),

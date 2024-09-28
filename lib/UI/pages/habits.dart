@@ -1,5 +1,3 @@
-// habits_pages/habit_page.dart
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:habit_app/ui/pages/habits_pages/habit_type.dart';  // Importamos la página para escoger el tipo de hábito
@@ -8,12 +6,21 @@ import 'package:habit_app/ui/widgets/navigation_bar.dart';  // Barra de navegaci
 import 'package:habit_app/ui/widgets/Empty_message.dart';  // Widget reutilizable para estados vacíos
 import 'package:habit_app/ui/widgets/app_bar.dart';
 
-class HabitPage extends StatelessWidget {
-  final HabitController habitController = Get.put(HabitController());  // Instanciamos el controlador
+class HabitPage extends StatefulWidget {
 
+  const HabitPage({super.key});  
+  @override
+  State<HabitPage> createState() => _HabitPageState();
+}
+
+class _HabitPageState extends State<HabitPage> {
+  final HabitController habitController = Get.put(HabitController());
+
+  // Instanciamos el controlador
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: const CustomAppBar(),
       
       body: Obx(() {
@@ -45,11 +52,13 @@ class HabitPage extends StatelessWidget {
       }),
 
       floatingActionButton: FloatingActionButton(
+        backgroundColor: Theme.of(context).colorScheme.primary,
+        foregroundColor: Colors.white,
         onPressed: () {
           // Navegar a la página de selección de tipo de hábito
           Get.to(() => HabitTypeSelectionPage());
         },
-        child: const Icon(Icons.add),
+        child: const Icon(Icons.add, size: 30),
       ),
 
       // Barra de navegación reutilizada

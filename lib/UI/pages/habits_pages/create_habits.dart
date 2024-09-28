@@ -1,19 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:habit_app/ui/widgets/text_field.dart';
+import 'package:habit_app/ui/widgets/buttons.dart';
 import 'package:habit_app/ui/controller/habit_controller.dart';  // Controlador de hábitos
-//import 'next_habit_creation_step_page.dart';  // La página a la que navegará cuando presione continuar
+import 'package:habit_app/ui/pages/habits_pages/choose_category.dart';  // La página a la que navegará cuando presione continuar
 
 class CreateHabitPage extends StatelessWidget {
   final HabitController habitController = Get.find<HabitController>();  // Controlador de hábitos
   final TextEditingController nameController = TextEditingController();  // Controlador para el nombre del hábito
-  final TextEditingController descriptionController = TextEditingController();  // Controlador para la descripción del hábito
+  final TextEditingController descriptionController = TextEditingController();
+
+  CreateHabitPage({super.key});  // Controlador para la descripción del hábito
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
-        backgroundColor:  const Color(0xFF2C3E50),
-        automaticallyImplyLeading: false,  // Cambiamos el color del AppBar a azul (#2980B9)
+        backgroundColor:  Theme.of(context).scaffoldBackgroundColor,  // Color de la barra de navegación
+        automaticallyImplyLeading: false,  // Oculta el botón de atrás
         elevation: 0,  // Color del AppBar para mayor contraste
       ),
       body: Padding(
@@ -36,41 +41,9 @@ class CreateHabitPage extends StatelessWidget {
             ),
             const SizedBox(height: 50),
             
-            // Campo para ingresar el nombre del hábito con estilo personalizado
-            TextField(
+            CustomTextField(
               controller: nameController,
-              decoration: InputDecoration(
-                labelText: 'Ingresa un nombre',
-                labelStyle: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black,  // Texto en negrita y color negro
-                ),
-                border: const OutlineInputBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                  borderSide: BorderSide(
-                    color: Colors.black,  // Borde en color negro y grueso
-                    width: 2.0,
-                  ),
-                ),
-                enabledBorder: const OutlineInputBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                  borderSide: BorderSide(
-                    color: Colors.black,  // Borde en color negro y grueso
-                    width: 2.0,
-                  ),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10.0),
-                  borderSide: BorderSide(
-                    color: Theme.of(context).colorScheme.primary,  // Borde de color primario del esquema de colores cuando esté en foco
-                    width: 2.0,
-                  ),
-                ),
-              ),
-              style: const TextStyle(
-                fontWeight: FontWeight.bold,
-                color: Colors.black,  // Texto dentro del campo en negrita y negro
-              ),
+              labelText: 'Nombre del hábito',              
             ),
             const SizedBox(height: 10),
 
@@ -84,41 +57,9 @@ class CreateHabitPage extends StatelessWidget {
             ),
             const SizedBox(height: 40),
             
-            // Campo para ingresar la descripción del hábito (opcional) con el mismo estilo
-            TextField(
+            CustomTextField(
               controller: descriptionController,
-              decoration: InputDecoration(
-                labelText: 'Agrega una descripción (opcional)',
-                labelStyle: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black,  // Texto en negrita y color negro
-                ),
-                border: const OutlineInputBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                  borderSide: BorderSide(
-                    color: Colors.black,  // Borde en color negro y grueso
-                    width: 2.0,
-                  ),
-                ),
-                enabledBorder: const OutlineInputBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                  borderSide: BorderSide(
-                    color: Colors.black,  // Borde en color negro y grueso
-                    width: 2.0,
-                  ),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10.0),
-                  borderSide: BorderSide(
-                    color: Theme.of(context).colorScheme.primary,  // Borde de color primario cuando esté en foco
-                    width: 2.0,
-                  ),
-                ),
-              ),
-              style: const TextStyle(
-                fontWeight: FontWeight.bold,
-                color: Colors.black,  // Texto dentro del campo en negrita y negro
-              ),
+              labelText: 'Descripción del hábito',
             ),
             const SizedBox(height: 10),
 
@@ -132,31 +73,20 @@ class CreateHabitPage extends StatelessWidget {
             ),
             const Spacer(),
             
-            // Botones de Cancelar y Continuar
+            // Botones de Atrás y Continuar
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 // Botón de Atrás
-                TextButton(
-                  onPressed: () {
-                    Get.back();  // Vuelve a la página anterior
-                  },
-                  child: const Text(
-                    'Atrás',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: Color(0xFF2980B9),  // Como boton sin fondo (averiguar nombre)
-                    ),
-                  ),
-                ),
+                const BackButtonWidget(),
                 
                 // Botón de Continuar
-                ElevatedButton(
-                  onPressed: () {
+                NavigateButton(text: "Continuar", 
+                onPressed: () {
                     if (nameController.text.isNotEmpty) {
                       // Añadir lógica para continuar solo si el nombre no está vacío
                       habitController.addHabit(nameController.text);  // Añadir el hábito al controlador
-                      //Get.to(() => NextHabitCreationStepPage());  // Navegar a la siguiente página del proceso
+                      Get.to(() => const ChooseCategoryPage());  // Navegar a la siguiente página del proceso
                     } else {
                       // Mostrar un mensaje de error si el nombre está vacío
                       Get.snackbar(
@@ -167,20 +97,7 @@ class CreateHabitPage extends StatelessWidget {
                         colorText: Colors.white,
                       );
                     }
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF2980B9),  // Fondo azul claro
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                  ),
-                  child: const Text(
-                    'Continuar',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,  // Texto en blanco
-                    ),
-                  ),
+                  }
                 ),
               ],
             ),
