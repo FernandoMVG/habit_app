@@ -26,7 +26,7 @@ class _HomePageState extends State<HomePage> {
     //final size = MediaQuery.of(context).size;
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: const CustomAppBar(), // Usamos el AppBar personalizado
       
       body: Column(
@@ -53,7 +53,7 @@ class _HomePageState extends State<HomePage> {
 
       // FAB para agregar hábito
       floatingActionButton: FloatingActionButton(
-        backgroundColor: const Color(0xFF2980B9),
+        backgroundColor: Theme.of(context).colorScheme.primary,
         foregroundColor: Colors.white,
         onPressed: () {
           setState(() {

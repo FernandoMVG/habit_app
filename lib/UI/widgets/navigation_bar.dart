@@ -15,9 +15,9 @@ class CustomBottomNavigationBar extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.only(top: 10),  // Añade espacio superior para aumentar la altura
       child: BottomNavigationBar(
-        backgroundColor: const Color(0xFF2C3E50), // Color de fondo
+        backgroundColor: Theme.of(context).colorScheme.surface, // Color de fondo
         type: BottomNavigationBarType.fixed,  // Fija los íconos sin animación
-        selectedItemColor: Colors.white,  // Íconos seleccionados en blanco
+        selectedItemColor: Theme.of(context).colorScheme.onSurface,  // Íconos seleccionados en blanco
         unselectedItemColor: Colors.grey[400],  // Íconos no seleccionados en gris claro
         currentIndex: currentIndex,  // Índice seleccionado
         onTap: onTap,  // Función de tap

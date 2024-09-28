@@ -18,15 +18,21 @@ class EmptyStateMessageWidget extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(icon, size: 80, color: Colors.grey),
+          Icon(icon, size: 80, 
+          color: Theme.of(context).colorScheme.primary
+          ),
           const SizedBox(height: 20),
           Text(
             message,
-            style: const TextStyle(fontSize: 18, color: Color(0xFF2196F3)),
+            style: TextStyle(fontSize: 18, 
+            color: Theme.of(context).colorScheme.primary
+            ),
           ),
           Text(
             subMessage,
-            style: const TextStyle(fontSize: 16, color: Colors.grey),
+            style: TextStyle(fontSize: 16, 
+            color: Theme.of(context).colorScheme.onSurface
+            ),
           ),
         ],
       ),
