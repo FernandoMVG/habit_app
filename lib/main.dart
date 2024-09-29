@@ -1,9 +1,22 @@
+// main.dart
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:habit_app/ui/pages/home.dart';  // Importa la página de home
+import 'package:habit_app/ui/pages/home.dart'; // Importa la página de home
+import 'package:habit_app/constants.dart'; // Importa las constantes de colores
+import 'package:habit_app/ui/pages/Welcome/welcome_screen.dart';
+import 'package:provider/provider.dart';
+import 'package:habit_app/UI/controller/auth_controller.dart'; // Importa el controlador
 
 void main() {
-  runApp(const MyApp());
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+            create: (_) => AuthController()), // Inicializa AuthController
+      ],
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatefulWidget {
@@ -17,40 +30,54 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
-      title: 'Habit App',
+        title: 'Habit App',
 
-      // Definir tema claro
-      theme: ThemeData(
-        scaffoldBackgroundColor: Colors.white,  // Fondo claro
-        primaryColor: const Color(0xFF2980B9),  // Azul primario
-        colorScheme: ColorScheme.fromSwatch().copyWith(
-          primary: const Color(0xFF2980B9),  // Azul primario
-          secondary: const Color(0xE6E6E6E6),  // Fondo claro
-          error: const Color(0xFFC0392B),  // Rojo de error
-          surface: const Color(0xFF34495E),  // Color para las superficies (ej. nav bar)
-        
-
-          onSurface: Colors.grey,  // Color para texto/iconos en superficies
-          onPrimary: Colors.white,  // Color del texto sobre el primario
-        ),
-        textTheme: const TextTheme(
-          titleLarge: TextStyle(color: Color(0xFF2980B9), fontWeight: FontWeight.bold),
-          bodyLarge: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
-          bodyMedium: TextStyle(color: Colors.grey),
-          labelLarge: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-          labelSmall: TextStyle(color: Colors.grey, fontWeight: FontWeight.bold),
-          
-        ),
-        elevatedButtonTheme: ElevatedButtonThemeData(
-          style: ElevatedButton.styleFrom(
-            foregroundColor: Colors.white, backgroundColor: const Color(0xFF2980B9),  // Texto en blanco
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(20),
+        // Definir tema claro
+        theme: ThemeData(
+            scaffoldBackgroundColor: Colors.white, // Fondo claro
+            primaryColor: primaryColor, // Azul primario
+            colorScheme: ColorScheme.fromSwatch().copyWith(
+              primary: primaryColor, // Azul primario
+              secondary: secondaryColor, // Fondo claro
+              error: errorColor, // Rojo de error
+              surface: surfaceColor, // Color para superficies
+              onSurface:
+                  onSurfaceColor, // Color para texto/iconos en superficies
+              onPrimary: onPrimaryColor, // Color del texto sobre el primario
             ),
-          ),
-        ),
-      ),
-      home: HomePage(),  // Página de inicio
-    );
+            textTheme: const TextTheme(
+              titleLarge: TextStyle(
+                  color: Color(0xFF2980B9), fontWeight: FontWeight.bold),
+              bodyLarge:
+                  TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+              bodyMedium: TextStyle(color: Colors.grey),
+              labelLarge:
+                  TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+              labelSmall:
+                  TextStyle(color: Colors.grey, fontWeight: FontWeight.bold),
+            ),
+            elevatedButtonTheme: ElevatedButtonThemeData(
+              style: ElevatedButton.styleFrom(
+                foregroundColor: Colors.white,
+                backgroundColor: primaryColor, // Texto en blanco
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20),
+                ),
+              ),
+            ),
+            inputDecorationTheme: const InputDecorationTheme(
+              filled: true,
+              fillColor: kPrimaryLightColor,
+              iconColor: primaryColor,
+              prefixIconColor: primaryColor,
+              contentPadding: EdgeInsets.symmetric(
+                  horizontal: defaultPadding, vertical: defaultPadding),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.all(Radius.circular(30)),
+                borderSide: BorderSide.none,
+              ),
+            )),
+        home: const WelcomeScreen() //const HomePage(), // Página de inicio
+        );
   }
 }
