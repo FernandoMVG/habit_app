@@ -9,7 +9,9 @@ import 'package:habit_app/ui/pages/Welcome/welcome_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:habit_app/UI/controller/auth_controller.dart'; // Importa el controlador
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await initializeDateFormatting('es', null);
   runApp(
     MultiProvider(
       providers: [
@@ -79,7 +81,7 @@ class _MyAppState extends State<MyApp> {
                 borderSide: BorderSide.none,
               ),
             )),
-        home: const WelcomeScreen() //const HomePage(), // Página de inicio
+        home: const HomePage(), //const WelcomeScreen(), // Página de inicio
         );
   }
 }
