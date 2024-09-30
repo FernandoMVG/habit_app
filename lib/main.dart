@@ -1,6 +1,8 @@
 // main.dart
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
+import 'package:intl/date_symbol_data_local.dart';
 import 'package:habit_app/ui/pages/home.dart'; // Importa la página de home
 import 'package:habit_app/constants.dart'; // Importa las constantes de colores
 import 'package:habit_app/ui/pages/Welcome/welcome_screen.dart';
