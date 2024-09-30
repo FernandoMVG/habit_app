@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:habit_app/UI/widgets/progress_bar.dart';
+import 'package:habit_app/UI/widgets/progress_bar2.dart';
 import 'package:habit_app/ui/widgets/calendar.dart';
-import 'package:habit_app/ui/widgets/progress_bar.dart';
 import 'package:habit_app/ui/widgets/app_bar.dart';
 import 'package:habit_app/ui/widgets/Empty_message.dart';
 import 'package:habit_app/ui/widgets/navigation_bar.dart';
@@ -37,7 +38,7 @@ class _HomePageState extends State<HomePage> {
           // Verificar si hay hábitos
           if (todayHabits.isNotEmpty) ...[
             // Muestra la ProgressBar solo si hay hábitos para ese día
-            const ProgressBarWidget(progress: 0.5),
+            const ProgressBarWidget2(progress: 0.5),
           ] else ...[
             // Si no hay hábitos, muestra el mensaje vacío
             const Expanded(
@@ -57,7 +58,8 @@ class _HomePageState extends State<HomePage> {
         foregroundColor: Colors.white,
         onPressed: () {
           setState(() {
-            todayHabits.remove('Nuevo hábito');  // Agrega un nuevo hábito a la lista
+            //todayHabits.remove('Nuevo hábito');  // Agrega un nuevo hábito a la lista
+            todayHabits.add('Nuevo hábito');
           });
         },
         child: const Icon(Icons.add, size: 30),
