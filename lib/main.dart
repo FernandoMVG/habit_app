@@ -30,6 +30,7 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
+      debugShowCheckedModeBanner: false,
         title: 'Habit App',
 
         // Definir tema claro
@@ -77,7 +78,8 @@ class _MyAppState extends State<MyApp> {
                 borderSide: BorderSide.none,
               ),
             )),
-        home: const WelcomeScreen() //const HomePage(), // Página de inicio
+        home: //const WelcomeScreen() 
+        const HomePage(), // Página de inicio
         );
   }
 }

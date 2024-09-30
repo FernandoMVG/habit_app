@@ -5,6 +5,7 @@ class CustomTextField extends StatelessWidget {
   final String labelText;
   final bool isObscureText;  // Útil si quieres usarlo para contraseñas o texto normal
   final TextInputType keyboardType;
+  final bool enabled;
 
   const CustomTextField({
     super.key,
@@ -12,11 +13,13 @@ class CustomTextField extends StatelessWidget {
     required this.labelText,
     this.isObscureText = false,  // False por defecto
     this.keyboardType = TextInputType.text,  // Texto por defecto
+    this.enabled = true,  // True por defecto
   });
 
   @override
   Widget build(BuildContext context) {
     return TextField(
+      enabled: enabled,
       controller: controller,
       obscureText: isObscureText,
       keyboardType: keyboardType,
@@ -26,6 +29,8 @@ class CustomTextField extends StatelessWidget {
           fontWeight: FontWeight.bold,
           color: Colors.black,  // Texto en negrita y color negro
         ),
+        fillColor: Colors.white, //color del fondo del textfield
+        filled: true,
         border: const OutlineInputBorder(
           borderRadius: BorderRadius.all(Radius.circular(10.0)),
           borderSide: BorderSide(
