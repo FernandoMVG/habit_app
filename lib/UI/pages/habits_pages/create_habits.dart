@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:habit_app/ui/widgets/text_field.dart';
-import 'package:habit_app/ui/widgets/buttons.dart';
+import 'package:habit_app/ui/widgets/shared/text_field.dart';
+import 'package:habit_app/ui/widgets/shared/buttons.dart';
 import 'package:habit_app/ui/controller/habit_controller.dart';  // Controlador de hábitos
 import 'package:habit_app/ui/pages/habits_pages/choose_category.dart';  // La página a la que navegará cuando presione continuar
 

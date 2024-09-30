@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:habit_app/ui/widgets/buttons.dart';
+import 'package:habit_app/ui/widgets/shared/buttons.dart';
 import 'package:habit_app/ui/pages/habits.dart';
 import 'package:habit_app/ui/controller/habit_controller.dart';
 
@@ -125,7 +125,7 @@ class _ChooseFrequencyPageState extends State<ChooseFrequencyPage> {
                     selectedColor: widget.categoryColor,
                     backgroundColor: Theme.of(context).colorScheme.onPrimary,
                     labelStyle: TextStyle(
-                      color: isSelected ? Colors.white : widget.categoryColor,
+                      color: isSelected ? Theme.of(context).colorScheme.onPrimary : widget.categoryColor,
                       fontWeight: FontWeight.bold,
                     ),
                   );

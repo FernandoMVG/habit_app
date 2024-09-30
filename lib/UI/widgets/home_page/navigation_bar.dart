@@ -12,7 +12,14 @@ class CustomBottomNavigationBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Obtén la altura del dispositivo
+    final double deviceHeight = MediaQuery.of(context).size.height;
+
+    // Calcula la altura del BottomNavigationBar en función de la altura del dispositivo
+    final double navBarHeight = deviceHeight * 0.10; // Por ejemplo, 10% de la altura del dispositivo
+
     return Container(
+      height: navBarHeight,
       padding: const EdgeInsets.only(top: 10),  // Añade espacio superior para aumentar la altura
       child: BottomNavigationBar(
         backgroundColor: Theme.of(context).colorScheme.surface, // Color de fondo

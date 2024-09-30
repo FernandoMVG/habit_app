@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:habit_app/models/habit_model.dart';
 import 'package:habit_app/ui/controller/habit_controller.dart';
 import 'package:habit_app/ui/widgets/home_page/navigation_bar.dart';
-import 'package:habit_app/ui/widgets/empty_message.dart';
-import 'package:habit_app/ui/widgets/app_bar.dart';
+import 'package:habit_app/ui/widgets/shared/empty_message.dart';
+import 'package:habit_app/ui/widgets/shared/app_bar.dart';
 import 'package:habit_app/ui/widgets/habit_page/habit.dart'; // Nuevo HabitCardWidget
 import 'package:habit_app/ui/pages/home.dart';
 import 'package:habit_app/ui/pages/habits_pages/habit_type.dart';
+import 'package:habit_app/ui/widgets/shared/bottom_sheet.dart';
 
 class HabitPage extends StatefulWidget {
   const HabitPage({super.key});
@@ -43,7 +45,7 @@ class _HabitPageState extends State<HabitPage> {
 
               return GestureDetector(
                 onTap: () {
-                  _showHabitDetailsBottomSheet(context, habit); // Muestra el BottomSheet al hacer tap en la tarjeta
+                  _showBottomSheet(context, habit); // Muestra el BottomSheet al hacer tap en la tarjeta
                 },
                 child: HabitCardWidget(
                   habitName: habit.name,
@@ -57,7 +59,7 @@ class _HabitPageState extends State<HabitPage> {
                   selectedDays: habit.selectedDays,
                   onEdit: () {
                     // Lógica para editar el hábito desde el botón de editar dentro del BottomSheet
-                    _showHabitDetailsBottomSheet(context, habit);
+                    _showBottomSheet(context, habit);
                   },
                   onDelete: () {
                     habitController.removeHabit(habit);
@@ -102,20 +104,18 @@ class _HabitPageState extends State<HabitPage> {
   }
 
   // Función para mostrar un BottomSheet con detalles del hábito
-  void _showHabitDetailsBottomSheet(BuildContext context, habit) {
+  void _showBottomSheet(BuildContext context, Habit habit) {
   showModalBottomSheet(
     context: context,
     shape: const RoundedRectangleBorder(
       borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
     ),
-    backgroundColor: Theme.of(context).scaffoldBackgroundColor,
     builder: (BuildContext context) {
-      return Padding(
-        padding: const EdgeInsets.all(20.0),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
+      return CustomBottomSheet(
+        content: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            
             // Encabezado del nombre del hábito
             Text(
               habit.name,
@@ -186,50 +186,20 @@ class _HabitPageState extends State<HabitPage> {
                 ),
               ),
             const SizedBox(height: 20),
-
-            // Botones de Editar y Eliminar
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                ElevatedButton.icon(
-                  icon: const Icon(Icons.edit, color: Colors.white),
-                  label: const Text('Editar'),
-                  onPressed: () {
-                    // Lógica para editar el hábito
-                    Get.back();  // Cierra el BottomSheet
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Theme.of(context).primaryColor,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 20, vertical: 12),
-                  ),
-                ),
-                ElevatedButton.icon(
-                  icon: const Icon(Icons.delete, color: Colors.white),
-                  label: const Text('Eliminar'),
-                  onPressed: () {
-                    // Lógica para eliminar el hábito
-                    habitController.removeHabit(habit);
-                    Get.back();  // Cierra el BottomSheet
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Theme.of(context).colorScheme.error,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 20, vertical: 12),
-                  ),
-                ),
-              ],
-            ),
           ],
         ),
+        // Pasar las funciones de editar y eliminar como parametros para el widget (controladores)
+        onEdit: () {
+          // Lógica para editar el hábito
+          Get.back();  // Cierra el BottomSheet
+        },
+        onDelete: () {
+          // Lógica para eliminar el hábito
+          habitController.removeHabit(habit);
+          Get.back();  // Cierra el BottomSheet
+        },
       );
     },
   );
- }
+}
 }
