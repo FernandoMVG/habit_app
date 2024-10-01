@@ -48,6 +48,7 @@ class _ChooseFrequencyPageState extends State<ChooseFrequencyPage> {
             ),
             const SizedBox(height: 50),
 
+            // Intentar modificar la apariencia cuando no esta seleccionado
             // Botón para seleccionar "Todos los días"
             ElevatedButton(
               onPressed: () {
@@ -147,7 +148,7 @@ class _ChooseFrequencyPageState extends State<ChooseFrequencyPage> {
                         days: isDailySelected ? null : selectedDays,
                       );
                       habitController.addHabit();
-                      Get.off(() => HabitPage()); // Regresa a la página de hábitos
+                      Get.off(() => const HabitPage()); // Regresa a la página de hábitos
                     }
                   },
                   isEnabled: selectedDays.isNotEmpty || isDailySelected,

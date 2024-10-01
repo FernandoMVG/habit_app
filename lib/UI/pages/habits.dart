@@ -9,6 +9,8 @@ import 'package:habit_app/ui/widgets/habit_page/habit.dart'; // Nuevo HabitCardW
 import 'package:habit_app/ui/pages/home.dart';
 import 'package:habit_app/ui/pages/habits_pages/habit_type.dart';
 import 'package:habit_app/ui/widgets/shared/bottom_sheet.dart';
+import 'package:habit_app/ui/widgets/habit_page/habit_details.dart';
+import 'package:habit_app/ui/widgets/habit_page/habit_edit.dart';
 
 class HabitPage extends StatefulWidget {
   const HabitPage({super.key});
@@ -103,100 +105,37 @@ class _HabitPageState extends State<HabitPage> {
     );
   }
 
-  // Función para mostrar un BottomSheet con detalles del hábito
   void _showBottomSheet(BuildContext context, Habit habit) {
+  final TextEditingController nameController = TextEditingController(text: habit.name);
+  final TextEditingController descriptionController = TextEditingController(text: habit.description ?? '');
+
   showModalBottomSheet(
     context: context,
     shape: const RoundedRectangleBorder(
       borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
     ),
+    isScrollControlled: true,
     builder: (BuildContext context) {
       return CustomBottomSheet(
-        content: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            
-            // Encabezado del nombre del hábito
-            Text(
-              habit.name,
-              style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: Theme.of(context).primaryColor,
-                  ),
-            ),
-            const SizedBox(height: 10),
-            
-            // Categoría del hábito
-            RichText(
-              text: TextSpan(
-                text: 'Categoría: ',
-                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                      fontWeight: FontWeight.bold,
-                      color: Theme.of(context).textTheme.bodyLarge?.color,
-                    ),
-                children: [
-                  TextSpan(
-                    text: habit.categoryName,
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: habit.categoryColor,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 10),
-            
-            // Días seleccionados
-            RichText(
-              text: TextSpan(
-                text: 'Días seleccionados: ',
-                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                      fontWeight: FontWeight.bold,
-                      color: Theme.of(context).textTheme.bodyLarge?.color,
-                    ),
-                children: [
-                  TextSpan(
-                    text: habit.selectedDays?.join(', ') ?? "Ninguno",
-                    style: const TextStyle(fontWeight: FontWeight.normal),
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 10),
-            
-            // Descripción del hábito
-            if (habit.description != null && habit.description!.isNotEmpty)
-              Padding(
-                padding: const EdgeInsets.only(top: 10.0),
-                child: RichText(
-                  text: TextSpan(
-                    text: 'Descripción: ',
-                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                          fontWeight: FontWeight.bold,
-                          color: Theme.of(context).textTheme.bodyLarge?.color,
-                        ),
-                    children: [
-                      TextSpan(
-                        text: habit.description,
-                        style: const TextStyle(fontWeight: FontWeight.normal),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            const SizedBox(height: 20),
-          ],
+        content: HabitDetailsWidget(habit: habit),
+        editContent: HabitEditWidget(
+          nameController: nameController,
+          descriptionController: descriptionController,
         ),
-        // Pasar las funciones de editar y eliminar como parametros para el widget (controladores)
         onEdit: () {
-          // Lógica para editar el hábito
-          Get.back();  // Cierra el BottomSheet
+          // Activar modo edición
         },
         onDelete: () {
-          // Lógica para eliminar el hábito
           habitController.removeHabit(habit);
-          Get.back();  // Cierra el BottomSheet
+          Get.back();
+        },
+        onSave: () {
+          habitController.updateHabit(
+            habit,
+            nameController.text.isNotEmpty ? nameController.text : habit.name,
+            descriptionController.text.isNotEmpty ? descriptionController.text : habit.description ?? "",
+          );
+          Get.back();  // Cierra el BottomSheet después de guardar
         },
       );
     },

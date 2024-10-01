@@ -121,4 +121,26 @@ class HabitController extends GetxController {
   void removeHabit(Habit habit) {
     habits.remove(habit);
   }
+
+  // Método para actualizar un hábito específico
+  void updateHabit(Habit habit, String newName, String newDescription) {
+    final habitIndex = habits.indexOf(habit);
+
+    if (habitIndex != -1) {
+      habits[habitIndex] = Habit(
+        name: newName,
+        description: newDescription,
+        categoryColor: habit.categoryColor,
+        categoryName: habit.categoryName,
+        isQuantifiable: habit.isQuantifiable,
+        selectedDays: habit.selectedDays,
+        isDaily: habit.isDaily,
+        //quantificationType: habit.quantificationType,
+        //quantity: habit.quantity,
+        unit: habit.unit,
+        completedCount: habit.completedCount,
+      );
+      habits.refresh(); // Refresca la lista para actualizar la UI
+    }
+  }
 }

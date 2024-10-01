@@ -39,7 +39,8 @@ class HabitCardWidget extends StatelessWidget {
   selectedDays?.sort((a, b) => orderedDays.indexOf(a).compareTo(orderedDays.indexOf(b)));
 
     return Card(
-      elevation: 3,
+      elevation: 10,
+      shadowColor: Theme.of(context).primaryColorLight,
       color: Theme.of(context).colorScheme.secondary,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(15),
@@ -56,7 +57,7 @@ class HabitCardWidget extends StatelessWidget {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(habitName, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black)),
+                    Text(habitName, style: Theme.of(context).textTheme.bodyLarge),
                     Text(categoryName, style: TextStyle(fontSize: 14, color: categoryColor)),
                   ],
                 ),
