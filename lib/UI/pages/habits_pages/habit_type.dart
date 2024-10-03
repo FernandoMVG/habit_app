@@ -6,7 +6,7 @@ import 'package:habit_app/ui/widgets/shared/buttons.dart';
 import 'package:habit_app/ui/pages/habits_pages/create_habits_quantity.dart';
 
 class HabitTypeSelectionPage extends StatelessWidget {
-  final HabitController habitController = Get.find<HabitController>(); // Accedemos al controlador ya inicializado
+  final HabitController habitController = Get.find<HabitController>();
 
   HabitTypeSelectionPage({super.key});
 
@@ -15,8 +15,8 @@ class HabitTypeSelectionPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-        automaticallyImplyLeading: false,  // Oculta el botón de back
-        elevation: 0,  // Sin sombra
+        automaticallyImplyLeading: false,
+        elevation: 0,
       ),
       body: Padding(
         padding: const EdgeInsets.all(20.0),
@@ -39,7 +39,7 @@ class HabitTypeSelectionPage extends StatelessWidget {
 
             ElevatedButton(
               onPressed: () {
-                habitController.setHabitType(false); // Hábito no cuantificable
+                habitController.initHabit(name: '', categoryName: '', categoryColor: Colors.transparent, categoryIcon: Icons.category, isQuantifiable: false);
                 Get.to(() => CreateHabitPage()); // Navega a la siguiente página
               },
               style: ElevatedButton.styleFrom(
@@ -72,7 +72,7 @@ class HabitTypeSelectionPage extends StatelessWidget {
 
             ElevatedButton(
               onPressed: () {
-                habitController.setHabitType(true); // Hábito cuantificable
+                habitController.initHabit(name: '', categoryName: '', categoryColor: Colors.transparent, categoryIcon: Icons.category, isQuantifiable: true);
                 Get.to(() => const QuantityHabitPage());
               },
               style: ElevatedButton.styleFrom(

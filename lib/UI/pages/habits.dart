@@ -5,7 +5,7 @@ import 'package:habit_app/ui/controller/habit_controller.dart';
 import 'package:habit_app/ui/widgets/home_page/navigation_bar.dart';
 import 'package:habit_app/ui/widgets/shared/empty_message.dart';
 import 'package:habit_app/ui/widgets/shared/app_bar.dart';
-import 'package:habit_app/ui/widgets/habit_page/habit.dart'; // Nuevo HabitCardWidget
+import 'package:habit_app/ui/widgets/habit_page/habit_card.dart'; // Nuevo HabitCardWidget
 import 'package:habit_app/ui/pages/home.dart';
 import 'package:habit_app/ui/pages/habits_pages/habit_type.dart';
 import 'package:habit_app/ui/widgets/shared/bottom_sheet.dart';
@@ -52,7 +52,7 @@ class _HabitPageState extends State<HabitPage> {
                 child: HabitCardWidget(
                   habitName: habit.name,
                   categoryName: habit.categoryName,
-                  categoryIcon: Icons.category,  // Podrías cambiar este ícono según la categoría si tienes un icono específico
+                  categoryIcon: habit.categoryIcon,  // Podrías cambiar este ícono según la categoría si tienes un icono específico
                   categoryColor: habit.categoryColor,
                   isQuantifiable: habit.isQuantifiable,
                   currentProgress: habit.isQuantifiable ? habit.completedCount : null,

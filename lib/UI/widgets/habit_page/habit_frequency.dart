@@ -14,13 +14,20 @@ class HabitFrequencyWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Si el hábito es diario, mostramos "Diario"
     if (isDaily) {
       return BoxDays(
         categoryColor: categoryColor,
-        text: 'Todos los días',
+        text: 'Diario',
         ); 
       
-      //
+      //Si el usuario selecciona todos los días de la semana, marcamos como diario
+     } else if (selectedDays != null && selectedDays!.length == 7) {
+      return BoxDays(
+        categoryColor: categoryColor,
+        text: 'Diario',
+      );
+      // Si el usuario selecciona dias específicos, los mostramos
     } else if (selectedDays != null && selectedDays!.isNotEmpty) {
       return Wrap(
         spacing: 8.0,
@@ -31,7 +38,8 @@ class HabitFrequencyWidget extends StatelessWidget {
           );
         }).toList(),
       );
-    } else {
+
+    }  else {
       return Text('Sin días seleccionados', style: TextStyle(fontSize: 14, color: Theme.of(context).textTheme.bodyLarge?.color));
     }
   }

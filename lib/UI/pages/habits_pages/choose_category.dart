@@ -94,7 +94,7 @@ class _ChooseCategoryPageState extends State<ChooseCategoryPage> {
                     if (selectedCategory != null) {
                       // Establecer la categoría seleccionada en el controlador
                       final selectedCategoryData = categories.firstWhere((category) => category['name'] == selectedCategory);
-                      habitController.setCategory(selectedCategoryData['name'], selectedCategoryData['color']);
+                      habitController.setCategory(selectedCategoryData['name'], selectedCategoryData['color'], selectedCategoryData['icon']);
 
                       // Navegar a la página de selección de frecuencia
                       Get.to(() => ChooseFrequencyPage(

@@ -5,7 +5,7 @@ class Habit {
   final String? description;
   final Color categoryColor;
   final String categoryName;
-  final bool isQuantifiable;
+  late final bool isQuantifiable;
   final List<String>? selectedDays; // Días seleccionados si es un hábito semanal
   final bool isDaily; // Si es un hábito diario
   
@@ -16,13 +16,14 @@ class Habit {
   // Nuevas propiedades para manejo avanzado de hábitos cuantificables
   final String? frequencyType;  // Al menos, menos de, exactamente, más de, sin especificar
   final String? unit;  // Unidad opcional (ej. "vasos", "repeticiones")
-  final Icon iconData;
+  final IconData categoryIcon;
 
   Habit({
     required this.name,
     this.description,
     required this.categoryColor,
     required this.categoryName,
+    required this.categoryIcon,
     required this.isQuantifiable,
     this.selectedDays,
     this.isDaily = false,
@@ -30,8 +31,39 @@ class Habit {
     this.completedCount = 0,
     this.frequencyType,  // Nueva propiedad para el tipo de frecuencia
     this.unit, String? quantificationType, int? quantity,  // Nueva propiedad para la unidad
-    this.iconData = const Icon(Icons.check_circle_outline),
   });
+
+  // Método copyWith para copiar el hábito y actualizar solo ciertos atributos
+  Habit copyWith({
+    String? name,
+    String? description,
+    Color? categoryColor,
+    String? categoryName,
+    bool? isQuantifiable,
+    List<String>? selectedDays,
+    bool? isDaily,
+    int? targetCount,
+    int? completedCount,
+    String? frequencyType,
+    String? unit,
+    IconData? categoryIcon,
+  }) {
+    
+    return Habit(
+      name: name ?? this.name,
+      description: description ?? this.description,
+      categoryColor: categoryColor ?? this.categoryColor,
+      categoryName: categoryName ?? this.categoryName,
+      categoryIcon: categoryIcon ?? this.categoryIcon,
+      isQuantifiable: isQuantifiable ?? this.isQuantifiable,
+      selectedDays: selectedDays ?? this.selectedDays,
+      isDaily: isDaily ?? this.isDaily,
+      targetCount: targetCount ?? this.targetCount,
+      completedCount: completedCount ?? this.completedCount,
+      frequencyType: frequencyType ?? this.frequencyType,
+      unit: unit ?? this.unit,
+    );
+  }
 
   // Método que calcula si el hábito se ha completado en función del `frequencyType`
   bool isHabitCompleted() {

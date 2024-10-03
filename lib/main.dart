@@ -35,7 +35,7 @@ class _MyAppState extends State<MyApp> {
 
         // Definir tema claro
         theme: ThemeData(
-            scaffoldBackgroundColor: Colors.white, // Fondo claro
+            scaffoldBackgroundColor: const Color.fromRGBO(245, 246, 250, 1), // Fondo claro
             primaryColor: primaryColor, // Azul primario
             colorScheme: ColorScheme.fromSwatch().copyWith(
               primary: primaryColor, // Azul primario

@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:habit_app/ui/widgets/shared/text_field.dart';
 import 'package:habit_app/ui/widgets/shared/buttons.dart';
-import 'package:habit_app/ui/controller/habit_controller.dart';  // Controlador de hábitos
-import 'package:habit_app/ui/pages/habits_pages/choose_category.dart';  // La página a la que navegará cuando presione continuar
+import 'package:habit_app/ui/controller/habit_controller.dart';  
+import 'package:habit_app/ui/pages/habits_pages/choose_category.dart';
 
 class CreateHabitPage extends StatelessWidget {
-  final HabitController habitController = Get.find<HabitController>(); // Accedemos al controlador de hábitos
+  final HabitController habitController = Get.find<HabitController>();
   final TextEditingController nameController = TextEditingController();
   final TextEditingController descriptionController = TextEditingController();
 
@@ -43,8 +43,6 @@ class CreateHabitPage extends StatelessWidget {
               labelText: 'Nombre del hábito',
             ),
             const SizedBox(height: 10),
-
-            // Ejemplo de cómo llenar el campo
             Text(
               'Ejemplo: Estudiar compiladores',
               textAlign: TextAlign.center,
@@ -59,8 +57,6 @@ class CreateHabitPage extends StatelessWidget {
               labelText: 'Descripción del hábito',
             ),
             const SizedBox(height: 10),
-
-            // Ejemplo de cómo llenar el campo
             Text(
               'Ejemplo: Repasar formas de obtener un automata finito.',
               textAlign: TextAlign.center,

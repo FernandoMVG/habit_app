@@ -37,23 +37,26 @@ class HabitCardWidget extends StatelessWidget {
   // Ordenar los días seleccionados antes de mostrarlos
   List<String> orderedDays = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'];
   selectedDays?.sort((a, b) => orderedDays.indexOf(a).compareTo(orderedDays.indexOf(b)));
-
+  
     return Card(
-      elevation: 10,
+      elevation: 0.5,
       shadowColor: Theme.of(context).primaryColorLight,
-      color: Theme.of(context).colorScheme.secondary,
+      color: Theme.of(context).colorScheme.onPrimary,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(15),
+        side: BorderSide(color: Theme.of(context).colorScheme.onSurface, width: 0.1),
       ),
       child: Padding(
         padding: const EdgeInsets.all(12.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            
             Row(
               children: [
                 CategoryIconWidget(icon: categoryIcon, color: categoryColor),
                 const SizedBox(width: 10),
+                
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [

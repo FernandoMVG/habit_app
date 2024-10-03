@@ -47,7 +47,7 @@ class HabitDetailsWidget extends StatelessWidget {
                 ),
             children: [
               TextSpan(
-                text: habit.selectedDays?.join(', ') ?? "Todos los días",
+                text: habit.selectedDays?.join(' - ') ?? "Todos los días",
                 style: const TextStyle(fontWeight: FontWeight.normal),
               ),
             ],

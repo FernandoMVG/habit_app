@@ -12,14 +12,16 @@ class CategoryIconWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Asegúrate de imprimir estos valores para depurar
     return Container(
-      width: 30,
-      height: 30,
+      width: 40,
+      height: 40,
       decoration: BoxDecoration(
         color: color,
-        shape: BoxShape.circle,
+        shape: BoxShape.rectangle,
+        borderRadius: BorderRadius.circular(15),
       ),
-      child: Icon(icon, color: Colors.white, size: 16),
+      child: Icon(icon, color: Colors.white, size: 25),
     );
   }
 }

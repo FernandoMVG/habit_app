@@ -217,30 +217,19 @@ class _QuantityHabitPageState extends State<QuantityHabitPage> {
                 NavigateButton(
                   text: 'Continuar',
                   onPressed: () {
-                    if (quantityController.text.isNotEmpty || selectedQuantificationType == 'Sin especificar' && nameController.text.isNotEmpty) {
-
-                      // Establecer el nombre del hábito
-                      habitController.setHabitName(nameController.text);
+                    if (nameController.text.isNotEmpty && (quantityController.text.isNotEmpty || selectedQuantificationType == 'Sin especificar')) {
                       
-                      // Establecer la descripción del hábito
+                      habitController.setHabitName(nameController.text);
                       habitController.setHabitDescription(descriptionController.text.isNotEmpty ? descriptionController.text : null);
 
-                      // Usar los tres métodos separados del controlador
+                      // Llamada a los setters
                       habitController.setQuantificationType(selectedQuantificationType);
-
-                      // Establecer la cantidad solo si el tipo no es 'Sin especificar'
-                      if (selectedQuantificationType != 'Sin especificar') {
-                        habitController.setQuantity(int.tryParse(quantityController.text) ?? 0);
-                      } else {
-                        habitController.setQuantity(null);  // Deshabilitar cantidad si es 'Sin especificar'
-                      }
-
-                      // Establecer la unidad solo si el tipo no es 'Sin especificar'
-                      if (selectedQuantificationType != 'Sin especificar') {
-                        habitController.setUnit(unitController.text.isNotEmpty ? unitController.text : null);
-                      } else {
-                        habitController.setUnit(null);  // Deshabilitar unidad si es 'Sin especificar'
-                      }
+                      habitController.setQuantity(selectedQuantificationType != 'Sin especificar'
+                          ? int.tryParse(quantityController.text) ?? 0
+                          : null);
+                      habitController.setUnit(selectedQuantificationType != 'Sin especificar'
+                          ? unitController.text.isNotEmpty ? unitController.text : null
+                          : null);
 
                       // Navegamos a la siguiente página en el flujo
                       Get.to(() => const ChooseCategoryPage());
