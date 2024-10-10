@@ -74,6 +74,7 @@ class HabitController extends GetxController {
     return habits.isNotEmpty;
   }
 
+  // Método para obtener la unidad del hábito
   void setUnit(String? unit) {
     habit = habit?.copyWith(unit: unit);
   }
