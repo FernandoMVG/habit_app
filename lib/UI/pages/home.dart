@@ -5,18 +5,19 @@ import 'package:habit_app/ui/widgets/home_page/progress_bar.dart';
 import 'package:habit_app/ui/widgets/shared/app_bar.dart';
 import 'package:habit_app/ui/widgets/shared/empty_message.dart';
 import 'package:habit_app/ui/widgets/home_page/navigation_bar.dart';
-import 'package:habit_app/ui/pages/habits.dart';
+import 'package:habit_app/ui/pages/habits_pages/habit_type.dart';
+import 'package:habit_app/ui/widgets/shared/fab_button.dart';
 //import 'package:habit_app/UI/widgets/habit_list.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
   @override
-  _HomePageState createState() => _HomePageState();
+  State<HomePage> createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
-  int _currentIndex = 0;  // Para gestionar el índice seleccionado
+  final int _currentIndex = 0;  // Para gestionar el índice seleccionado
 
 // Simulamos una lista de hábitos para el día actual
   final List<String> todayHabits = [];  // Si está vacía, no hay hábitos para hoy
@@ -52,35 +53,15 @@ class _HomePageState extends State<HomePage> {
       ),
 
       // FAB para agregar hábito
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: Theme.of(context).colorScheme.primary,
-        foregroundColor: Colors.white,
+      floatingActionButton: CustomFabButton(
         onPressed: () {
-          setState(() {
-            todayHabits.remove('Nuevo hábito');  // Agrega un nuevo hábito a la lista
-          });
+          Get.to(() => HabitTypeSelectionPage()); // Navega a la página correspondiente
         },
-        child: const Icon(Icons.add, size: 30),
       ),
 
       // Aquí usas el CustomBottomNavigationBar
       bottomNavigationBar: CustomBottomNavigationBar(
         currentIndex: _currentIndex,
-        onTap: (index) {
-          setState(() {
-            _currentIndex = index;  // Actualiza el índice cuando cambies de pantalla
-          });
-          // Lógica de navegación (opcional, dependiendo de cómo manejes las rutas)
-          if (index == 1) {
-            Get.to(() => HabitPage());  // Navegar a la pantalla de crear hábito
-          } else if (index == 2) {
-            // Navegar a la pantalla de categorías
-          } else if (index == 3) {
-            // Navegar a la pantalla de logros
-          } else if (index == 4) {
-            // Navegar a la pantalla de retos
-          }
-        },
       ),
     );
   }

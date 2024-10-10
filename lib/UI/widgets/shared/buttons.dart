@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:habit_app/ui/pages/habits.dart';
+import 'package:habit_app/ui/pages/home.dart';
 
 class CancelButton extends StatelessWidget {
   final String label;
@@ -18,7 +18,7 @@ class CancelButton extends StatelessWidget {
       alignment: Alignment.bottomLeft,
       child: ElevatedButton(
         onPressed: onPressed ?? () {
-          Get.off(const HabitPage()); // Elimina el 
+          Get.off(const HomePage()); // Elimina el 
         },
         style: ElevatedButton.styleFrom(
           backgroundColor: Colors.red[100],  // Fondo rojo claro

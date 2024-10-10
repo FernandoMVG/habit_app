@@ -1,14 +1,39 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:habit_app/ui/pages/home.dart';
+import 'package:habit_app/ui/pages/habits.dart';
+
 
 class CustomBottomNavigationBar extends StatelessWidget {
   final int currentIndex;
-  final Function(int) onTap;
 
   const CustomBottomNavigationBar({
     super.key,
     required this.currentIndex,
-    required this.onTap,
   });
+
+  void _navigateToPage(int index) {
+    switch (index) {
+      case 0:
+        Get.to(() => const HomePage());
+        break;
+      case 1:
+        Get.to(() => const HabitPage());
+        break;
+      case 2:
+        //Get.to(() => const CategoriesPage());
+        break;
+      case 3:
+        //Get.to(() => const AchievementsPage());
+        break;
+      case 4:
+        //Get.to(() => const ChallengesPage());
+        break;
+      default:
+        Get.to(() => const HomePage());
+        break;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +52,11 @@ class CustomBottomNavigationBar extends StatelessWidget {
         selectedItemColor: Theme.of(context).colorScheme.onSurface,  // Íconos seleccionados en blanco
         unselectedItemColor: Colors.grey[400],  // Íconos no seleccionados en gris claro
         currentIndex: currentIndex,  // Índice seleccionado
-        onTap: onTap,  // Función de tap
+        onTap: (index) {
+          if (index != currentIndex) {
+            _navigateToPage(index);
+          }
+        },
         items: const [
           BottomNavigationBarItem(
             icon: Icon(Icons.home, size: 30),  // Tamaño del ícono
