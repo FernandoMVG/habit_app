@@ -81,7 +81,9 @@ class _MyAppState extends State<MyApp> {
                 borderSide: BorderSide.none,
               ),
             )),
-        home: const HomePage(), //const WelcomeScreen(), // Página de inicio
+
+          //home: const WelcomeScreen(),
+          home: const HomePage(), //const WelcomeScreen(), Página de inicio
         );
   }
 }

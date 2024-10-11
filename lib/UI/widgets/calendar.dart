@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class CalendarWidget extends StatelessWidget {
-  const CalendarWidget({super.key});
+  final bool allHabitsCompleted;  // Nuevo parámetro para recibir si todos los hábitos están completados
+
+  const CalendarWidget({super.key, required this.allHabitsCompleted});
 
   // Método para obtener la fecha del lunes de la semana actual
   DateTime _getStartOfWeek(DateTime date) {
@@ -36,7 +38,8 @@ class CalendarWidget extends StatelessWidget {
             final dayAbbreviation = DateFormat.E('es').format(date); // Formato abreviado en español
             final dayNumber = date.day.toString();
 
-            return _buildCalendarDay(dayAbbreviation, dayNumber, isToday, dayWidth);
+            // Aquí llamamos al método para construir el día
+            return _buildCalendarDay(dayAbbreviation, dayNumber, isToday, dayWidth, allHabitsCompleted && isToday);
           }).toList(),
         ),
       ),
@@ -44,13 +47,15 @@ class CalendarWidget extends StatelessWidget {
   }
 
   // Método para construir cada día del calendario
-  Widget _buildCalendarDay(String day, String date, bool isSelected, double width) {
+  Widget _buildCalendarDay(String day, String date, bool isSelected, double width, bool allCompleted) {
     return Container(
       width: width * 0.9, // Ajusta el ancho según sea necesario
       margin: const EdgeInsets.symmetric(horizontal: 5.0),
       padding: const EdgeInsets.symmetric(vertical: 10.0),
       decoration: BoxDecoration(
-        color: isSelected ? const Color(0xFF2C3E50) : Colors.grey[300],
+        color: allCompleted 
+            ? Colors.green // Si todos los hábitos están completos, se pinta verde
+            : (isSelected ? const Color(0xFF2C3E50) : Colors.grey[300]), // Mantener el color normal si no
         borderRadius: BorderRadius.circular(10),
       ),
       child: Column(
@@ -59,7 +64,7 @@ class CalendarWidget extends StatelessWidget {
           Text(
             day,
             style: TextStyle(
-              color: isSelected ? Colors.white : Colors.black,
+              color: isSelected || allCompleted ? Colors.white : Colors.black, // Cambiar color del texto si es hoy o completado
               fontWeight: FontWeight.bold,
             ),
           ),
@@ -67,7 +72,7 @@ class CalendarWidget extends StatelessWidget {
           Text(
             date,
             style: TextStyle(
-              color: isSelected ? Colors.white : Colors.black,
+              color: isSelected || allCompleted ? Colors.white : Colors.black, // Cambiar color del texto si es hoy o completado
               fontWeight: FontWeight.bold,
               fontSize: 16,
             ),
