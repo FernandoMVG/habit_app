@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
-  const CustomAppBar({super.key});
+  final int experience; // Recibir experiencia como parámetro
+
+  const CustomAppBar({super.key, required this.experience});
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +29,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                   color: Colors.white.withOpacity(0.2),
                   borderRadius: BorderRadius.circular(10),
                 ),
-                child: const Text('Lvl. 0', //Aqui debería actualizar el valor del nivel más adelante
+                child: const Text('Lvl. 0', // Aquí actualizas el nivel más adelante
                 style: TextStyle(color: Colors.white)
                 ), 
               ),
@@ -38,8 +40,9 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                   color: Colors.white.withOpacity(0.2),
                   borderRadius: BorderRadius.circular(10),
                 ),
-                child: const Text('EXP 0', 
-                style: TextStyle(color: Colors.white)
+                // Mostrar la experiencia dinámica
+                child: Text('EXP $experience', // Mostrar la experiencia pasada
+                style: const TextStyle(color: Colors.white)
                 ),
               ),
             ],

@@ -2,9 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class CalendarWidget extends StatelessWidget {
-  final bool allHabitsCompleted;  // Nuevo parámetro para recibir si todos los hábitos están completados
+  final bool allHabitsCompleted;
+  final DateTime selectedDate;
+  final Map<DateTime, bool> completedDays; // Para saber qué días se completaron
 
-  const CalendarWidget({super.key, required this.allHabitsCompleted});
+  const CalendarWidget({
+    super.key,
+    required this.allHabitsCompleted,
+    required this.selectedDate,
+    required this.completedDays,
+  });
 
   // Método para obtener la fecha del lunes de la semana actual
   DateTime _getStartOfWeek(DateTime date) {
@@ -14,7 +21,7 @@ class CalendarWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final today = DateTime.now();
+    final today = selectedDate; // Usamos selectedDate en lugar del día actual real
     final startOfWeek = _getStartOfWeek(today);
 
     // Generar la lista de 7 días de la semana
@@ -38,8 +45,15 @@ class CalendarWidget extends StatelessWidget {
             final dayAbbreviation = DateFormat.E('es').format(date); // Formato abreviado en español
             final dayNumber = date.day.toString();
 
-            // Aquí llamamos al método para construir el día
-            return _buildCalendarDay(dayAbbreviation, dayNumber, isToday, dayWidth, allHabitsCompleted && isToday);
+            // Determinar el color basado en el estado de completado
+            Color dayColor;
+            if (completedDays.containsKey(date)) {
+              dayColor = completedDays[date] == true ? Colors.green : Colors.red;
+            } else {
+              dayColor = isToday ? const Color(0xFF2C3E50) : (Colors.grey[300] ?? Colors.grey);  // Usar un color por defecto si es null
+            }
+
+            return _buildCalendarDay(dayAbbreviation, dayNumber, dayColor, dayWidth);
           }).toList(),
         ),
       ),
@@ -47,15 +61,13 @@ class CalendarWidget extends StatelessWidget {
   }
 
   // Método para construir cada día del calendario
-  Widget _buildCalendarDay(String day, String date, bool isSelected, double width, bool allCompleted) {
+  Widget _buildCalendarDay(String day, String date, Color color, double width) {
     return Container(
       width: width * 0.9, // Ajusta el ancho según sea necesario
       margin: const EdgeInsets.symmetric(horizontal: 5.0),
       padding: const EdgeInsets.symmetric(vertical: 10.0),
       decoration: BoxDecoration(
-        color: allCompleted 
-            ? Colors.green // Si todos los hábitos están completos, se pinta verde
-            : (isSelected ? const Color(0xFF2C3E50) : Colors.grey[300]), // Mantener el color normal si no
+        color: color,
         borderRadius: BorderRadius.circular(10),
       ),
       child: Column(
@@ -63,16 +75,16 @@ class CalendarWidget extends StatelessWidget {
         children: [
           Text(
             day,
-            style: TextStyle(
-              color: isSelected || allCompleted ? Colors.white : Colors.black, // Cambiar color del texto si es hoy o completado
+            style: const TextStyle(
+              color: Colors.white,
               fontWeight: FontWeight.bold,
             ),
           ),
           const SizedBox(height: 5),
           Text(
             date,
-            style: TextStyle(
-              color: isSelected || allCompleted ? Colors.white : Colors.black, // Cambiar color del texto si es hoy o completado
+            style: const TextStyle(
+              color: Colors.white,
               fontWeight: FontWeight.bold,
               fontSize: 16,
             ),
