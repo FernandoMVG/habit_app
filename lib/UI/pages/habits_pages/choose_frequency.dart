@@ -10,7 +10,7 @@ class ChooseFrequencyPage extends StatefulWidget {
   const ChooseFrequencyPage({super.key, required this.categoryColor});
 
   @override
-  _ChooseFrequencyPageState createState() => _ChooseFrequencyPageState();
+  State<ChooseFrequencyPage> createState() => _ChooseFrequencyPageState();
 }
 
 class _ChooseFrequencyPageState extends State<ChooseFrequencyPage> {
