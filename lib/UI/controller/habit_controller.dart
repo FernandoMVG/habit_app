@@ -95,5 +95,91 @@ class HabitController extends GetxController {
       categoryIcon: icon,
     );
   }
-  
+
+  // Método para reiniciar los hábitos al final del día
+  void resetDailyHabits() {
+    for (var habit in habits) {
+      if (habit.isCompleted == false && habit.completedCount == 0) {
+        habit.isMissed = true; // Marcar como incompleto
+      } else {
+        habit.isMissed = false;
+      }
+      habit.isCompleted = false;
+      habit.completedCount = 0;
+    }
+    habits.refresh();
+  }
+
+  // Método para obtener los hábitos de la rutina diaria
+  List<Habit> getTodayHabits() {
+    DateTime now = DateTime.now();
+    String today = _weekdayToString(now.weekday);
+
+    return habits.where((habit) {
+      if (habit.isDaily) {
+        return true;
+      } else if (habit.selectedDays != null) {
+        return habit.selectedDays!.contains(today);
+      }
+      return false;
+    }).toList();
+  }
+
+  String _weekdayToString(int weekday) {
+    switch (weekday) {
+      case DateTime.monday:
+        return 'Lun';
+      case DateTime.tuesday:
+        return 'Mar';
+      case DateTime.wednesday:
+        return 'Mié';
+      case DateTime.thursday:
+        return 'Jue';
+      case DateTime.friday:
+        return 'Vie';
+      case DateTime.saturday:
+        return 'Sáb';
+      case DateTime.sunday:
+        return 'Dom';
+      default:
+        return '';
+    }
+  }
+
+  // Método para actualizar el estado de completado de un hábito
+  void updateHabitCompletion(Habit habitToUpdate) {
+    final index = habits.indexWhere((h) => h.name == habitToUpdate.name);
+    if (index != -1) {
+      habits[index] = habitToUpdate;
+      switch (habitToUpdate.frequencyType) {
+        case 'Exactamente':
+          habits[index].isCompleted = (habitToUpdate.targetCount != null && habitToUpdate.completedCount == habitToUpdate.targetCount!);
+          break;
+        case 'Al menos':
+          habits[index].isCompleted = (habitToUpdate.targetCount != null && habitToUpdate.completedCount >= habitToUpdate.targetCount!);
+          break;
+        case 'Menos de':
+          habits[index].isCompleted = (habitToUpdate.targetCount != null && habitToUpdate.completedCount < habitToUpdate.targetCount!);
+          break;
+        case 'Más de':
+          habits[index].isCompleted = (habitToUpdate.targetCount != null && habitToUpdate.completedCount > habitToUpdate.targetCount!);
+          break;
+        case 'Sin especificar':
+          habits[index].isCompleted = (habitToUpdate.targetCount != null && habitToUpdate.completedCount > 0);
+          break;
+        default:
+          habits[index].isCompleted = false;
+      }
+      habits.refresh();
+    }
+  }
+
+
+  // Método para incrementar el progreso de un hábito y verificar si está completado
+  void incrementHabitProgress(Habit habit) {
+    habit.completedCount++;
+    updateHabitCompletion(habit);
+  }
 }
+
+

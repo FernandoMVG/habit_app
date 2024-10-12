@@ -18,6 +18,10 @@ class Habit {
   final String? unit;  // Unidad opcional (ej. "vasos", "repeticiones")
   final IconData categoryIcon;
 
+  //Nuevas propiedades para manejar el estado de completación del hábito
+  bool isCompleted;
+  bool isMissed; 
+
   Habit({
     required this.name,
     this.description,
@@ -30,7 +34,9 @@ class Habit {
     this.targetCount,
     this.completedCount = 0,
     this.frequencyType,  // Nueva propiedad para el tipo de frecuencia
-    this.unit, String? quantificationType, int? quantity,  // Nueva propiedad para la unidad
+    this.unit, String? quantificationType, int? quantity,
+    this.isCompleted = false,
+    this.isMissed = false, 
   });
 
   // Método copyWith para copiar el hábito y actualizar solo ciertos atributos
@@ -47,6 +53,8 @@ class Habit {
     String? frequencyType,
     String? unit,
     IconData? categoryIcon,
+    bool? isCompleted,
+    bool? isMissed,
   }) {
     
     return Habit(
@@ -62,23 +70,27 @@ class Habit {
       completedCount: completedCount ?? this.completedCount,
       frequencyType: frequencyType ?? this.frequencyType,
       unit: unit ?? this.unit,
+      isCompleted: isCompleted ?? this.isCompleted,
+      isMissed: isMissed ?? this.isMissed,
     );
   }
 
-  // Método que calcula si el hábito se ha completado en función del `frequencyType`
+  // Método que calcula si el hábito cuantificable se ha completado en función de `frequencyType`
   bool isHabitCompleted() {
-    if (frequencyType == 'al menos') {
-      return completedCount >= targetCount!;
-    } else if (frequencyType == 'menos de') {
-      return completedCount < targetCount!;
-    } else if (frequencyType == 'exactamente') {
-      return completedCount == targetCount!;
-    } else if (frequencyType == 'más de') {
-      return completedCount > targetCount!;
-    } else if (frequencyType == 'sin especificar') {
-      return true;  // Siempre se puede marcar como completado sin meta específica
+    switch (frequencyType) {
+      case 'al menos':
+        return completedCount >= targetCount!;
+      case 'menos de':
+        return completedCount < targetCount!;
+      case 'exactamente':
+        return completedCount == targetCount!;
+      case 'más de':
+        return completedCount > targetCount!;
+      case 'sin especificar':
+        return true;  // Siempre se puede marcar como completado sin meta específica
+      default:
+        return false;
     }
-    return false;
   }
 
   // Método que calcula el progreso del hábito en forma de porcentaje
@@ -86,18 +98,41 @@ class Habit {
     if (isQuantifiable && targetCount != null && targetCount! > 0) {
       return completedCount / targetCount!;
     }
-    return 0.0;
+    return isCompleted ? 1.0 : 0.0;
   }
 
   // Método para marcar el hábito como completado y aumentar el contador
   void completeHabit() {
-    if (isQuantifiable && frequencyType != 'sin especificar') {
-      completedCount++;
+    if (isQuantifiable && targetCount != null) {
+      if (isHabitCompleted()) {
+        isCompleted = true;  // Marcamos como completado si la meta se alcanza
+      } else {
+        isCompleted = false; // Si no se ha alcanzado, no está completado
+      }
+    } else {
+      toggleCompleted(); // Para hábitos binarios
     }
   }
 
   // Método para reiniciar el progreso del hábito
   void resetProgress() {
     completedCount = 0;
+    isCompleted = false;
   }
+
+   // Método para alternar el estado completado en hábitos binarios
+  void toggleCompleted() {
+    if (!isQuantifiable) {
+      isCompleted = !isCompleted;
+    }
+  }
+
+  // Método que incrementa el progreso y verifica si se ha completado
+  void incrementProgress() {
+    if (isQuantifiable && completedCount < targetCount!) {
+      completedCount++;
+      completeHabit(); // Revisa si está completado después de cada incremento
+    }
+  }
+
 }
