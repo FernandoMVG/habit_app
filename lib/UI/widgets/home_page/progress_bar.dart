@@ -1,31 +1,37 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:habit_app/models/habit_model.dart';
+import 'package:habit_app/ui/controller/habit_controller.dart';
 
-class ProgressBarWidget extends StatelessWidget {
-  final double progress;
+class DailyProgressBar extends StatelessWidget {
+  final HabitController habitController = Get.find<HabitController>();
 
-  const ProgressBarWidget({super.key, this.progress = 0.5});
+  DailyProgressBar({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(10.0),
-      width: double.infinity,
-      child: Column(
+    return Obx(() {
+      List<Habit> todayHabits = habitController.getTodayHabits();
+      int totalHabits = todayHabits.length;
+      int completedHabits = todayHabits.where((habit) => habit.isCompleted).length;
+
+      double progress = totalHabits > 0 ? completedHabits / totalHabits : 0.0;
+
+      return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            'Tu progreso',
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          Text(
+            'Progreso de hoy: $completedHabits/$totalHabits hábitos completados',
+            style: Theme.of(context).textTheme.bodyLarge,
           ),
           const SizedBox(height: 10),
           LinearProgressIndicator(
             value: progress,
-            backgroundColor: Theme.of(context).colorScheme.surface,
-            color: Colors.blue,
-            minHeight: 10,
+            backgroundColor: Colors.grey[300],
+            color: Theme.of(context).primaryColor,
           ),
         ],
-      ),
-    );
+      );
+    });
   }
 }
