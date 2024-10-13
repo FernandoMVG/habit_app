@@ -55,7 +55,7 @@ class _MyAppState extends State<MyApp> {
                   color: Color(0xFF2980B9), fontWeight: FontWeight.bold),
               bodyLarge:
                   TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
-              bodyMedium: TextStyle(color: Colors.grey),
+              bodyMedium: TextStyle(color: Colors.grey,  fontWeight: FontWeight.bold),
               labelLarge:
                   TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
               labelSmall:

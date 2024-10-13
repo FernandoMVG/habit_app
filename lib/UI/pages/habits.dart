@@ -27,7 +27,7 @@ class _HabitPageState extends State<HabitPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      appBar: const CustomAppBar(),
+      appBar:  CustomAppBar(),
 
       body: Obx(() {
         // Verificar si hay hábitos

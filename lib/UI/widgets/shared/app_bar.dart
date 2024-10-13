@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:habit_app/ui/controller/habit_controller.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
-  const CustomAppBar({super.key});
+  final HabitController habitController = Get.find<HabitController>();
 
+  // Quitamos el `const` del constructor
+  CustomAppBar({super.key});
+  
   @override
   Widget build(BuildContext context) {
     return AppBar(
@@ -11,11 +16,28 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
       title: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          IconButton(
-            icon: Icon(Icons.menu, 
-            color: Theme.of(context).colorScheme.onSurface
+          PopupMenuButton<String>(
+            icon: Icon(
+              Icons.menu,
+              color: Theme.of(context).colorScheme.onSurface,
             ),
-            onPressed: () {}, // Funcionalidad del menú
+            onSelected: (String value) {
+              if (value == 'Avanzar día') {
+                habitController.advanceDate();
+              } else if (value == 'Retroceder día') {
+                habitController.goBackDate();
+              }
+            },
+            itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
+              const PopupMenuItem<String>(
+                value: 'Avanzar día',
+                child: Text('Avanzar día'),
+              ),
+              const PopupMenuItem<String>(
+                value: 'Retroceder día',
+                child: Text('Retroceder día'),
+              ),
+            ],
           ),
           Row(
             children: [
@@ -27,9 +49,10 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                   color: Colors.white.withOpacity(0.2),
                   borderRadius: BorderRadius.circular(10),
                 ),
-                child: const Text('Lvl. 0', //Aqui debería actualizar el valor del nivel más adelante
-                style: TextStyle(color: Colors.white)
-                ), 
+                child: const Text(
+                  'Lvl. 0',
+                  style: TextStyle(color: Colors.white),
+                ),
               ),
               const SizedBox(width: 10),
               Container(
@@ -38,8 +61,9 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                   color: Colors.white.withOpacity(0.2),
                   borderRadius: BorderRadius.circular(10),
                 ),
-                child: const Text('EXP 0', 
-                style: TextStyle(color: Colors.white)
+                child: const Text(
+                  'EXP 0',
+                  style: TextStyle(color: Colors.white),
                 ),
               ),
             ],
@@ -52,3 +76,4 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Size get preferredSize => const Size.fromHeight(kToolbarHeight);
 }
+

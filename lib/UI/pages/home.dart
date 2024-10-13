@@ -30,7 +30,7 @@ class _HomePageState extends State<HomePage> {
 
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      appBar: const CustomAppBar(), // Usamos el AppBar personalizado
+      appBar:  CustomAppBar(), // Usamos el AppBar personalizado
       
       body: Column(
         children: [
