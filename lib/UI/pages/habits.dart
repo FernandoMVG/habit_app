@@ -20,7 +20,7 @@ class HabitPage extends StatefulWidget {
 }
 
 class _HabitPageState extends State<HabitPage> {
-  final HabitController habitController = Get.put(HabitController()); // Instanciamos el controlador
+  final habitController =Get.find<HabitController>(); // Instanciamos el controlador
   final int _currentIndex = 1;  // Para gestionar el índice seleccionado
 
   @override

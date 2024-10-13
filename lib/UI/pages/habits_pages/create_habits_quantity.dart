@@ -222,7 +222,7 @@ class _QuantityHabitPageState extends State<QuantityHabitPage> {
                       habitController.setHabitName(nameController.text);
                       habitController.setHabitDescription(descriptionController.text.isNotEmpty ? descriptionController.text : null);
 
-                      // Llamada a los setters
+                      // Llamada a los setters, para guardar los valores ingresados por el usuario. Definir que sin especificar es libre
                       habitController.setQuantificationType(selectedQuantificationType);
                       habitController.setQuantity(selectedQuantificationType != 'Sin especificar'
                           ? int.tryParse(quantityController.text) ?? 0

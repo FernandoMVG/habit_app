@@ -20,7 +20,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final int _currentIndex = 0;  // Para gestionar el índice seleccionado
-  final HabitController habitController = Get.put(HabitController());
+  final habitController = Get.find<HabitController>();
 // Simulamos una lista de hábitos para el día actual
   final List<String> todayHabits = [];  // Si está vacía, no hay hábitos para hoy
   

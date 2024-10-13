@@ -33,6 +33,7 @@ class _HabitRoutineCardState extends State<HabitRoutineCard> {
           setState(() {
             widget.habit.toggleCompleted();
             habitController.updateHabitCompletion(widget.habit);
+            //habitController.habits.refresh();
           });
         }
       },

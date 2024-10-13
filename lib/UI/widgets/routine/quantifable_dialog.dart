@@ -10,11 +10,11 @@ class QuantifiableHabitDialog extends StatefulWidget {
   final Function(int) onProgressUpdated;
 
   const QuantifiableHabitDialog({
-    Key? key,
+    super.key,
     required this.habit,
     required this.habitController,
     required this.onProgressUpdated,
-  }) : super(key: key);
+  });
 
   @override
   State<QuantifiableHabitDialog> createState() => _QuantifiableHabitDialogState();

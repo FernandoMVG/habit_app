@@ -5,9 +5,13 @@ import 'package:habit_app/ui/pages/home.dart'; // Importa la página de home
 import 'package:habit_app/constants.dart'; // Importa las constantes de colores
 import 'package:habit_app/ui/pages/Welcome/welcome_screen.dart';
 import 'package:provider/provider.dart';
-import 'package:habit_app/UI/controller/auth_controller.dart'; // Importa el controlador
+import 'package:habit_app/ui/controller/auth_controller.dart'; // Importa el controlador
+import 'package:habit_app/ui/controller/habit_controller.dart'; // Importa el controlador de hábitos
 
 void main() {
+  
+  Get.put(HabitController()); // Instancia el controlador de hábitos
+
   runApp(
     MultiProvider(
       providers: [

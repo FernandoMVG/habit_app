@@ -146,11 +146,14 @@ class HabitController extends GetxController {
     }
   }
 
-  // Método para actualizar el estado de completado de un hábito
-  void updateHabitCompletion(Habit habitToUpdate) {
-    final index = habits.indexWhere((h) => h.name == habitToUpdate.name);
-    if (index != -1) {
-      habits[index] = habitToUpdate;
+// Método para actualizar el estado de completado de un hábito
+void updateHabitCompletion(Habit habitToUpdate) {
+  final index = habits.indexWhere((h) => h.name == habitToUpdate.name);
+  if (index != -1) {
+    habits[index] = habitToUpdate;
+    if (!habitToUpdate.isQuantifiable) {
+      habits[index].isCompleted = habitToUpdate.isCompleted;
+    } else {
       switch (habitToUpdate.frequencyType) {
         case 'Exactamente':
           habits[index].isCompleted = (habitToUpdate.targetCount != null && habitToUpdate.completedCount == habitToUpdate.targetCount!);
@@ -165,14 +168,18 @@ class HabitController extends GetxController {
           habits[index].isCompleted = (habitToUpdate.targetCount != null && habitToUpdate.completedCount > habitToUpdate.targetCount!);
           break;
         case 'Sin especificar':
-          habits[index].isCompleted = (habitToUpdate.targetCount != null && habitToUpdate.completedCount > 0);
+          habits[index].isCompleted = true;
+          break;
+        case null:
+          habits[index].isCompleted = false;
           break;
         default:
           habits[index].isCompleted = false;
       }
-      habits.refresh();
     }
+    habits.refresh();
   }
+}
 
 
   // Método para incrementar el progreso de un hábito y verificar si está completado
