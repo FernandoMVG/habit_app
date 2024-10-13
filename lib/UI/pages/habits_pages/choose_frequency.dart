@@ -16,7 +16,7 @@ class ChooseFrequencyPage extends StatefulWidget {
 class _ChooseFrequencyPageState extends State<ChooseFrequencyPage> {
   bool isDailySelected = false; // Para el botón de "Todos los días"
   List<String> selectedDays = []; // Para los días seleccionados de la semana
-  final List<String> weekDays = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'];
+  final List<String> weekDays = ['Lun', 'Mar', 'Mie', 'Jue', 'Vie', 'Sab', 'Dom'];
 
   final HabitController habitController = Get.find<HabitController>(); // Accedemos al controlador
 

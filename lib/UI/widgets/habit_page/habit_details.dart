@@ -1,78 +1,120 @@
 import 'package:flutter/material.dart';
 import 'package:habit_app/models/habit_model.dart';
+import 'package:habit_app/ui/widgets/category_icon.dart';
+import 'package:habit_app/ui/widgets/box_color.dart';
 
 class HabitDetailsWidget extends StatelessWidget {
   final Habit habit;
 
-  const HabitDetailsWidget({super.key, required this.habit});
+
+  const HabitDetailsWidget({
+    super.key,
+    required this.habit,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          habit.name,
-          style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                fontWeight: FontWeight.bold,
-                color: Theme.of(context).textTheme.bodyLarge?.color,
-              ),
+        // Encabezado: Nombre del hábito y el icono de categoría
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              habit.name,
+              style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                    fontSize: 36,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black87,
+                  ),
+            ),
+            CategoryIconWidget(
+              icon: habit.categoryIcon,
+              color: habit.categoryColor,
+            ),
+          ],
         ),
         const SizedBox(height: 10),
-        RichText(
-          text: TextSpan(
-            text: 'Categoría: ',
-            style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                  fontWeight: FontWeight.bold,
-                  color: Theme.of(context).textTheme.bodyLarge?.color,
-                ),
-            children: [
-              TextSpan(
-                text: habit.categoryName,
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: habit.categoryColor,
-                ),
-              ),
-            ],
+
+        // Categoría del hábito
+        BoxDays(
+          categoryColor: habit.categoryColor, 
+          text: habit.categoryName,
+          fontSize: 18,
           ),
-        ),
+
+        // Días seleccionados del hábito
         const SizedBox(height: 10),
-        RichText(
-          text: TextSpan(
-            text: 'Días seleccionados: ',
-            style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                  fontWeight: FontWeight.bold,
-                  color: Theme.of(context).textTheme.bodyLarge?.color,
+        if (habit.selectedDays != null && habit.selectedDays!.isNotEmpty)
+          Text(
+            'Días: ${habit.selectedDays?.join(' - ') ?? 'Todos los días'}',
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  fontSize: 16,
                 ),
-            children: [
-              TextSpan(
-                text: habit.selectedDays?.join(' - ') ?? "Todos los días",
-                style: const TextStyle(fontWeight: FontWeight.normal),
-              ),
-            ],
           ),
+        const SizedBox(height: 20),
+
+        // Información de las rachas
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            _buildStreakInfo(
+              Icons.local_fire_department,
+              "Racha actual",
+              habit.streakCount,
+            ),
+            _buildStreakInfo(
+              Icons.emoji_events,
+              "Racha más larga",
+              habit.longestStreak,
+            ),
+          ],
         ),
-        const SizedBox(height: 10),
+        const SizedBox(height: 20),
+
+        // Descripción del hábito (opcional)
         if (habit.description != null && habit.description!.isNotEmpty)
           Padding(
             padding: const EdgeInsets.only(top: 10.0),
-            child: RichText(
-              text: TextSpan(
-                text: 'Descripción: ',
-                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                      fontWeight: FontWeight.bold,
-                      color: Theme.of(context).textTheme.bodyLarge?.color,
-                    ),
-                children: [
-                  TextSpan(
-                    text: habit.description,
-                    style: const TextStyle(fontWeight: FontWeight.normal),
-                  ),
-                ],
+            child: Text(
+              habit.description!,
+              style: TextStyle(
+                fontSize: 24,
+                color: Colors.grey[600],
               ),
             ),
           ),
+      ],
+    );
+  }
+
+  // Widget auxiliar para mostrar la información de rachas
+  Widget _buildStreakInfo(IconData icon, String label, int streak) {
+    return Column(
+      children: [
+        Icon(
+          icon,
+          size: 30,
+          color: icon == Icons.local_fire_department
+              ? Colors.orange
+              : Colors.blueAccent,
+        ),
+        const SizedBox(height: 8),
+        Text(
+          '$streak días',
+          style: const TextStyle(
+            fontSize: 12,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        Text(
+          label,
+          style: const TextStyle(
+            fontSize: 18,
+            color: Colors.grey,
+          ),
+        ),
       ],
     );
   }

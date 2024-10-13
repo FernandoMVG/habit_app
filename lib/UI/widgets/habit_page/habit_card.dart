@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:habit_app/ui/widgets/habit_page/habit_action.dart';
 import 'package:habit_app/ui/widgets/habit_page/habit_frequency.dart';
-import 'package:habit_app/ui/widgets/habit_page/habit_progress.dart';
+//import 'package:habit_app/ui/widgets/habit_page/habit_progress.dart';
 import 'package:habit_app/ui/widgets/category_icon.dart';
 
 class HabitCardWidget extends StatelessWidget {
@@ -34,10 +33,12 @@ class HabitCardWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-  // Ordenar los días seleccionados antes de mostrarlos
-  List<String> orderedDays = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'];
-  selectedDays?.sort((a, b) => orderedDays.indexOf(a).compareTo(orderedDays.indexOf(b)));
-  
+    // Ordenar los días seleccionados antes de mostrarlos
+    List<String> orderedDays = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'];
+    selectedDays?.sort((a, b) => orderedDays.indexOf(a).compareTo(orderedDays.indexOf(b)));
+
+    
+
     return Card(
       elevation: 0.5,
       shadowColor: Theme.of(context).primaryColorLight,
@@ -51,12 +52,10 @@ class HabitCardWidget extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            
             Row(
               children: [
                 CategoryIconWidget(icon: categoryIcon, color: categoryColor),
                 const SizedBox(width: 10),
-                
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -65,19 +64,17 @@ class HabitCardWidget extends StatelessWidget {
                   ],
                 ),
                 const Spacer(),
-                HabitActionsWidget(onEdit: onEdit, onDelete: onDelete),
+                
               ],
             ),
             const SizedBox(height: 10),
-            HabitFrequencyWidget(isDaily: isDaily, selectedDays: selectedDays, categoryColor: categoryColor,),
-            if (isQuantifiable && currentProgress != null && totalProgress != null)
-              Padding(
-                padding: const EdgeInsets.only(top: 10.0),
-                child: HabitProgressWidget(
-                  currentProgress: currentProgress!,
-                  totalProgress: totalProgress!,
-                ),
-              ),
+            // Widget de frecuencia del hábito
+            HabitFrequencyWidget(
+              isDaily: isDaily,
+              selectedDays: selectedDays,
+              categoryColor: categoryColor,
+            ),
+            const SizedBox(height: 10),
           ],
         ),
       ),

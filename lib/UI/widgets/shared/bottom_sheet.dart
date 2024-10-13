@@ -6,6 +6,8 @@ class CustomBottomSheet extends StatefulWidget {
   final VoidCallback onEdit;
   final VoidCallback onDelete;
   final VoidCallback onSave;
+  final int? currentStreak;  // Racha actual (opcional)
+  final int? longestStreak;  // Racha más larga (opcional)
 
   const CustomBottomSheet({
     super.key,
@@ -14,6 +16,8 @@ class CustomBottomSheet extends StatefulWidget {
     required this.onEdit,      // Acción para editar
     required this.onDelete,    // Acción para eliminar
     required this.onSave,      // Acción para guardar cambios
+    this.currentStreak,        // Racha actual opcional
+    this.longestStreak,        // Racha más larga opcional
   });
 
   @override
@@ -26,37 +30,36 @@ class _CustomBottomSheetState extends State<CustomBottomSheet> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: MediaQuery.of(context).size.width, // Ocupa todo el ancho de la pantalla
+      width: MediaQuery.of(context).size.width,
       padding: const EdgeInsets.all(20),
-      decoration:  BoxDecoration(
-        color: Theme.of(context).scaffoldBackgroundColor, // Fondo blanco para contraste
+      decoration: BoxDecoration(
+        color: Theme.of(context).scaffoldBackgroundColor,
         borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start, // Alinea el contenido a la izquierda
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          
-          // Mostrar contenido dependiendo del estado de edición
-          isEditing 
+          // Mostrar contenido según el estado de edición
+          isEditing
               ? SizedBox(
-                  width: MediaQuery.of(context).size.width, // Se asegura de que el contenido de edición también ocupe todo el ancho
+                  width: MediaQuery.of(context).size.width,
                   child: widget.editContent,
-                ) 
+                )
               : SizedBox(
-                  width: MediaQuery.of(context).size.width, // Se asegura de que el contenido estándar ocupe todo el ancho
+                  width: MediaQuery.of(context).size.width,
                   child: widget.content,
                 ),
+
           const SizedBox(height: 20),
 
+          // Botones de acciones
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              
-              // Mostrar el botón de editar solo si no estamos en modo edición
               if (!isEditing)
                 ElevatedButton.icon(
-                  icon:  Icon(Icons.edit, color: Theme.of(context).colorScheme.onPrimary), 
+                  icon: Icon(Icons.edit, color: Theme.of(context).colorScheme.onPrimary),
                   label: const Text('Editar'),
                   onPressed: () {
                     setState(() {
@@ -69,15 +72,12 @@ class _CustomBottomSheetState extends State<CustomBottomSheet> {
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20),
                     ),
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 20, vertical: 12),
+                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
                   ),
                 ),
-
-              // Mostrar el botón de eliminar solo si no estamos en modo edición
               if (!isEditing)
                 ElevatedButton.icon(
-                  icon:  Icon(Icons.delete, color: Theme.of(context).colorScheme.onPrimary),
+                  icon: Icon(Icons.delete, color: Theme.of(context).colorScheme.onPrimary),
                   label: const Text('Eliminar'),
                   onPressed: widget.onDelete,
                   style: ElevatedButton.styleFrom(
@@ -85,15 +85,12 @@ class _CustomBottomSheetState extends State<CustomBottomSheet> {
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20),
                     ),
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 20, vertical: 12),
+                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
                   ),
                 ),
-                
-              // Mostrar el botón de guardar solo cuando estamos en modo edición
               if (isEditing)
                 ElevatedButton.icon(
-                  icon:  Icon(Icons.save, color: Theme.of(context).colorScheme.onPrimary),
+                  icon: Icon(Icons.save, color: Theme.of(context).colorScheme.onPrimary),
                   label: const Text('Guardar'),
                   onPressed: () {
                     widget.onSave();
@@ -106,8 +103,7 @@ class _CustomBottomSheetState extends State<CustomBottomSheet> {
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20),
                     ),
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 20, vertical: 12),
+                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
                   ),
                 ),
             ],

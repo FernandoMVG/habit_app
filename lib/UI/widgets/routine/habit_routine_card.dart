@@ -68,8 +68,19 @@ class _HabitRoutineCardState extends State<HabitRoutineCard> {
                           fontWeight: FontWeight.bold,
                         ),
                   ),
+                  const SizedBox(height: 5.0),
+                  //mostrar el lastcompleted
                   Text(
-                    widget.habit.categoryName,
+                    widget.habit.lastCompleted != null
+                        ? 'Última vez: ${widget.habit.lastCompleted!.day}/${widget.habit.lastCompleted!.month}/${widget.habit.lastCompleted!.year}'
+                        : 'Nunca completado',
+                    style: TextStyle(
+                      color: Colors.grey[400],
+                      fontSize: 14.0,
+                    ),
+                  ),
+                  Text(
+                    widget.habit.frequencyType ?? 'Unknown', //categoryName
                     style: TextStyle(
                       color: widget.habit.categoryColor,
                       fontSize: 14.0,
@@ -82,6 +93,7 @@ class _HabitRoutineCardState extends State<HabitRoutineCard> {
                       backgroundColor: Colors.grey[300],
                       color: Theme.of(context).primaryColor,
                     ),
+                    
                 ],
               ),
             ),

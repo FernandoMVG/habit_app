@@ -5,22 +5,25 @@ class Habit {
   final String? description;
   final Color categoryColor;
   final String categoryName;
-  late final bool isQuantifiable;
-  final List<String>? selectedDays; // Días seleccionados si es un hábito semanal
-  final bool isDaily; // Si es un hábito diario
-  
-  // Nuevas propiedades para manejar el progreso del hábito
-  final int? targetCount;  // Cantidad objetivo, se usa si el hábito es cuantificable y tiene meta
-  int completedCount;  // Progreso actual del hábito
-  
-  // Nuevas propiedades para manejo avanzado de hábitos cuantificables
-  final String? frequencyType;  // Al menos, menos de, exactamente, más de, sin especificar
-  final String? unit;  // Unidad opcional (ej. "vasos", "repeticiones")
+  final bool isQuantifiable;
+  final List<String>? selectedDays; 
+  final bool isDaily;
+
+  final int? targetCount; 
+  int completedCount;
+
+  final String? frequencyType; 
+  final String? unit; 
   final IconData categoryIcon;
 
-  //Nuevas propiedades para manejar el estado de completación del hábito
   bool isCompleted;
-  bool isMissed; 
+  bool isMissed;
+
+  // Propiedades para manejar las rachas
+  int streakCount; // Racha actual
+  int longestStreak; // Racha más larga registrada
+  List<DateTime> completionDates; // Fechas en las que se completó el hábito
+  DateTime? lastCompleted; // Última vez que se completó el hábito
 
   Habit({
     required this.name,
@@ -33,13 +36,16 @@ class Habit {
     this.isDaily = false,
     this.targetCount,
     this.completedCount = 0,
-    this.frequencyType,  // Nueva propiedad para el tipo de frecuencia
-    this.unit, String? quantificationType, int? quantity,
+    this.frequencyType,
+    this.unit,
     this.isCompleted = false,
-    this.isMissed = false, 
+    this.isMissed = false,
+    this.streakCount = 0,
+    this.longestStreak = 0,
+    this.completionDates = const [],
+    this.lastCompleted,
   });
 
-  // Método copyWith para copiar el hábito y actualizar solo ciertos atributos
   Habit copyWith({
     String? name,
     String? description,
@@ -55,8 +61,11 @@ class Habit {
     IconData? categoryIcon,
     bool? isCompleted,
     bool? isMissed,
+    int? streakCount,
+    int? longestStreak,
+    List<DateTime>? completionDates,
+    DateTime? lastCompleted,
   }) {
-    
     return Habit(
       name: name ?? this.name,
       description: description ?? this.description,
@@ -72,6 +81,10 @@ class Habit {
       unit: unit ?? this.unit,
       isCompleted: isCompleted ?? this.isCompleted,
       isMissed: isMissed ?? this.isMissed,
+      streakCount: streakCount ?? this.streakCount,  // Aseguramos que no sea null
+      longestStreak: longestStreak ?? this.longestStreak,  // Aseguramos que no sea null
+      completionDates: completionDates ?? this.completionDates,
+      lastCompleted: lastCompleted ?? this.lastCompleted,
     );
   }
 
@@ -87,30 +100,18 @@ class Habit {
       case 'más de':
         return completedCount > targetCount!;
       case 'sin especificar':
-        return true;  // Siempre se puede marcar como completado sin meta específica
+        return true;
       default:
         return false;
     }
   }
 
-  // Método que calcula el progreso del hábito en forma de porcentaje
-  double get progress {
-    if (isQuantifiable && targetCount != null && targetCount! > 0) {
-      return completedCount / targetCount!;
-    }
-    return isCompleted ? 1.0 : 0.0;
-  }
-
   // Método para marcar el hábito como completado y aumentar el contador
   void completeHabit() {
     if (isQuantifiable && targetCount != null) {
-      if (isHabitCompleted()) {
-        isCompleted = true;  // Marcamos como completado si la meta se alcanza
-      } else {
-        isCompleted = false; // Si no se ha alcanzado, no está completado
-      }
+      isCompleted = isHabitCompleted();
     } else {
-      toggleCompleted(); // Para hábitos binarios
+      toggleCompleted();
     }
   }
 
@@ -131,8 +132,29 @@ class Habit {
   void incrementProgress() {
     if (isQuantifiable && completedCount < targetCount!) {
       completedCount++;
-      completeHabit(); // Revisa si está completado después de cada incremento
+      completeHabit();
     }
   }
 
+  // Incrementa la racha si el hábito se completó en el día correspondiente
+  void incrementStreak() {
+    DateTime now = DateTime.now();
+    if (lastCompleted != null &&
+        now.difference(lastCompleted!).inDays == 1) {
+      streakCount++;
+    } else {
+      streakCount = 1;
+    }
+    lastCompleted = now;
+    completionDates.add(now);
+
+    if (streakCount > longestStreak) {
+      longestStreak = streakCount;
+    }
+  }
+
+  // Reinicia la racha si el hábito no se completó en los días esperados
+  void resetStreak() {
+    streakCount = 0;
+  }
 }
