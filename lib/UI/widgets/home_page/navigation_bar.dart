@@ -63,8 +63,8 @@ class CustomBottomNavigationBar extends StatelessWidget {
         },
         items: const [
           BottomNavigationBarItem(
-            icon: Icon(Icons.home, size: 28), // Ajusta el tamaño de los íconos
-            label: 'Home',
+            icon: Icon(Icons.schedule, size: 28), // Ajusta el tamaño de los íconos
+            label: 'Rutina',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.check_circle, size: 28),

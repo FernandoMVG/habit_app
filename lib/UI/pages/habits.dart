@@ -136,15 +136,12 @@ class _HabitPageState extends State<HabitPage> {
             Get.back();
           },
           onSave: () {
-            habitController.updateHabit(
-              habit,
-              nameController.text.isNotEmpty
-                  ? nameController.text
-                  : habit.name,
-              descriptionController.text.isNotEmpty
-                  ? descriptionController.text
-                  : habit.description ?? "",
-            );
+            // Asegura que se puede guardar una descripción vacía
+          habitController.updateHabit(
+            habit,
+            nameController.text.isNotEmpty ? nameController.text : habit.name,
+            descriptionController.text,  // Permitir valor vacío
+          );
             Get.back(); // Cierra el BottomSheet después de guardar
           },
         );

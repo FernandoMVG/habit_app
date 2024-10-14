@@ -55,11 +55,12 @@ class HabitController extends GetxController {
   void updateHabit(Habit habitToUpdate, String newName, String newDescription) {
     final habitIndex = habits.indexOf(habitToUpdate);
     if (habitIndex != -1) {
+      // Actualiza el hábito permitiendo que la descripción esté vacía
       habits[habitIndex] = habitToUpdate.copyWith(
         name: newName,
-        description: newDescription,
+        description: newDescription.isNotEmpty ? newDescription : '',
       );
-      habits.refresh();
+      habits.refresh(); // Refrescar la lista de hábitos
     }
   }
 

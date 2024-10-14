@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:habit_app/ui/widgets/shared/buttons.dart';
 import 'package:habit_app/ui/pages/habits.dart';
 import 'package:habit_app/ui/controller/habit_controller.dart';
+import 'package:habit_app/constants.dart'; // Asegúrate de importar los colores parametrizados.
 
 class ChooseFrequencyPage extends StatefulWidget {
   final Color categoryColor;
@@ -18,7 +19,7 @@ class _ChooseFrequencyPageState extends State<ChooseFrequencyPage> {
   List<String> selectedDays = []; // Para los días seleccionados de la semana
   final List<String> weekDays = ['Lun', 'Mar', 'Mie', 'Jue', 'Vie', 'Sab', 'Dom'];
 
-  final HabitController habitController = Get.find<HabitController>(); // Accedemos al controlador
+  final HabitController habitController = Get.find<HabitController>();
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +34,6 @@ class _ChooseFrequencyPageState extends State<ChooseFrequencyPage> {
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
-
             // Título centrado
             Center(
               child: Text(
@@ -41,66 +41,39 @@ class _ChooseFrequencyPageState extends State<ChooseFrequencyPage> {
                 style: Theme.of(context).textTheme.titleLarge?.copyWith(
                       fontSize: 32,
                       fontWeight: FontWeight.bold,
-                      color: Theme.of(context).primaryColor,
+                      color: Theme.of(context).colorScheme.primary,
                     ),
                 textAlign: TextAlign.center,
               ),
             ),
             const SizedBox(height: 50),
 
-            // Intentar modificar la apariencia cuando no esta seleccionado
             // Botón para seleccionar "Todos los días"
-            ElevatedButton(
+            _buildChoiceButton(
+              context: context,
+              text: 'Todos los días',
+              isSelected: isDailySelected,
+              icon: Icons.check_circle,
               onPressed: () {
                 setState(() {
                   isDailySelected = true;
-                  selectedDays.clear(); // Limpiamos los días de la semana seleccionados
+                  selectedDays.clear(); // Limpiamos los días seleccionados.
                 });
               },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: isDailySelected ? widget.categoryColor : Theme.of(context).colorScheme.primary,
-                minimumSize: const Size(double.infinity, 60),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20),
-                ),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const Text(
-                    'Todos los días',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                  ),
-                  Icon(Icons.check_circle, color: Theme.of(context).colorScheme.onPrimary),
-                ],
-              ),
             ),
             const SizedBox(height: 20),
 
             // Botón para seleccionar "Días de la semana"
-            ElevatedButton(
+            _buildChoiceButton(
+              context: context,
+              text: 'Días de la semana',
+              isSelected: !isDailySelected,
+              icon: Icons.calendar_today,
               onPressed: () {
                 setState(() {
                   isDailySelected = false;
                 });
               },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: !isDailySelected ? widget.categoryColor : Theme.of(context).colorScheme.primary,
-                minimumSize: const Size(double.infinity, 60),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20),
-                ),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const Text(
-                    'Días de la semana',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                  ),
-                  Icon(Icons.calendar_today, color: Theme.of(context).colorScheme.onPrimary),
-                ],
-              ),
             ),
             const SizedBox(height: 20),
 
@@ -126,7 +99,9 @@ class _ChooseFrequencyPageState extends State<ChooseFrequencyPage> {
                     selectedColor: widget.categoryColor,
                     backgroundColor: Theme.of(context).colorScheme.onPrimary,
                     labelStyle: TextStyle(
-                      color: isSelected ? Theme.of(context).colorScheme.onPrimary : widget.categoryColor,
+                      color: isSelected
+                          ? Theme.of(context).colorScheme.onPrimary
+                          : widget.categoryColor,
                       fontWeight: FontWeight.bold,
                     ),
                   );
@@ -148,7 +123,7 @@ class _ChooseFrequencyPageState extends State<ChooseFrequencyPage> {
                         days: isDailySelected ? null : selectedDays,
                       );
                       habitController.addHabit();
-                      Get.off(() => const HabitPage()); // Regresa a la página de hábitos
+                      Get.off(() => const HabitPage());
                     }
                   },
                   isEnabled: selectedDays.isNotEmpty || isDailySelected,
@@ -157,6 +132,52 @@ class _ChooseFrequencyPageState extends State<ChooseFrequencyPage> {
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  // Widget para construir botones de selección con estilo alternado.
+  Widget _buildChoiceButton({
+    required BuildContext context,
+    required String text,
+    required bool isSelected,
+    required IconData icon,
+    required VoidCallback onPressed,
+  }) {
+    return ElevatedButton(
+      onPressed: onPressed,
+      style: ElevatedButton.styleFrom(
+        elevation: 0,
+        backgroundColor: isSelected ? widget.categoryColor : Colors.transparent,
+        side: BorderSide(
+          color: widget.categoryColor,
+          width: 2.0,
+        ),
+        minimumSize: const Size(double.infinity, 60),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20),
+        ),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            text,
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              color: isSelected
+                  ? Theme.of(context).colorScheme.onPrimary
+                  : widget.categoryColor,
+            ),
+          ),
+          Icon(
+            icon,
+            color: isSelected
+                ? Theme.of(context).colorScheme.onPrimary
+                : widget.categoryColor,
+          ),
+        ],
       ),
     );
   }
