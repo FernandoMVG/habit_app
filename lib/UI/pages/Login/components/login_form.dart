@@ -42,6 +42,7 @@ class LoginForm extends StatelessWidget {
           const SizedBox(height: defaultPadding),
           ElevatedButton(
             onPressed: () {
+              print('entra');
               // Verificar las credenciales
               bool isLoggedIn = context.read<AuthController>().logIn(
                     emailController.text,
