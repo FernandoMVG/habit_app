@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:habit_app/UI/pages/category/category_page.dart';
 import 'package:habit_app/ui/pages/home.dart';
 import 'package:habit_app/ui/pages/habits.dart';
 import 'package:habit_app/constants.dart'; // Importa las constantes
@@ -15,13 +16,13 @@ class CustomBottomNavigationBar extends StatelessWidget {
   void _navigateToPage(int index) {
     switch (index) {
       case 0:
-        Get.offAll(() => const HomePage());
+        Get.to(() => const HomePage()); // Navegar a la página de Home
         break;
       case 1:
-        Get.offAll(() => const HabitPage());
+        Get.to(() => const HabitPage()); // Navegar a la página de Hábitos
         break;
       case 2:
-        //Get.offAll(() => const CategoriesPage());
+        Get.to(() => CategoryPage()); // Navegar a la página de Categorías
         break;
       case 3:
         //Get.offAll(() => const AchievementsPage());
@@ -40,7 +41,8 @@ class CustomBottomNavigationBar extends StatelessWidget {
     final double deviceHeight = MediaQuery.of(context).size.height;
 
     // Calcula la altura de la barra de navegación
-    final double navBarHeight = deviceHeight * 0.10; // 10% de la altura del dispositivo
+    final double navBarHeight =
+        deviceHeight * 0.10; // 10% de la altura del dispositivo
 
     return Container(
       height: navBarHeight,
@@ -63,7 +65,8 @@ class CustomBottomNavigationBar extends StatelessWidget {
         },
         items: const [
           BottomNavigationBarItem(
-            icon: Icon(Icons.schedule, size: 28), // Ajusta el tamaño de los íconos
+            icon: Icon(Icons.schedule,
+                size: 28), // Ajusta el tamaño de los íconos
             label: 'Rutina',
           ),
           BottomNavigationBarItem(
