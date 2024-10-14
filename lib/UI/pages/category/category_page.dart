@@ -5,6 +5,7 @@ import 'package:habit_app/UI/pages/category/create_category_page.dart';
 import 'package:habit_app/UI/pages/category/edit_category_page.dart';
 import 'package:habit_app/ui/controller/category_controller.dart';
 import 'package:habit_app/ui/widgets/navigation_bar.dart';
+import '/responsive.dart'; // Importar el widget Responsive
 
 class CategoryPage extends StatelessWidget {
   final CategoryController categoryController = Get.put(CategoryController());
@@ -17,7 +18,6 @@ class CategoryPage extends StatelessWidget {
         backgroundColor: Theme.of(context).colorScheme.surface,
       ),
       body: Obx(() {
-        // Verificar si hay categorías creadas
         if (categoryController.categories.isEmpty) {
           return const Center(
             child: Text(
@@ -26,52 +26,72 @@ class CategoryPage extends StatelessWidget {
             ),
           );
         } else {
-          // Mostrar la lista de categorías
-          return ListView.builder(
-            itemCount: categoryController.categories.length,
-            itemBuilder: (context, index) {
-              final category = categoryController.categories[index];
-              return ListTile(
-                onTap: () {
-                  // Al hacer clic en cualquier parte de la categoría, navegar a la edición
-                  Get.to(() => EditCategoryPage(category: category));
-                },
-                leading: Icon(category.icon,
-                    color: category.color), // Mostrar ícono y color
-                title: Text(
-                  category.name,
-                  style: const TextStyle(fontWeight: FontWeight.bold),
-                ),
-                trailing: IconButton(
-                  icon: const Icon(Icons.delete,
-                      color: Colors.red), // Ícono de eliminar
-                  onPressed: () {
-                    // Eliminar la categoría
-                    categoryController.removeCategory(category);
-                  },
-                ),
-              );
-            },
+          return Responsive(
+            mobile: _buildCategoryGrid(context,
+                crossAxisCount: 3), // 3 columnas en móvil
+            tablet: _buildCategoryGrid(context,
+                crossAxisCount: 4), // 4 columnas en tablet
+            desktop: _buildCategoryGrid(context,
+                crossAxisCount: 5), // 5 columnas en escritorio
           );
         }
       }),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          // Navegar a la página de creación de nueva categoría
           Get.to(() => const CreateCategoryPage());
         },
         backgroundColor: Theme.of(context).colorScheme.primary,
         child: const Icon(Icons.add),
       ),
       bottomNavigationBar: CustomBottomNavigationBar(
-        currentIndex: 2, // Marcar la página de "Categorías"
+        currentIndex: 2,
         onTap: (index) {
-          // Aquí puedes manejar la navegación entre las diferentes páginas
           if (index == 0) {
-            Get.back(); // Navegar de vuelta a HomePage
+            Get.back();
           }
         },
       ),
+    );
+  }
+
+  // Método para construir la cuadrícula de categorías
+  Widget _buildCategoryGrid(BuildContext context,
+      {required int crossAxisCount}) {
+    return GridView.builder(
+      padding: const EdgeInsets.all(16.0),
+      itemCount: categoryController.categories.length,
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: crossAxisCount, // Número de columnas
+        crossAxisSpacing: 16.0, // Espacio entre columnas
+        mainAxisSpacing: 16.0, // Espacio entre filas
+        childAspectRatio: 1, // Relación de aspecto de las celdas
+      ),
+      itemBuilder: (context, index) {
+        final category = categoryController.categories[index];
+        return GestureDetector(
+          onTap: () {
+            Get.to(() => EditCategoryPage(category: category));
+          },
+          child: Container(
+            decoration: BoxDecoration(
+              color: category.color.withOpacity(0.1),
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: category.color, width: 2),
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(category.icon, color: category.color, size: 40),
+                const SizedBox(height: 8),
+                Text(
+                  category.name,
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 }
