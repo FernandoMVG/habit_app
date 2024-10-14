@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:habit_app/ui/pages/home.dart';
 import 'package:habit_app/ui/pages/habits.dart';
-
+import 'package:habit_app/constants.dart'; // Importa las constantes
 
 class CustomBottomNavigationBar extends StatelessWidget {
   final int currentIndex;
@@ -15,43 +15,47 @@ class CustomBottomNavigationBar extends StatelessWidget {
   void _navigateToPage(int index) {
     switch (index) {
       case 0:
-        Get.to(() => const HomePage());
+        Get.offAll(() => const HomePage());
         break;
       case 1:
-        Get.to(() => const HabitPage());
+        Get.offAll(() => const HabitPage());
         break;
       case 2:
-        //Get.to(() => const CategoriesPage());
+        //Get.offAll(() => const CategoriesPage());
         break;
       case 3:
-        //Get.to(() => const AchievementsPage());
+        //Get.offAll(() => const AchievementsPage());
         break;
       case 4:
-        //Get.to(() => const ChallengesPage());
+        //Get.offAll(() => const ChallengesPage());
         break;
       default:
-        Get.to(() => const HomePage());
+        Get.offAll(() => const HomePage());
         break;
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    // Obtén la altura del dispositivo
     final double deviceHeight = MediaQuery.of(context).size.height;
 
-    // Calcula la altura del BottomNavigationBar en función de la altura del dispositivo
-    final double navBarHeight = deviceHeight * 0.10; // Por ejemplo, 10% de la altura del dispositivo
+    // Calcula la altura de la barra de navegación
+    final double navBarHeight = deviceHeight * 0.10; // 10% de la altura del dispositivo
 
     return Container(
       height: navBarHeight,
-      padding: const EdgeInsets.only(top: 10),  // Añade espacio superior para aumentar la altura
+      decoration: const BoxDecoration(
+        color: navBarBackgroundColor, // Color de fondo de la navbar
+        border: Border(
+          top: BorderSide(color: cardShadowColor, width: 1.0), // Borde superior
+        ),
+      ),
       child: BottomNavigationBar(
-        backgroundColor: Theme.of(context).colorScheme.surface, // Color de fondo
-        type: BottomNavigationBarType.fixed,  // Fija los íconos sin animación
-        selectedItemColor: Theme.of(context).colorScheme.onSurface,  // Íconos seleccionados en blanco
-        unselectedItemColor: Colors.grey[400],  // Íconos no seleccionados en gris claro
-        currentIndex: currentIndex,  // Índice seleccionado
+        type: BottomNavigationBarType.fixed,
+        backgroundColor: navBarBackgroundColor,
+        selectedItemColor: navBarActiveColor, // Íconos activos
+        unselectedItemColor: navBarInactiveColor, // Íconos inactivos
+        currentIndex: currentIndex,
         onTap: (index) {
           if (index != currentIndex) {
             _navigateToPage(index);
@@ -59,28 +63,31 @@ class CustomBottomNavigationBar extends StatelessWidget {
         },
         items: const [
           BottomNavigationBarItem(
-            icon: Icon(Icons.home, size: 30),  // Tamaño del ícono
+            icon: Icon(Icons.home, size: 28), // Ajusta el tamaño de los íconos
             label: 'Home',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.check_circle, size: 30),
+            icon: Icon(Icons.check_circle, size: 28),
             label: 'Hábitos',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.category, size: 30),
+            icon: Icon(Icons.category, size: 28),
             label: 'Categorías',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.star, size: 30),
-            label: 'Logros',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.flag, size: 30),
+            icon: Icon(Icons.flag, size: 28),
             label: 'Retos',
           ),
         ],
-        selectedLabelStyle: const TextStyle(fontSize: 14),  // Tamaño del texto seleccionado
-        unselectedLabelStyle: const TextStyle(fontSize: 12),  // Tamaño del texto no seleccionado
+        selectedLabelStyle: navBarTextStyle.copyWith(
+          fontSize: 13,
+          color: navBarActiveColor,
+        ), // Estilo para el ítem seleccionado
+        unselectedLabelStyle: navBarTextStyle.copyWith(
+          fontSize: 12,
+          color: navBarInactiveColor,
+        ), // Estilo para los ítems no seleccionados
+        showUnselectedLabels: true, // Mostrar los ítems no seleccionados
       ),
     );
   }

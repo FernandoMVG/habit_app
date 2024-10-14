@@ -34,7 +34,7 @@ class DailyRoutineWidget extends StatelessWidget {
           if (notCompletedHabits.isNotEmpty) ...[
             Text(
               'Mi rutina',
-              style: Theme.of(context).textTheme.titleLarge,
+              style: Theme.of(context).textTheme.titleLarge?.copyWith(fontSize: 18),
             ),
             const SizedBox(height: 5),
             ...notCompletedHabits.map((habit) => HabitRoutineCard(habit: habit)),
@@ -48,7 +48,7 @@ class DailyRoutineWidget extends StatelessWidget {
           if (completedHabits.isNotEmpty) ...[
             Text(
               'Completados',
-              style: Theme.of(context).textTheme.titleLarge,
+              style: Theme.of(context).textTheme.titleLarge?.copyWith(fontSize: 18),
             ),
             const SizedBox(height: 5),
             ...completedHabits.map((habit) => HabitRoutineCard(habit: habit)),

@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:habit_app/models/habit_model.dart';
 import 'package:habit_app/ui/widgets/category_icon.dart';
 import 'package:habit_app/ui/widgets/box_color.dart';
+import 'package:habit_app/constants.dart'; // Importa las constantes
 
 class HabitDetailsWidget extends StatelessWidget {
   final Habit habit;
-
 
   const HabitDetailsWidget({
     super.key,
@@ -23,11 +23,7 @@ class HabitDetailsWidget extends StatelessWidget {
           children: [
             Text(
               habit.name,
-              style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                    fontSize: 36,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black87,
-                  ),
+              style: titleTextStyle.copyWith(fontSize: 36),
             ),
             CategoryIconWidget(
               icon: habit.categoryIcon,
@@ -39,19 +35,17 @@ class HabitDetailsWidget extends StatelessWidget {
 
         // Categoría del hábito
         BoxDays(
-          categoryColor: habit.categoryColor, 
+          categoryColor: habit.categoryColor,
           text: habit.categoryName,
           fontSize: 18,
-          ),
+        ),
 
         // Días seleccionados del hábito
         const SizedBox(height: 10),
         if (habit.selectedDays != null && habit.selectedDays!.isNotEmpty)
           Text(
             'Días: ${habit.selectedDays?.join(' - ') ?? 'Todos los días'}',
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  fontSize: 16,
-                ),
+            style: bodyTextStyle.copyWith(fontSize: 16),
           ),
         const SizedBox(height: 20),
 
@@ -59,15 +53,19 @@ class HabitDetailsWidget extends StatelessWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            _buildStreakInfo(
-              Icons.local_fire_department,
-              "Racha actual",
-              habit.streakCount,
+            Expanded(
+              child: _buildStreakInfo(
+                Icons.local_fire_department,
+                "Actual",
+                habit.streakCount,
+              ),
             ),
-            _buildStreakInfo(
-              Icons.emoji_events,
-              "Racha más larga",
-              habit.longestStreak,
+            Expanded(
+              child: _buildStreakInfo(
+                Icons.emoji_events,
+                "Record",
+                habit.longestStreak,
+              ),
             ),
           ],
         ),
@@ -79,7 +77,7 @@ class HabitDetailsWidget extends StatelessWidget {
             padding: const EdgeInsets.only(top: 10.0),
             child: Text(
               habit.description!,
-              style: TextStyle(
+              style: bodyTextStyle.copyWith(
                 fontSize: 24,
                 color: Colors.grey[600],
               ),
@@ -95,7 +93,7 @@ class HabitDetailsWidget extends StatelessWidget {
       children: [
         Icon(
           icon,
-          size: 30,
+          size: 40,
           color: icon == Icons.local_fire_department
               ? Colors.orange
               : Colors.blueAccent,
@@ -103,17 +101,14 @@ class HabitDetailsWidget extends StatelessWidget {
         const SizedBox(height: 8),
         Text(
           '$streak días',
-          style: const TextStyle(
-            fontSize: 12,
+          style: bodyTextStyle.copyWith(
+            fontSize: 16,
             fontWeight: FontWeight.bold,
           ),
         ),
         Text(
           label,
-          style: const TextStyle(
-            fontSize: 18,
-            color: Colors.grey,
-          ),
+          style: subtitleTextStyle.copyWith(fontSize: 18),
         ),
       ],
     );

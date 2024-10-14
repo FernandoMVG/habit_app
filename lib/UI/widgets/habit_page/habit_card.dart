@@ -34,13 +34,14 @@ class HabitCardWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // Ordenar los días seleccionados antes de mostrarlos
-    List<String> orderedDays = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'];
+    List<String> orderedDays = ['Lun', 'Mar', 'Mie', 'Jue', 'Vie', 'Sab', 'Dom'];
     selectedDays?.sort((a, b) => orderedDays.indexOf(a).compareTo(orderedDays.indexOf(b)));
 
     
 
     return Card(
       elevation: 0.5,
+      margin: const EdgeInsets.symmetric(vertical: 5.0, horizontal: 16.0),
       shadowColor: Theme.of(context).primaryColorLight,
       color: Theme.of(context).colorScheme.onPrimary,
       shape: RoundedRectangleBorder(
@@ -59,8 +60,14 @@ class HabitCardWidget extends StatelessWidget {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(habitName, style: Theme.of(context).textTheme.bodyLarge),
-                    Text(categoryName, style: TextStyle(fontSize: 14, color: categoryColor)),
+                    Text(
+                      habitName, 
+                      style: Theme.of(context).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.w700)
+                      ),
+                    Text(
+                      categoryName, 
+                      style: TextStyle(fontSize: 14, color: categoryColor)
+                      ),
                   ],
                 ),
                 const Spacer(),
