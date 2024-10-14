@@ -1,23 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:habit_app/ui/widgets/calendar.dart';
-import 'package:habit_app/ui/widgets/progress_bar.dart';
-import 'package:habit_app/ui/widgets/app_bar.dart';
-import 'package:habit_app/ui/widgets/Empty_message.dart';
-import 'package:habit_app/ui/widgets/navigation_bar.dart';
-import 'package:habit_app/ui/pages/habits.dart';
+import 'package:habit_app/ui/widgets/home_page/progress_bar.dart';
+import 'package:habit_app/ui/widgets/routine/daily_routine.dart';
+import 'package:habit_app/ui/widgets/shared/app_bar.dart';
+import 'package:habit_app/ui/widgets/shared/empty_message.dart';
+import 'package:habit_app/ui/widgets/home_page/navigation_bar.dart';
+import 'package:habit_app/ui/pages/habits_pages/habit_type.dart';
+import 'package:habit_app/ui/widgets/shared/fab_button.dart';
+import 'package:habit_app/ui/controller/habit_controller.dart';
 //import 'package:habit_app/UI/widgets/habit_list.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
   @override
-  _HomePageState createState() => _HomePageState();
+  State<HomePage> createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
-  int _currentIndex = 0;  // Para gestionar el índice seleccionado
-
+  final int _currentIndex = 0;  // Para gestionar el índice seleccionado
+  final habitController = Get.find<HabitController>();
 // Simulamos una lista de hábitos para el día actual
   final List<String> todayHabits = [];  // Si está vacía, no hay hábitos para hoy
   
@@ -27,60 +30,52 @@ class _HomePageState extends State<HomePage> {
 
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      appBar: const CustomAppBar(), // Usamos el AppBar personalizado
+      appBar:  CustomAppBar(), // Usamos el AppBar personalizado
       
       body: Column(
         children: [
           // Usa el widget de calendario
           const CalendarWidget(),
 
-          // Verificar si hay hábitos
-          if (todayHabits.isNotEmpty) ...[
-            // Muestra la ProgressBar solo si hay hábitos para ese día
-            const ProgressBarWidget(progress: 0.5),
-          ] else ...[
-            // Si no hay hábitos, muestra el mensaje vacío
-            const Expanded(
-              child: EmptyStateMessageWidget(
-                message: 'No tienes hábitos',
-                subMessage: 'Prueba agregando uno nuevo :D',
-                icon: Icons.calendar_today,
-              ),
-            ),
-          ],
+          // Mostrar barra de progreso y rutina diaria
+          Obx(() {
+            // Verificar si hay hábitos para hoy
+            final todayHabits = habitController.getTodayHabits();
+
+            if (todayHabits.isNotEmpty) {
+              return Expanded(
+                child: Column(
+                  children: [
+                    DailyProgressBar(),  // Muestra la barra de progreso
+                    const SizedBox(height: 20),
+                    Expanded(child: DailyRoutineWidget()),  // Muestra la rutina diaria
+                  ],
+                ),
+              );
+            } else {
+              // Si no hay hábitos, muestra el mensaje vacío
+              return const Expanded(
+                child: EmptyStateMessageWidget(
+                  message: 'No tienes hábitos para hoy',
+                  subMessage: 'Prueba agregando uno nuevo :D',
+                  icon: Icons.calendar_today,
+                ),
+              );
+            }
+          }),
         ],
       ),
 
       // FAB para agregar hábito
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: Theme.of(context).colorScheme.primary,
-        foregroundColor: Colors.white,
+      floatingActionButton: CustomFabButton(
         onPressed: () {
-          setState(() {
-            todayHabits.remove('Nuevo hábito');  // Agrega un nuevo hábito a la lista
-          });
+          Get.to(() => HabitTypeSelectionPage()); // Navega a la página correspondiente
         },
-        child: const Icon(Icons.add, size: 30),
       ),
 
       // Aquí usas el CustomBottomNavigationBar
       bottomNavigationBar: CustomBottomNavigationBar(
         currentIndex: _currentIndex,
-        onTap: (index) {
-          setState(() {
-            _currentIndex = index;  // Actualiza el índice cuando cambies de pantalla
-          });
-          // Lógica de navegación (opcional, dependiendo de cómo manejes las rutas)
-          if (index == 1) {
-            Get.to(() => HabitPage());  // Navegar a la pantalla de crear hábito
-          } else if (index == 2) {
-            // Navegar a la pantalla de categorías
-          } else if (index == 3) {
-            // Navegar a la pantalla de logros
-          } else if (index == 4) {
-            // Navegar a la pantalla de retos
-          }
-        },
       ),
     );
   }
