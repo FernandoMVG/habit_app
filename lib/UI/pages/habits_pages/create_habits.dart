@@ -1,33 +1,31 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:habit_app/ui/widgets/text_field.dart';
-import 'package:habit_app/ui/widgets/buttons.dart';
-import 'package:habit_app/ui/controller/habit_controller.dart';  // Controlador de hábitos
-import 'package:habit_app/ui/pages/habits_pages/choose_category.dart';  // La página a la que navegará cuando presione continuar
+import 'package:habit_app/ui/widgets/shared/text_field.dart';
+import 'package:habit_app/ui/widgets/shared/buttons.dart';
+import 'package:habit_app/ui/controller/habit_controller.dart';  
+import 'package:habit_app/ui/pages/habits_pages/choose_category.dart';
 
 class CreateHabitPage extends StatelessWidget {
-  final HabitController habitController = Get.find<HabitController>();  // Controlador de hábitos
-  final TextEditingController nameController = TextEditingController();  // Controlador para el nombre del hábito
+  final HabitController habitController = Get.find<HabitController>();
+  final TextEditingController nameController = TextEditingController();
   final TextEditingController descriptionController = TextEditingController();
 
-  CreateHabitPage({super.key});  // Controlador para la descripción del hábito
+  CreateHabitPage({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
-        backgroundColor:  Theme.of(context).scaffoldBackgroundColor,  // Color de la barra de navegación
-        automaticallyImplyLeading: false,  // Oculta el botón de atrás
-        elevation: 0,  // Color del AppBar para mayor contraste
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor, 
+        automaticallyImplyLeading: false, 
+        elevation: 0,
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-
-            // Título centrado
             Center(
               child: Text(
                 'Crea tu hábito',
@@ -40,64 +38,55 @@ class CreateHabitPage extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 50),
-            
             CustomTextField(
               controller: nameController,
-              labelText: 'Nombre del hábito',              
+              labelText: 'Nombre del hábito',
             ),
             const SizedBox(height: 10),
-
-            const Text(
+            Text(
               'Ejemplo: Estudiar compiladores',
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontWeight: FontWeight.bold,
-                color: Colors.black
-              )
+                color: Theme.of(context).textTheme.labelSmall?.color,
+              ),
             ),
             const SizedBox(height: 40),
-            
             CustomTextField(
               controller: descriptionController,
               labelText: 'Descripción del hábito',
             ),
             const SizedBox(height: 10),
-
-            const Text(
-              'Ejemplo: Repasar las formas de obtener un automata finito a partir de una e.r',
+            Text(
+              'Ejemplo: Repasar formas de obtener un automata finito.',
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontWeight: FontWeight.bold,
-                color: Colors.black
-              )
+                color: Theme.of(context).textTheme.labelSmall?.color,
+              ),
             ),
             const Spacer(),
-            
-            // Botones de Atrás y Continuar
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                // Botón de Atrás
                 const BackButtonWidget(),
-                
-                // Botón de Continuar
-                NavigateButton(text: "Continuar", 
-                onPressed: () {
+                NavigateButton(
+                  text: 'Continuar',
+                  onPressed: () {
                     if (nameController.text.isNotEmpty) {
-                      // Añadir lógica para continuar solo si el nombre no está vacío
-                      habitController.addHabit(nameController.text);  // Añadir el hábito al controlador
-                      Get.to(() => const ChooseCategoryPage());  // Navegar a la siguiente página del proceso
+                      habitController.setHabitName(nameController.text);
+                      habitController.setHabitDescription(descriptionController.text.isNotEmpty ? descriptionController.text : null);
+                      Get.to(() => const ChooseCategoryPage());
                     } else {
-                      // Mostrar un mensaje de error si el nombre está vacío
                       Get.snackbar(
                         'Error',
                         'El nombre del hábito es obligatorio',
                         snackPosition: SnackPosition.BOTTOM,
-                        backgroundColor: Colors.red,
-                        colorText: Colors.white,
+                        backgroundColor: Theme.of(context).colorScheme.error,
+                        colorText: Theme.of(context).textTheme.labelLarge?.color,
                       );
                     }
-                  }
+                  },
                 ),
               ],
             ),
