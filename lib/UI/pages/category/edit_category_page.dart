@@ -1,12 +1,12 @@
 // lib/pages/category/edit_category_page.dart
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:habit_app/UI/controller/category_controller.dart';
 import 'package:habit_app/UI/pages/category/picker_functions.dart';
 import 'package:habit_app/UI/widgets/shared/buttons.dart';
 import 'package:habit_app/UI/widgets/shared/text_field.dart';
 import 'package:habit_app/constants.dart';
 import 'package:habit_app/models/category_model.dart';
-import 'package:habit_app/ui/controller/category_controller.dart';
 
 class EditCategoryPage extends StatefulWidget {
   final CategoryModel category;

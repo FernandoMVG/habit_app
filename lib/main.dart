@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:habit_app/UI/controller/category_controller.dart';
 import 'package:habit_app/ui/pages/home.dart';
 import 'package:habit_app/constants.dart';
 import 'package:habit_app/ui/pages/Welcome/welcome_screen.dart';
@@ -9,7 +10,7 @@ import 'package:habit_app/ui/controller/habit_controller.dart';
 
 void main() {
   Get.put(HabitController()); // Instancia el controlador de hábitos
-
+  Get.lazyPut(() => CategoryController());
   runApp(
     MultiProvider(
       providers: [
