@@ -3,7 +3,6 @@ import 'package:get/get.dart';
 import 'package:habit_app/ui/widgets/shared/buttons.dart';
 import 'package:habit_app/ui/pages/habits.dart';
 import 'package:habit_app/ui/controller/habit_controller.dart';
-import 'package:habit_app/constants.dart'; // Asegúrate de importar los colores parametrizados.
 
 class ChooseFrequencyPage extends StatefulWidget {
   final Color categoryColor;

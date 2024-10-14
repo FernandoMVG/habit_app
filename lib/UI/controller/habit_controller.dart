@@ -160,45 +160,70 @@ class HabitController extends GetxController {
     for (var habit in habits) {
       if (!habit.isDaily) {
         verifyStreakForSpecificDays(habit);
-      } else if (habit.isDaily && habit.isCompleted) {
+      } else {
+        // Verificamos si el hábito diario fue completado ayer.
         _updateDailyStreak(habit);
       }
-      habit.isCompleted = false; // Reiniciar estado
-      habit.completedCount = 0;
+      habit.isCompleted = false; // Reiniciar estado al cambiar de día
+      habit.completedCount = 0;   // Reiniciar progreso de hábitos cuantificables
     }
     habits.refresh();
   }
 
-  // Actualiza la racha de un hábito diario
+  //Método para actualizar la racha diaria
   void _updateDailyStreak(Habit habit) {
+    DateTime today = DateTime(
+      simulatedDate.value.year,
+      simulatedDate.value.month,
+      simulatedDate.value.day,
+    );
+
+    DateTime yesterday = today.subtract(const Duration(days: 1));
+    // Verificar si fue completado ayer y si está marcado como completado hoy
     if (habit.lastCompleted != null &&
-        isSameDate(habit.lastCompleted!, simulatedDate.value.subtract(const Duration(days: 1)))) {
-      habit.streakCount++;
+        isSameDate(habit.lastCompleted!, yesterday) &&
+        habit.isCompleted) {
+      habit.streakCount++; // Incrementa la racha.
     } else {
-      habit.streakCount = 1;
+      // Si no fue completado ayer o hoy no está completado, reinicia la racha.
+      habit.streakCount = 0; 
     }
+
+    // Si el hábito fue completado hoy, actualizamos la última vez completada.
+    if (habit.isCompleted) {
+      habit.lastCompleted = today;
+      print("Actualizando última vez completado a: $today");
+    } else {
+      print("El hábito no fue completado hoy, no se actualiza la última vez completado.");
+    }
+
+    // Actualizamos la racha más larga si es necesario.
     habit.longestStreak = habit.streakCount > habit.longestStreak
         ? habit.streakCount
         : habit.longestStreak;
-    habit.lastCompleted = DateTime(simulatedDate.value.year, simulatedDate.value.month, simulatedDate.value.day);
+
+    //print("Racha actual: ${habit.streakCount}");
+    //print("Racha más larga: ${habit.longestStreak}");
+    //print("--------------------FIN DIA---------------------");
+    habits.refresh(); // Refrescamos para que los cambios se reflejen en la UI.
   }
 
 // Verifica la racha para hábitos de días específicos
 void verifyStreakForSpecificDays(Habit habit) {
   if (habit.selectedDays == null || habit.selectedDays!.isEmpty) return;
-  print('Dia actual: "${simulatedDate.value}"');
+  //print('Dia actual: "${simulatedDate.value}"');
 
   // Convertir los días programados a enteros (números de días de la semana)
   List<int> scheduledWeekdays = habit.selectedDays!
       .map((dayStr) => _weekdayFromString(dayStr))
       .toList();
-  print('Días programados para el hábito "${habit.name}": $scheduledWeekdays');
+  //print('Días programados para el hábito "${habit.name}": $scheduledWeekdays');
 
   // Crear un conjunto de fechas de completación para búsqueda eficiente
   Set<DateTime> completionDatesSet = habit.completionDates
       .map((date) => DateTime(date.year, date.month, date.day))
       .toSet();
-  print('Fechas de completación ordenadas para el hábito "${habit.name}": ${completionDatesSet.toList()..sort()}');
+  //print('Fechas de completación ordenadas para el hábito "${habit.name}": ${completionDatesSet.toList()..sort()}');
 
   int streak = 0;
   DateTime currentDate = DateTime(simulatedDate.value.year, simulatedDate.value.month, simulatedDate.value.day);
@@ -210,15 +235,15 @@ void verifyStreakForSpecificDays(Habit habit) {
       if (completionDatesSet.contains(currentDate)) {
         // El hábito fue completado en este día
         streak++;
-        print('Incrementando la racha de "${habit.name}": $streak');
+        //print('Incrementando la racha de "${habit.name}": $streak');
       } else {
         // El hábito no fue completado en este día programado
-        print('Racha reiniciada para "${habit.name}" porque no se completó ${currentDate}');
+        //print('Racha reiniciada para "${habit.name}" porque no se completó ${currentDate}');
         break;
       }
     }
     // Retroceder un día
-    currentDate = currentDate.subtract(Duration(days: 1));
+    currentDate = currentDate.subtract(const Duration(days: 1));
 
   }
 
@@ -229,8 +254,9 @@ void verifyStreakForSpecificDays(Habit habit) {
   }
 
   // Refrescar lista de hábitos
-  print('Racha final para "${habit.name}": ${habit.streakCount}');
-  print('Racha más larga para "${habit.name}": ${habit.longestStreak}');
+  //print('Racha final para "${habit.name}": ${habit.streakCount}');
+  //print('Racha más larga para "${habit.name}": ${habit.longestStreak}');
+  //print("--------------------FIN ESPECIFICO DIA---------------------");
   habits.refresh();
 }
 
