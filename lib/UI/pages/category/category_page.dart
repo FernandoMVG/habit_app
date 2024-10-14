@@ -1,14 +1,14 @@
 // lib/pages/category_page.dart
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:habit_app/UI/controller/category_controller.dart';
 import 'package:habit_app/UI/pages/category/create_category_page.dart';
 import 'package:habit_app/UI/pages/category/edit_category_page.dart';
 import 'package:habit_app/UI/widgets/home_page/navigation_bar.dart';
-import 'package:habit_app/ui/controller/category_controller.dart';
 import '/responsive.dart'; // Importar el widget Responsive
 
 class CategoryPage extends StatelessWidget {
-  final CategoryController categoryController = Get.put(CategoryController());
+  final CategoryController categoryController = Get.find<CategoryController>();
 
   @override
   Widget build(BuildContext context) {
