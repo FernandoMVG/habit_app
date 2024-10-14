@@ -91,34 +91,19 @@ class Habit {
   // Método que calcula si el hábito cuantificable se ha completado en función de `frequencyType`
   bool isHabitCompleted() {
     switch (frequencyType) {
-      case 'al menos':
+      case 'Al menos':
         return completedCount >= targetCount!;
-      case 'menos de':
+      case 'Menos de':
         return completedCount < targetCount!;
-      case 'exactamente':
+      case 'Exactamente':
         return completedCount == targetCount!;
-      case 'más de':
+      case 'Más de':
         return completedCount > targetCount!;
-      case 'sin especificar':
+      case 'Sin especificar':
         return true;
       default:
         return false;
     }
-  }
-
-  // Método para marcar el hábito como completado y aumentar el contador
-  void completeHabit() {
-    if (isQuantifiable && targetCount != null) {
-      isCompleted = isHabitCompleted();
-    } else {
-      toggleCompleted();
-    }
-  }
-
-  // Método para reiniciar el progreso del hábito
-  void resetProgress() {
-    completedCount = 0;
-    isCompleted = false;
   }
 
    // Método para alternar el estado completado en hábitos binarios
@@ -126,35 +111,5 @@ class Habit {
     if (!isQuantifiable) {
       isCompleted = !isCompleted;
     }
-  }
-
-  // Método que incrementa el progreso y verifica si se ha completado
-  void incrementProgress() {
-    if (isQuantifiable && completedCount < targetCount!) {
-      completedCount++;
-      completeHabit();
-    }
-  }
-
-  // Incrementa la racha si el hábito se completó en el día correspondiente
-  void incrementStreak() {
-    DateTime now = DateTime.now();
-    if (lastCompleted != null &&
-        now.difference(lastCompleted!).inDays == 1) {
-      streakCount++;
-    } else {
-      streakCount = 1;
-    }
-    lastCompleted = now;
-    completionDates.add(now);
-
-    if (streakCount > longestStreak) {
-      longestStreak = streakCount;
-    }
-  }
-
-  // Reinicia la racha si el hábito no se completó en los días esperados
-  void resetStreak() {
-    streakCount = 0;
   }
 }
