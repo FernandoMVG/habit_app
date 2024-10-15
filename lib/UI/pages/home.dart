@@ -35,7 +35,7 @@ class _HomePageState extends State<HomePage> {
       body: Column(
         children: [
           // Usa el widget de calendario
-          const CalendarWidget(),
+          CalendarWidget(),
 
           // Mostrar barra de progreso y rutina diaria
           Obx(() {
