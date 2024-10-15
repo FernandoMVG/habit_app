@@ -1,14 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/date_symbol_data_local.dart';
+import 'package:habit_app/ui/pages/home.dart'; // Importa la página de home
+import 'package:habit_app/constants.dart'; // Importa las constantes de colores
 import 'package:habit_app/UI/controller/category_controller.dart';
-import 'package:habit_app/ui/pages/home.dart';
-import 'package:habit_app/constants.dart';
 import 'package:habit_app/ui/pages/Welcome/welcome_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:habit_app/UI/controller/auth_controller.dart';
 import 'package:habit_app/ui/controller/habit_controller.dart';
 
-void main() {
+
+void main() async{
+  WidgetsFlutterBinding.ensureInitialized();
+  await initializeDateFormatting('es', null);
   Get.put(HabitController()); // Instancia el controlador de hábitos
   Get.lazyPut(() => CategoryController());
   runApp(

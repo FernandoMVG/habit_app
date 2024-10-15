@@ -27,75 +27,55 @@ class _HabitPageState extends State<HabitPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      appBar: CustomAppBar(), // AppBar reutilizable
-
+      appBar: CustomAppBar(experience: 0),
+      
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Título de la sección que solo aparece si hay habitos
-            Obx(() {
-              if (habitController.habits.isNotEmpty) {
-                return Text(
-                  'Mis hábitos',
-                  style: Theme.of(context).textTheme.titleLarge?.copyWith(fontSize: 18),
-                );
-              } else {
-                return const SizedBox.shrink();
-              }
-            }),
-            // Verificar si hay hábitos y mostrar el contenido
-            Expanded(
-              child: Obx(() {
-                
-                if (habitController.habits.isEmpty) {
-                  return const EmptyStateMessageWidget(
-                    message: 'No tienes ningún hábito...',
-                    subMessage: 'Prueba agregando uno nuevo :D',
-                    icon: Icons.check_circle_outline,
-                  );
-                } else {
-                  return ListView.builder(
-                    padding: const EdgeInsets.only(top: 8),
-                    itemCount: habitController.habits.length,
-                    itemBuilder: (context, index) {
-                      final habit = habitController.habits[index];
-
-                      return GestureDetector(
-                        onTap: () {
-                          _showBottomSheet(context, habit);
-                        },
-                        child: HabitCardWidget(
-                          habitName: habit.name,
-                          categoryName: habit.categoryName,
-                          categoryIcon: habit.categoryIcon,
-                          categoryColor: habit.categoryColor,
-                          isQuantifiable: habit.isQuantifiable,
-                          currentProgress: habit.isQuantifiable
-                              ? habit.completedCount
-                              : null,
-                          totalProgress: habit.isQuantifiable
-                              ? habit.targetCount
-                              : null,
-                          isDaily: habit.isDaily,
-                          selectedDays: habit.selectedDays,
-                          onEdit: () {
-                            _showBottomSheet(context, habit);
-                          },
-                          onDelete: () {
-                            habitController.removeHabit(habit);
-                          },
-                        ),
-                      );
+        child: Obx(() {
+          if (habitController.habits.isEmpty) {
+            return const EmptyStateMessageWidget(
+              message: 'No tienes ningún hábito...',
+              subMessage: 'Prueba agregando uno nuevo :D',
+              icon: Icons.check_circle_outline,
+            );
+          } else {
+            return ListView.builder(
+              padding: const EdgeInsets.only(top: 8),
+              itemCount: habitController.habits.length,
+              itemBuilder: (context, index) {
+                final habit = habitController.habits[index];
+                return GestureDetector(
+                  onTap: () {
+                    _showBottomSheet(context, habit);
+                  },
+                  child: HabitCardWidget(
+                    habitName: habit.name,
+                    categoryName: habit.categoryName,
+                    categoryIcon: habit.categoryIcon,
+                    categoryColor: habit.categoryColor,
+                    isQuantifiable: habit.isQuantifiable,
+                    currentProgress: habit.isQuantifiable
+                        ? habit.completedCount
+                        : null,
+                    totalProgress: habit.isQuantifiable
+                        ? habit.targetCount
+                        : null,
+                    isDaily: habit.isDaily,
+                    selectedDays: habit.selectedDays,
+                    onEdit: () {
+                      _showBottomSheet(context, habit);
                     },
-                  );
-                }
-              }),
-            ),
-          ],
-        ),
+                    onDelete: () {
+                      habitController.removeHabit(habit);
+                    },
+                  ),
+                );
+              },
+            );
+          }
+        }),
       ),
+
 
       floatingActionButton: CustomFabButton(
         onPressed: () {
