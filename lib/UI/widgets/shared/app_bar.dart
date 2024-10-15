@@ -5,8 +5,9 @@ import 'package:habit_app/constants.dart'; // Importa las constantes
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final HabitController habitController = Get.find<HabitController>();
+  final int experience;
 
-  CustomAppBar({super.key});
+  CustomAppBar({super.key, required this.experience});
 
   @override
   Widget build(BuildContext context) {
@@ -60,7 +61,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
               const SizedBox(width: 10),
 
               // Contenedor de EXP
-              _buildInfoContainer('EXP 0', context),
+              _buildInfoContainer('EXP $experience', context),
             ],
           ),
         ],
