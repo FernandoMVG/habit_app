@@ -110,8 +110,7 @@ class _MyAppState extends State<MyApp> {
       ),
 
       // Pantalla inicial
-      home: const HomePage(), // Página de inicio
+      home: const WelcomeScreen(), // Página de inicio
     );
   }
 }
-
