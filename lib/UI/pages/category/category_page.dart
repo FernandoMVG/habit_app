@@ -5,6 +5,7 @@ import 'package:habit_app/UI/controller/category_controller.dart';
 import 'package:habit_app/UI/pages/category/create_category_page.dart';
 import 'package:habit_app/UI/pages/category/edit_category_page.dart';
 import 'package:habit_app/UI/widgets/home_page/navigation_bar.dart';
+import 'package:habit_app/UI/widgets/shared/app_bar.dart';
 import '/responsive.dart'; // Importar el widget Responsive
 
 class CategoryPage extends StatelessWidget {
@@ -13,10 +14,7 @@ class CategoryPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Categorías'),
-        backgroundColor: Theme.of(context).colorScheme.surface,
-      ),
+      appBar: CustomAppBar(),
       body: Obx(() {
         if (categoryController.categories.isEmpty) {
           return const Center(

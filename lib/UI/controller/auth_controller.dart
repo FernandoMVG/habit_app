@@ -15,9 +15,19 @@ class AuthController extends ChangeNotifier {
 
   // Método para iniciar sesión
   bool logIn(String email, String password) {
+    // Comprobar si los datos coinciden con el usuario registrado
     if (_user != null && _user!.email == email && _user!.password == password) {
+      // Actualizar el usuario autenticado en memoria
+      _user = UserModel(email: email, password: password);
+      notifyListeners();
       return true;
     }
     return false;
+  }
+
+  // Método para cerrar sesión
+  void logOut() {
+    _user = null; // Limpiar el usuario
+    notifyListeners();
   }
 }
