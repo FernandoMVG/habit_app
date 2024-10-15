@@ -2,10 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:habit_app/UI/widgets/progress_bar2.dart';
 import 'package:habit_app/ui/widgets/calendar.dart';
-import 'package:habit_app/ui/widgets/app_bar.dart';
-import 'package:habit_app/ui/widgets/Empty_message.dart';
-import 'package:habit_app/ui/widgets/navigation_bar.dart';
+import 'package:habit_app/ui/widgets/shared/Empty_message.dart';
+import 'package:habit_app/ui/widgets/home_page/navigation_bar.dart';
 import 'package:habit_app/ui/pages/habits.dart';
+import 'package:habit_app/ui/widgets/home_page/progress_bar.dart';
+import 'package:habit_app/ui/widgets/routine/daily_routine.dart';
+import 'package:habit_app/ui/widgets/shared/app_bar.dart';
+import 'package:habit_app/ui/widgets/home_page/navigation_bar.dart';
+import 'package:habit_app/ui/pages/habits_pages/habit_type.dart';
+import 'package:habit_app/ui/widgets/shared/fab_button.dart';
+import 'package:habit_app/ui/controller/habit_controller.dart';
+//import 'package:habit_app/UI/widgets/habit_list.dart';
 
 class Habit {
   final String name;
@@ -25,7 +32,7 @@ class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
   @override
-  _HomePageState createState() => _HomePageState();
+  State<HomePage> createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
@@ -159,21 +166,6 @@ class _HomePageState extends State<HomePage> {
       // Aquí usas el CustomBottomNavigationBar
       bottomNavigationBar: CustomBottomNavigationBar(
         currentIndex: _currentIndex,
-        onTap: (index) {
-          setState(() {
-            _currentIndex = index; // Actualiza el índice cuando cambies de pantalla
-          });
-          // Lógica de navegación (opcional, dependiendo de cómo manejes las rutas)
-          if (index == 1) {
-            Get.to(() => HabitPage()); // Navegar a la pantalla de crear hábito
-          } else if (index == 2) {
-            // Navegar a la pantalla de categorías
-          } else if (index == 3) {
-            // Navegar a la pantalla de logros
-          } else if (index == 4) {
-            // Navegar a la pantalla de retos
-          }
-        },
       ),
     );
   }

@@ -1,17 +1,20 @@
-// main.dart
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:intl/intl.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:habit_app/ui/pages/home.dart'; // Importa la página de home
 import 'package:habit_app/constants.dart'; // Importa las constantes de colores
+import 'package:habit_app/UI/controller/category_controller.dart';
 import 'package:habit_app/ui/pages/Welcome/welcome_screen.dart';
 import 'package:provider/provider.dart';
-import 'package:habit_app/UI/controller/auth_controller.dart'; // Importa el controlador
+import 'package:habit_app/UI/controller/auth_controller.dart';
+import 'package:habit_app/ui/controller/habit_controller.dart';
 
-void main() async {
+
+void main() async{
   WidgetsFlutterBinding.ensureInitialized();
   await initializeDateFormatting('es', null);
+  Get.put(HabitController()); // Instancia el controlador de hábitos
+  Get.lazyPut(() => CategoryController());
   runApp(
     MultiProvider(
       providers: [
@@ -34,56 +37,72 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
+        debugShowCheckedModeBanner: false,
         title: 'Habit App',
 
-        // Definir tema claro
+        // Definición del tema
         theme: ThemeData(
-            scaffoldBackgroundColor: Colors.white, // Fondo claro
-            primaryColor: primaryColor, // Azul primario
-            colorScheme: ColorScheme.fromSwatch().copyWith(
-              primary: primaryColor, // Azul primario
-              secondary: secondaryColor, // Fondo claro
-              error: errorColor, // Rojo de error
-              surface: surfaceColor, // Color para superficies
-              onSurface:
-                  onSurfaceColor, // Color para texto/iconos en superficies
-              onPrimary: onPrimaryColor, // Color del texto sobre el primario
-            ),
-            textTheme: const TextTheme(
-              titleLarge: TextStyle(
-                  color: Color(0xFF2980B9), fontWeight: FontWeight.bold),
-              bodyLarge:
-                  TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
-              bodyMedium: TextStyle(color: Colors.grey),
-              labelLarge:
-                  TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-              labelSmall:
-                  TextStyle(color: Colors.grey, fontWeight: FontWeight.bold),
-            ),
-            elevatedButtonTheme: ElevatedButtonThemeData(
-              style: ElevatedButton.styleFrom(
-                foregroundColor: Colors.white,
-                backgroundColor: primaryColor, // Texto en blanco
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20),
-                ),
-              ),
-            ),
-            inputDecorationTheme: const InputDecorationTheme(
-              filled: true,
-              fillColor: kPrimaryLightColor,
-              iconColor: primaryColor,
-              prefixIconColor: primaryColor,
-              contentPadding: EdgeInsets.symmetric(
-                  horizontal: defaultPadding, vertical: defaultPadding),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.all(Radius.circular(30)),
-                borderSide: BorderSide.none,
-              ),
-            )),
+          scaffoldBackgroundColor: secondaryColor, // Fondo claro general
+          primaryColor: primaryColor, // Color primario
 
-          //home: const WelcomeScreen(),
-          home: const HomePage(), //const WelcomeScreen(), Página de inicio
+          // Esquema de colores
+          colorScheme: ColorScheme.fromSwatch().copyWith(
+            primary: primaryColor,
+            secondary: secondaryColor,
+            error: errorColor,
+            surface: surfaceColor,
+            onSurface: onSurfaceColor,
+            onPrimary: onPrimaryColor,
+          ),
+
+          // Estilo de texto
+          textTheme: const TextTheme(
+            titleLarge: titleTextStyle,
+            bodyLarge: bodyTextStyle,
+            bodyMedium: subtitleTextStyle,
+            labelLarge: labelTextStyle,
+          ),
+
+          // Tema de botones elevados
+          elevatedButtonTheme: ElevatedButtonThemeData(
+            style: ElevatedButton.styleFrom(
+              foregroundColor: onPrimaryColor, // Texto en blanco
+              backgroundColor: primaryColor, // Fondo del botón primario
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(defaultRadius),
+              ),
+            ),
+          ),
+
+          // Estilo de campos de texto
+          inputDecorationTheme: InputDecorationTheme(
+            filled: true,
+            fillColor: kPrimaryLightColor,
+            iconColor: primaryColor,
+            prefixIconColor: primaryColor,
+            contentPadding: const EdgeInsets.symmetric(
+                horizontal: defaultPadding, vertical: defaultPadding),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(defaultRadius),
+              borderSide: BorderSide.none,
+            ),
+          ),
+
+          // Navigation Bar Theme
+          bottomNavigationBarTheme: BottomNavigationBarThemeData(
+            backgroundColor: navBarBackgroundColor,
+            selectedItemColor: navBarActiveColor,
+            unselectedItemColor: navBarInactiveColor,
+            selectedLabelStyle: navBarTextStyle,
+            unselectedLabelStyle: navBarTextStyle.copyWith(
+              color: navBarInactiveColor,
+            ),
+          ),
+        ),
+
+        // Pantalla inicial
+        home: const WelcomeScreen()
+        //const HomePage(), // Página de inicio
         );
   }
 }
