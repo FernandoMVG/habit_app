@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:habit_app/ui/widgets/shared/text_field.dart';
+import 'package:habit_app/UI/widgets/shared/text_field.dart';
 
 class HabitEditWidget extends StatelessWidget {
   final TextEditingController nameController;

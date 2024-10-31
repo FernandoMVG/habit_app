@@ -1,8 +1,8 @@
 // Nuevo archivo quantifiable_habit_dialog.dart
 import 'package:flutter/material.dart';
 import 'package:habit_app/models/habit_model.dart';
-import 'package:habit_app/ui/controller/habit_controller.dart';
-import 'package:habit_app/ui/widgets/category_icon.dart';
+import 'package:habit_app/UI/controller/habit_controller.dart';
+import 'package:habit_app/UI/widgets/category_icon.dart';
 
 class QuantifiableHabitDialog extends StatefulWidget {
   final Habit habit;

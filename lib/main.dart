@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:habit_app/UI/controller/category_controller.dart';
-import 'package:habit_app/ui/pages/home.dart';
+import 'package:habit_app/UI/pages/home.dart';
 import 'package:habit_app/constants.dart';
-import 'package:habit_app/ui/pages/Welcome/welcome_screen.dart';
+import 'package:habit_app/UI/pages/Welcome/welcome_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:habit_app/UI/controller/auth_controller.dart';
-import 'package:habit_app/ui/controller/habit_controller.dart';
+import 'package:habit_app/UI/controller/habit_controller.dart';
 
 import 'package:intl/date_symbol_data_local.dart'; // Import para formato regional
 
@@ -110,7 +110,7 @@ class _MyAppState extends State<MyApp> {
       ),
 
       // Pantalla inicial
-      home: const WelcomeScreen(), // Página de inicio
+      home: const HomePage(), // Página de inicio
     );
   }
 }

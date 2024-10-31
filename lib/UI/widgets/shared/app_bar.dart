@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:habit_app/ui/controller/habit_controller.dart';
-import 'package:habit_app/ui/pages/Welcome/welcome_screen.dart';
+import 'package:habit_app/UI/controller/habit_controller.dart';
+import 'package:habit_app/UI/pages/Welcome/welcome_screen.dart';
 import 'package:habit_app/constants.dart'; // Importar las constantes
 import 'package:provider/provider.dart'; // Importar Provider para AuthController
 import 'package:habit_app/UI/controller/auth_controller.dart';

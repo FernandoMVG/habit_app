@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:get/get.dart';
-import 'package:habit_app/ui/controller/habit_controller.dart';
+import 'package:habit_app/UI/controller/habit_controller.dart';
 import 'package:habit_app/constants.dart';
 
 class CalendarWidget extends StatelessWidget {

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:habit_app/ui/widgets/habit_page/habit_frequency.dart';
+import 'package:habit_app/UI/widgets/habit_page/habit_frequency.dart';
 //import 'package:habit_app/ui/widgets/habit_page/habit_progress.dart';
-import 'package:habit_app/ui/widgets/category_icon.dart';
+import 'package:habit_app/UI/widgets/category_icon.dart';
 
 class HabitCardWidget extends StatelessWidget {
   final String habitName;
@@ -12,7 +12,7 @@ class HabitCardWidget extends StatelessWidget {
   final int? currentProgress;
   final int? totalProgress;
   final bool isDaily;
-  final List<String>? selectedDays;
+  final List<int>? selectedDays;
   final VoidCallback onEdit;
   final VoidCallback onDelete;
 
@@ -34,10 +34,13 @@ class HabitCardWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // Ordenar los días seleccionados antes de mostrarlos
-    List<String> orderedDays = ['Lun', 'Mar', 'Mie', 'Jue', 'Vie', 'Sab', 'Dom'];
-    selectedDays?.sort((a, b) => orderedDays.indexOf(a).compareTo(orderedDays.indexOf(b)));
+    List<String> weekDays = ['Lun', 'Mar', 'Mie', 'Jue', 'Vie', 'Sab', 'Dom'];
+    List<String> selectedDaysStrings = selectedDays != null
+        ? selectedDays!.map((day) => weekDays[day - 1]).toList()
+        : [];
 
-    
+    // Ordenar los días seleccionados antes de mostrarlos
+    selectedDaysStrings.sort((a, b) => weekDays.indexOf(a).compareTo(weekDays.indexOf(b)));
 
     return Card(
       elevation: 0.5,
@@ -78,7 +81,7 @@ class HabitCardWidget extends StatelessWidget {
             // Widget de frecuencia del hábito
             HabitFrequencyWidget(
               isDaily: isDaily,
-              selectedDays: selectedDays,
+              selectedDays: selectedDaysStrings,
               categoryColor: categoryColor,
             ),
             const SizedBox(height: 10),

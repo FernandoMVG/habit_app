@@ -1,31 +1,30 @@
 import 'package:flutter/material.dart';
 
 class Habit {
+  final String id;
   final String name;
   final String? description;
   final Color categoryColor;
   final String categoryName;
   final bool isQuantifiable;
-  final List<String>? selectedDays; 
+  final List<int>? selectedDays; 
   final bool isDaily;
-
   final int? targetCount; 
   int completedCount;
-
   final String? frequencyType; 
   final String? unit; 
   final IconData categoryIcon;
-
   bool isCompleted;
   bool isMissed;
-
   // Propiedades para manejar las rachas
   int streakCount; // Racha actual
   int longestStreak; // Racha más larga registrada
   List<DateTime> completionDates; // Fechas en las que se completó el hábito
   DateTime? lastCompleted; // Última vez que se completó el hábito
+  int experience;
 
   Habit({
+    required this.id,
     required this.name,
     this.description,
     required this.categoryColor,
@@ -44,15 +43,17 @@ class Habit {
     this.longestStreak = 0,
     this.completionDates = const [],
     this.lastCompleted,
+    required this.experience,
   });
 
   Habit copyWith({
+    String? id,
     String? name,
     String? description,
     Color? categoryColor,
     String? categoryName,
     bool? isQuantifiable,
-    List<String>? selectedDays,
+    List<int>? selectedDays,
     bool? isDaily,
     int? targetCount,
     int? completedCount,
@@ -65,8 +66,10 @@ class Habit {
     int? longestStreak,
     List<DateTime>? completionDates,
     DateTime? lastCompleted,
+    int? experience,
   }) {
     return Habit(
+      id: id ?? this.id,
       name: name ?? this.name,
       description: description ?? this.description,
       categoryColor: categoryColor ?? this.categoryColor,
@@ -85,6 +88,7 @@ class Habit {
       longestStreak: longestStreak ?? this.longestStreak,  // Aseguramos que no sea null
       completionDates: completionDates ?? this.completionDates,
       lastCompleted: lastCompleted ?? this.lastCompleted,
+      experience: experience ?? this.experience,
     );
   }
 

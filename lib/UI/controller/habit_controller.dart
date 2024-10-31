@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 import 'package:habit_app/models/habit_model.dart';
 import 'package:flutter/material.dart';
+import 'dart:math';
 
 class HabitController extends GetxController {
   // Lista observable de hábitos
@@ -14,27 +15,31 @@ class HabitController extends GetxController {
 
   // Inicializa un nuevo hábito antes de que se empiece a construir
   void initHabit({
-    required String name,
+    required String name, //
     required String categoryName,
     required Color categoryColor,
     required IconData categoryIcon,
     bool isQuantifiable = false,
   }) {
     habit = Habit(
+      id: _generateId(),
       name: name,
       categoryName: categoryName,
       categoryColor: categoryColor,
       categoryIcon: categoryIcon,
       isQuantifiable: isQuantifiable,
       completionDates: [],
+      experience: _generateExperience(),
     );
   }
 
   // Setters para configurar atributos del hábito
   void setHabitName(String? name) => habit = habit?.copyWith(name: name);
+  
   void setHabitDescription(String? description) =>
       habit = habit?.copyWith(description: description);
-  void setFrequency({bool isDaily = false, List<String>? days}) {
+
+  void setFrequency({bool isDaily = false, List<int>? days}) {
     habit = habit?.copyWith(isDaily: isDaily, selectedDays: isDaily ? null : days);
   }
 
@@ -149,7 +154,7 @@ class HabitController extends GetxController {
 
   // Obtener los hábitos de hoy
   List<Habit> getTodayHabits() {
-    String today = _weekdayToString(simulatedDate.value.weekday);
+    int today = simulatedDate.value.weekday;
     return habits.where((habit) {
       return habit.isDaily || (habit.selectedDays?.contains(today) ?? false);
     }).toList();
@@ -192,9 +197,9 @@ class HabitController extends GetxController {
     // Si el hábito fue completado hoy, actualizamos la última vez completada.
     if (habit.isCompleted) {
       habit.lastCompleted = today;
-      print("Actualizando última vez completado a: $today");
+      //print("Actualizando última vez completado a: $today");
     } else {
-      print("El hábito no fue completado hoy, no se actualiza la última vez completado.");
+      //print("El hábito no fue completado hoy, no se actualiza la última vez completado.");
     }
 
     // Actualizamos la racha más larga si es necesario.
@@ -214,9 +219,7 @@ void verifyStreakForSpecificDays(Habit habit) {
   //print('Dia actual: "${simulatedDate.value}"');
 
   // Convertir los días programados a enteros (números de días de la semana)
-  List<int> scheduledWeekdays = habit.selectedDays!
-      .map((dayStr) => _weekdayFromString(dayStr))
-      .toList();
+  List<int> scheduledWeekdays = habit.selectedDays!;
   //print('Días programados para el hábito "${habit.name}": $scheduledWeekdays');
 
   // Crear un conjunto de fechas de completación para búsqueda eficiente
@@ -260,50 +263,12 @@ void verifyStreakForSpecificDays(Habit habit) {
   habits.refresh();
 }
 
-
-
-  // Convertir día de la semana de int a String
-  String _weekdayToString(int weekday) {
-    switch (weekday) {
-      case DateTime.monday:
-        return 'Lun';
-      case DateTime.tuesday:
-        return 'Mar';
-      case DateTime.wednesday:
-        return 'Mie';
-      case DateTime.thursday:
-        return 'Jue';
-      case DateTime.friday:
-        return 'Vie';
-      case DateTime.saturday:
-        return 'Sab';
-      case DateTime.sunday:
-        return 'Dom';
-      default:
-        return '';
-    }
+  String _generateId() {
+    return DateTime.now().millisecondsSinceEpoch.toString();
   }
 
-  // Convertir día de la semana de String a int
-  int _weekdayFromString(String weekdayStr) {
-    switch (weekdayStr) {
-      case 'Lun':
-        return DateTime.monday;
-      case 'Mar':
-        return DateTime.tuesday;
-      case 'Mie':
-        return DateTime.wednesday;
-      case 'Jue':
-        return DateTime.thursday;
-      case 'Vie':
-        return DateTime.friday;
-      case 'Sab':
-        return DateTime.saturday;
-      case 'Dom':
-        return DateTime.sunday;
-      default:
-        throw Exception('Día de la semana no válido');
-    }
+  int _generateExperience() {
+    return Random().nextInt(11) + 10; // Generar un valor entre 10 y 20
   }
 
   // Comparar fechas sin considerar la hora

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:habit_app/ui/pages/home.dart';
+import 'package:habit_app/UI/pages/home.dart';
 
 class CancelButton extends StatelessWidget {
   final String label;
