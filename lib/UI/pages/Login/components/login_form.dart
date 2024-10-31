@@ -9,8 +9,8 @@ import '/components/already_have_an_account_acheck.dart';
 
 class LoginForm extends StatelessWidget {
   const LoginForm({
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -42,7 +42,7 @@ class LoginForm extends StatelessWidget {
           const SizedBox(height: defaultPadding),
           ElevatedButton(
             onPressed: () {
-              print('entra');
+             // print('entra');
               // Verificar las credenciales
               bool isLoggedIn = context.read<AuthController>().logIn(
                     emailController.text,
