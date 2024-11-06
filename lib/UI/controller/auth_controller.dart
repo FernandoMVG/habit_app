@@ -1,12 +1,15 @@
 // lib/controller/auth_controller.dart
-import 'package:flutter/material.dart';
+//import 'package:flutter/material.dart';
 import '/models/user_model.dart';
 import 'package:get/get.dart';
+import 'user_controller.dart';
 
 class AuthController extends GetxController {
   UserModel? _user; // Usuario en memoria
 
   UserModel? get user => _user;
+
+  final UserController userController = Get.put(UserController());
 
   // Método para registrar el usuario
   void signUp(String email, String password) {

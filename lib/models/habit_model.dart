@@ -21,7 +21,7 @@ class Habit {
   int longestStreak; // Racha más larga registrada
   List<DateTime> completionDates; // Fechas en las que se completó el hábito
   DateTime? lastCompleted; // Última vez que se completó el hábito
-  int experience;
+  final int experience; // Add this line
 
   Habit({
     required this.id,
@@ -43,7 +43,7 @@ class Habit {
     this.longestStreak = 0,
     this.completionDates = const [],
     this.lastCompleted,
-    required this.experience,
+    required this.experience, // Add this line
   });
 
   Habit copyWith({
@@ -66,7 +66,7 @@ class Habit {
     int? longestStreak,
     List<DateTime>? completionDates,
     DateTime? lastCompleted,
-    int? experience,
+    int? experience, // Add this line
   }) {
     return Habit(
       id: id ?? this.id,
@@ -88,7 +88,7 @@ class Habit {
       longestStreak: longestStreak ?? this.longestStreak,  // Aseguramos que no sea null
       completionDates: completionDates ?? this.completionDates,
       lastCompleted: lastCompleted ?? this.lastCompleted,
-      experience: experience ?? this.experience,
+      experience: experience ?? this.experience, // Add this line
     );
   }
 

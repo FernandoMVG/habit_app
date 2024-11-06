@@ -7,6 +7,7 @@ import 'package:habit_app/UI/pages/Welcome/welcome_screen.dart';
 //import 'package:provider/provider.dart';
 import 'package:habit_app/UI/controller/auth_controller.dart';
 import 'package:habit_app/UI/controller/habit_controller.dart';
+import 'package:habit_app/UI/controller/user_controller.dart';
 
 import 'package:intl/date_symbol_data_local.dart'; // Import para formato regional
 
@@ -18,9 +19,11 @@ void main() async {
   await initializeDateFormatting('es');
 
   // Instancias de los controladores usando Get.
+  Get.put(UserController());
   Get.put(HabitController()); // Controlador de hábitos
   Get.lazyPut(() => CategoryController()); // Controlador de categorías
   Get.put(AuthController()); // Controlador de autenticación
+ // Controlador de usuario
 
   runApp(const MyApp());
 }

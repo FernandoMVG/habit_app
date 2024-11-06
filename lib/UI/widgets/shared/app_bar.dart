@@ -4,10 +4,12 @@ import 'package:habit_app/UI/controller/habit_controller.dart';
 import 'package:habit_app/UI/pages/Welcome/welcome_screen.dart';
 import 'package:habit_app/constants.dart'; // Importar las constantes
 import 'package:habit_app/UI/controller/auth_controller.dart';
+import 'package:habit_app/UI/controller/user_controller.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final HabitController habitController = Get.find<HabitController>();
   final AuthController authController = Get.find<AuthController>(); // Usar GetX para AuthController
+  final UserController userController = Get.find<UserController>();
 
   CustomAppBar({super.key});
 
@@ -83,11 +85,11 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
               const SizedBox(width: 10),
 
               // Contenedor de Nivel
-              _buildInfoContainer('Lvl. 0', context),
+              Obx(() => _buildInfoContainer('Lvl. ${userController.level}', context)),
               const SizedBox(width: 10),
 
               // Contenedor de EXP
-              _buildInfoContainer('EXP 0', context),
+              Obx(() => _buildInfoContainer('EXP ${userController.experience}', context)),
             ],
           ),
         ],

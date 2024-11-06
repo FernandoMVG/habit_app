@@ -2,6 +2,7 @@ import 'package:get/get.dart';
 import 'package:habit_app/models/habit_model.dart';
 import 'package:flutter/material.dart';
 import 'dart:math';
+import 'user_controller.dart';
 
 class HabitController extends GetxController {
   // Lista observable de hábitos
@@ -12,6 +13,8 @@ class HabitController extends GetxController {
 
   // Propiedad temporal para almacenar los datos de un hábito en construcción
   Habit? habit;
+
+  final UserController userController = Get.find<UserController>();
 
   // Inicializa un nuevo hábito antes de que se empiece a construir
   void initHabit({
@@ -29,7 +32,7 @@ class HabitController extends GetxController {
       categoryIcon: categoryIcon,
       isQuantifiable: isQuantifiable,
       completionDates: [],
-      experience: _generateExperience(),
+      experience: Random().nextInt(6) + 5, // 5 to 10 points
     );
   }
 
@@ -127,6 +130,11 @@ class HabitController extends GetxController {
       }
 
       if (habits[index].isCompleted) {
+        int baseExperience = habits[index].experience;
+        int streakMultiplier = (1 + habits[index].streakCount * 0.1).toInt();
+        int totalExperience = (baseExperience * streakMultiplier).toInt();
+        userController.addExperience(totalExperience);
+
         habits[index] = habits[index].copyWith(
           lastCompleted: DateTime(simulatedDate.value.year, simulatedDate.value.month, simulatedDate.value.day),
           completionDates: [
@@ -171,6 +179,9 @@ class HabitController extends GetxController {
       }
       habit.isCompleted = false; // Reiniciar estado al cambiar de día
       habit.completedCount = 0;   // Reiniciar progreso de hábitos cuantificables
+    }
+    if (habits.every((habit) => habit.isCompleted)) {
+      userController.addExperience(50); // Daily routine bonus
     }
     habits.refresh();
   }
