@@ -31,8 +31,7 @@ class _HabitRoutineCardState extends State<HabitRoutineCard> {
           _showQuantifiableHabitDialog();
         } else {
           setState(() {
-            widget.habit.toggleCompleted();
-            habitController.updateHabitCompletion(widget.habit);
+            habitController.toggleHabitCompletion(widget.habit);
           });
         }
       },
@@ -117,9 +116,7 @@ class _HabitRoutineCardState extends State<HabitRoutineCard> {
           habitController: habitController,
           onProgressUpdated: (int updatedCount) {
             setState(() {
-              widget.habit.completedCount = updatedCount;
-              widget.habit.isCompleted = widget.habit.isHabitCompleted();
-              habitController.updateHabitCompletion(widget.habit);
+              habitController.updateQuantifiableHabitProgress(widget.habit, updatedCount);
             });
           },
         );

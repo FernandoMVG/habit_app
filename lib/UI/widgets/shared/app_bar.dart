@@ -30,7 +30,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
         children: [
           // Menú de opciones para avanzar o retroceder día y cerrar sesión
           PopupMenuButton<String>(
-            icon: Icon(
+            icon: const Icon(
               Icons.menu,
               color: onSurfaceColor, // Usamos onSurfaceColor para el icono
             ),
@@ -45,14 +45,14 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
               }
             },
             itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
-              PopupMenuItem<String>(
+              const PopupMenuItem<String>(
                 value: 'Avanzar día',
                 child: ListTile(
                   leading: Icon(Icons.arrow_forward, color: onSurfaceColor),
                   title: Text('Avanzar día', style: bodyTextStyle),
                 ),
               ),
-              PopupMenuItem<String>(
+              const PopupMenuItem<String>(
                 value: 'Retroceder día',
                 child: ListTile(
                   leading: Icon(Icons.arrow_back, color: onSurfaceColor),
@@ -62,7 +62,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
               PopupMenuItem<String>(
                 value: 'Cerrar sesión',
                 child: ListTile(
-                  leading: Icon(Icons.logout, color: errorColor),
+                  leading: const Icon(Icons.logout, color: errorColor),
                   title: Text(
                     'Cerrar sesión',
                     style: bodyTextStyle.copyWith(

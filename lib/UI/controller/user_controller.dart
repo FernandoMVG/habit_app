@@ -9,6 +9,13 @@ class UserController extends GetxController {
     _checkLevelUp();
   }
 
+  void subtractExperience(int points) {
+    experience.value -= points;
+    if (experience.value < 0) {
+      experience.value = 0;
+    }
+  }
+
   void _checkLevelUp() {
     int requiredExperience = level.value * 100;
     while (experience.value >= requiredExperience) {

@@ -22,6 +22,7 @@ class Habit {
   List<DateTime> completionDates; // Fechas en las que se completó el hábito
   DateTime? lastCompleted; // Última vez que se completó el hábito
   final int experience; // Add this line
+  int? gainedExperience; // Add this line
 
   Habit({
     required this.id,
@@ -44,6 +45,7 @@ class Habit {
     this.completionDates = const [],
     this.lastCompleted,
     required this.experience, // Add this line
+    this.gainedExperience, // Add this line
   });
 
   Habit copyWith({
@@ -67,6 +69,7 @@ class Habit {
     List<DateTime>? completionDates,
     DateTime? lastCompleted,
     int? experience, // Add this line
+    int? gainedExperience, // Add this line
   }) {
     return Habit(
       id: id ?? this.id,
@@ -89,6 +92,7 @@ class Habit {
       completionDates: completionDates ?? this.completionDates,
       lastCompleted: lastCompleted ?? this.lastCompleted,
       experience: experience ?? this.experience, // Add this line
+      gainedExperience: gainedExperience ?? this.gainedExperience, // Add this line
     );
   }
 
@@ -110,10 +114,10 @@ class Habit {
     }
   }
 
-   // Método para alternar el estado completado en hábitos binarios
-  void toggleCompleted() {
-    if (!isQuantifiable) {
-      isCompleted = !isCompleted;
-    }
-  }
+  // Eliminar el método toggleCompleted
+  // void toggleCompleted() {
+  //   if (!isQuantifiable) {
+  //     isCompleted = !isCompleted;
+  //   }
+  // }
 }
