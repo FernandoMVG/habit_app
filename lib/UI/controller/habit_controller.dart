@@ -53,12 +53,12 @@ class HabitController extends GetxController {
 
   // Eliminar un hábito
   void removeHabit(Habit habit) {
-    habits.remove(habit);
+    habits.removeWhere((h) => h.id == habit.id); // Usar id para encontrar y eliminar el hábito
   }
 
   // Actualizar un hábito específico
   void updateHabit(Habit habitToUpdate, String newName, String newDescription) {
-    final habitIndex = habits.indexOf(habitToUpdate);
+    final habitIndex = habits.indexWhere((h) => h.id == habitToUpdate.id); // Usar id para encontrar el hábito
     if (habitIndex != -1) {
       // Actualiza el hábito permitiendo que la descripción esté vacía
       habits[habitIndex] = habitToUpdate.copyWith(
@@ -91,7 +91,7 @@ class HabitController extends GetxController {
 
   // Marcar un hábito como completado, manteniendo lógica para hábitos cuantificables
   void updateHabitCompletion(Habit habitToUpdate) {
-    final index = habits.indexWhere((h) => h.name == habitToUpdate.name);
+    final index = habits.indexWhere((h) => h.id == habitToUpdate.id);
     if (index != -1) {
       habits[index] = habitToUpdate;
 

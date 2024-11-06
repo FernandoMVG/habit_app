@@ -41,7 +41,7 @@ class CategoryPage extends StatelessWidget {
         backgroundColor: Theme.of(context).colorScheme.primary,
         child: const Icon(Icons.add),
       ),
-      bottomNavigationBar: CustomBottomNavigationBar(
+      bottomNavigationBar: const CustomBottomNavigationBar(
         currentIndex: 2,
       ),
     );
