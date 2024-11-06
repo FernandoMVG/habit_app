@@ -3,18 +3,18 @@ import 'package:get/get.dart';
 import 'package:habit_app/UI/controller/habit_controller.dart';
 import 'package:habit_app/UI/pages/Welcome/welcome_screen.dart';
 import 'package:habit_app/constants.dart'; // Importar las constantes
-import 'package:provider/provider.dart'; // Importar Provider para AuthController
 import 'package:habit_app/UI/controller/auth_controller.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final HabitController habitController = Get.find<HabitController>();
+  final AuthController authController = Get.find<AuthController>(); // Usar GetX para AuthController
 
   CustomAppBar({super.key});
 
   @override
   Widget build(BuildContext context) {
     // Obtener el email del usuario autenticado desde AuthController
-    final authController = Provider.of<AuthController>(context);
+    // final authController = Provider.of<AuthController>(context); // Eliminar uso de Provider
 
     // Obtener solo la parte del email antes del '@'
     final String userEmail = authController.user?.email ?? 'Usuario';

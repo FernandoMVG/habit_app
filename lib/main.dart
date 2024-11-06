@@ -4,7 +4,7 @@ import 'package:habit_app/UI/controller/category_controller.dart';
 import 'package:habit_app/UI/pages/home.dart';
 import 'package:habit_app/constants.dart';
 import 'package:habit_app/UI/pages/Welcome/welcome_screen.dart';
-import 'package:provider/provider.dart';
+//import 'package:provider/provider.dart';
 import 'package:habit_app/UI/controller/auth_controller.dart';
 import 'package:habit_app/UI/controller/habit_controller.dart';
 
@@ -20,17 +20,9 @@ void main() async {
   // Instancias de los controladores usando Get.
   Get.put(HabitController()); // Controlador de hábitos
   Get.lazyPut(() => CategoryController()); // Controlador de categorías
+  Get.put(AuthController()); // Controlador de autenticación
 
-  runApp(
-    MultiProvider(
-      providers: [
-        ChangeNotifierProvider(
-          create: (_) => AuthController(), // Inicializa AuthController
-        ),
-      ],
-      child: const MyApp(),
-    ),
-  );
+  runApp(const MyApp());
 }
 
 class MyApp extends StatefulWidget {
@@ -110,7 +102,7 @@ class _MyAppState extends State<MyApp> {
       ),
 
       // Pantalla inicial
-      home: const HomePage(), // Página de inicio
+      home: const WelcomeScreen(), // Página de inicio
     );
   }
 }
