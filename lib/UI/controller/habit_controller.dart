@@ -127,13 +127,16 @@ class HabitController extends GetxController {
           default:
             habits[index].isCompleted = false;
         }
+        //add experience to quantifiable habits
+        if (habitToUpdate.isCompleted) {
+          _addExperienceForHabit(habitToUpdate);
+        } else {
+          _subtractExperienceForHabit(habitToUpdate);
+        }
       }
 
       if (habits[index].isCompleted) {
-        int baseExperience = habits[index].experience;
-        int streakMultiplier = (1 + habits[index].streakCount * 0.1).toInt();
-        int totalExperience = (baseExperience * streakMultiplier).toInt();
-        userController.addExperience(totalExperience);
+        print('Habit "${habits[index].name}" completed.');
 
         habits[index] = habits[index].copyWith(
           lastCompleted: DateTime(simulatedDate.value.year, simulatedDate.value.month, simulatedDate.value.day),
@@ -164,14 +167,15 @@ class HabitController extends GetxController {
   // Método para actualizar el progreso de un hábito cuantificable
   void updateQuantifiableHabitProgress(Habit habit, int updatedCount) {
     habit.completedCount = updatedCount;
-    bool wasCompleted = habit.isCompleted;
-    habit.isCompleted = habit.isHabitCompleted();
-    if (habit.isCompleted && !wasCompleted) {
-      _addExperienceForHabit(habit);
-    } else if (!habit.isCompleted && wasCompleted) {
-      _subtractExperienceForHabit(habit);
+    if (habit.isQuantifiable) {
+      if(habit.isCompleted){
+        _subtractExperienceForHabit(habit);
+      } else {
+        _addExperienceForHabit(habit);
+      }
+      habit.isCompleted = !habit.isCompleted;
+      updateHabitCompletion(habit);
     }
-    updateHabitCompletion(habit);
   }
 
   void _addExperienceForHabit(Habit habit) {
@@ -180,11 +184,14 @@ class HabitController extends GetxController {
     int totalExperience = (baseExperience * streakMultiplier).toInt();
     habit.gainedExperience = totalExperience; // Store the gained experience
     userController.addExperience(totalExperience);
+
+    print('Experience added for habit "${habit.name}": $totalExperience');
   }
 
   void _subtractExperienceForHabit(Habit habit) {
     if (habit.gainedExperience != null) {
       userController.subtractExperience(habit.gainedExperience!);
+      print('Experience subtracted for habit "${habit.name}": ${habit.gainedExperience}');
       habit.gainedExperience = null; // Reset the gained experience
     }
   }

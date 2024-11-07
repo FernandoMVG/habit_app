@@ -96,28 +96,4 @@ class Habit {
     );
   }
 
-  // Método que calcula si el hábito cuantificable se ha completado en función de `frequencyType`
-  bool isHabitCompleted() {
-    switch (frequencyType) {
-      case 'Al menos':
-        return completedCount >= targetCount!;
-      case 'Menos de':
-        return completedCount < targetCount!;
-      case 'Exactamente':
-        return completedCount == targetCount!;
-      case 'Más de':
-        return completedCount > targetCount!;
-      case 'Sin especificar':
-        return true;
-      default:
-        return false;
-    }
-  }
-
-  // Eliminar el método toggleCompleted
-  // void toggleCompleted() {
-  //   if (!isQuantifiable) {
-  //     isCompleted = !isCompleted;
-  //   }
-  // }
 }

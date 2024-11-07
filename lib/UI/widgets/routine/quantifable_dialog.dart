@@ -133,7 +133,7 @@ class _QuantifiableHabitDialogState extends State<QuantifiableHabitDialog> {
           onPressed: () {
             if (hasUpdated) {
               widget.habit.completedCount = currentCount;
-              widget.habit.isCompleted = widget.habit.isHabitCompleted();
+              //widget.habit.isCompleted = widget.habit.isHabitCompleted;
               widget.habitController.updateHabitCompletion(widget.habit);
               widget.onProgressUpdated(currentCount);
             }
