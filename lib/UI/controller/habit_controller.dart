@@ -136,8 +136,6 @@ class HabitController extends GetxController {
       }
 
       if (habits[index].isCompleted) {
-        print('Habit "${habits[index].name}" completed.');
-
         habits[index] = habits[index].copyWith(
           lastCompleted: DateTime(simulatedDate.value.year, simulatedDate.value.month, simulatedDate.value.day),
           completionDates: [
@@ -184,14 +182,11 @@ class HabitController extends GetxController {
     int totalExperience = (baseExperience * streakMultiplier).toInt();
     habit.gainedExperience = totalExperience; // Store the gained experience
     userController.addExperience(totalExperience);
-
-    print('Experience added for habit "${habit.name}": $totalExperience');
   }
 
   void _subtractExperienceForHabit(Habit habit) {
     if (habit.gainedExperience != null) {
       userController.subtractExperience(habit.gainedExperience!);
-      print('Experience subtracted for habit "${habit.name}": ${habit.gainedExperience}');
       habit.gainedExperience = null; // Reset the gained experience
     }
   }
@@ -275,39 +270,67 @@ class HabitController extends GetxController {
 void verifyStreakForSpecificDays(Habit habit) {
   if (habit.selectedDays == null || habit.selectedDays!.isEmpty) return;
 
-  // Convertir los días programados a enteros (números de días de la semana)
   List<int> scheduledWeekdays = habit.selectedDays!;
+  print('Días programados para "${habit.name}": $scheduledWeekdays');
 
-  // Crear un conjunto de fechas de completación para búsqueda eficiente
   Set<DateTime> completionDatesSet = habit.completionDates
       .map((date) => DateTime(date.year, date.month, date.day))
       .toSet();
+  print('Fechas de completación para "${habit.name}": $completionDatesSet');
 
   int streak = 0;
-  DateTime currentDate = DateTime(simulatedDate.value.year, simulatedDate.value.month, simulatedDate.value.day);
+  DateTime currentDate = DateTime(
+    simulatedDate.value.year,
+    simulatedDate.value.month,
+    simulatedDate.value.day,
+  );
+  print('Fecha actual: $currentDate');
 
-  // Iterar hacia atrás desde la fecha actual
+  // Encontrar el último día completado
+  DateTime? lastCompletedDate;
+  DateTime checkDate = currentDate;
+  
+  // Buscar el último día completado
   while (true) {
-    if (scheduledWeekdays.contains(currentDate.weekday)) {
-      // Es un día programado
-      if (completionDatesSet.contains(currentDate)) {
+    if (scheduledWeekdays.contains(checkDate.weekday) && 
+        completionDatesSet.contains(checkDate)) {
+      lastCompletedDate = checkDate;
+      break;
+    }
+    if (checkDate.difference(currentDate).inDays < -30) break; // Límite de búsqueda
+    checkDate = checkDate.subtract(const Duration(days: 1));
+  }
+
+  // Si no hay días completados, la racha es 0
+  if (lastCompletedDate == null) {
+    habit.streakCount = 0;
+    return;
+  }
+
+  // Contar la racha desde el último día completado
+  DateTime countDate = lastCompletedDate;
+  while (true) {
+    if (scheduledWeekdays.contains(countDate.weekday)) {
+      if (completionDatesSet.contains(countDate)) {
         streak++;
+        print('Hábito completado en $countDate. Racha actual: $streak');
       } else {
-        //print('Racha reiniciada para "${habit.name}" porque no se completó ${currentDate}');
+        print('Racha interrumpida. No se completó el hábito en $countDate');
         break;
       }
     }
-    // Retroceder un día
-    currentDate = currentDate.subtract(const Duration(days: 1));
-
+    countDate = countDate.subtract(const Duration(days: 1));
   }
 
-  // Actualizar la racha actual y la racha más larga
+  print('Racha final para "${habit.name}": $streak');
   habit.streakCount = streak;
   if (streak > habit.longestStreak) {
     habit.longestStreak = streak;
+    print('Nueva racha más larga para "${habit.name}": ${habit.longestStreak}');
   }
-
+  print('Racha final para "${habit.name}": ${habit.streakCount}');
+  print('Racha más larga para "${habit.name}": ${habit.longestStreak}');
+  print("--------------------FIN ESPECIFICO DIA---------------------");
   habits.refresh();
 }
 
