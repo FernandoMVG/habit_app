@@ -44,6 +44,7 @@ class _EditCategoryPageState extends State<EditCategoryPage> {
           children: [
             const Text("Edita el nombre",
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            const SizedBox(height: 10),
             CustomTextField(
               controller: _nameController,
               labelText: "Nombre de la categoría",
@@ -53,33 +54,64 @@ class _EditCategoryPageState extends State<EditCategoryPage> {
             // Sección para seleccionar un ícono
             const Text("Escoge un ícono",
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-            IconButton(
-              icon: Icon(_selectedIcon ?? Icons.add, color: primaryColor),
-              onPressed: () {
+            GestureDetector(
+              onTap: () {
                 showIconPicker(context, _selectedIcon, (icon) {
                   setState(() {
                     _selectedIcon = icon; // Actualizar ícono
                   });
                 });
               },
+              child: Container(
+                height: 50,
+                width: 100,
+                decoration: BoxDecoration(
+                  color: Theme.of(context).primaryColor.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(
+                    color: Theme.of(context).primaryColor,
+                    width: 2,
+                  ),
+                ),
+                child: Icon(
+                  _selectedIcon ?? Icons.add,
+                  color: Theme.of(context).primaryColor,
+                  size: 25,
+                ),
+              ),
             ),
             const SizedBox(height: 20),
 
             // Sección para seleccionar un color
             const Text("Elige un color",
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-            IconButton(
-              icon:
-                  Icon(Icons.color_lens, color: _selectedColor ?? primaryColor),
-              onPressed: () {
+            GestureDetector(
+              onTap: () {
                 showColorPicker(context, _selectedColor, (color) {
                   setState(() {
                     _selectedColor = color; // Actualizar color
                   });
                 });
               },
+              child: Container(
+                height: 50,
+                width: 100,
+                decoration: BoxDecoration(
+                  color: _selectedColor ?? Theme.of(context).primaryColor.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(
+                    color: _selectedColor ?? Theme.of(context).primaryColor,
+                    width: 2,
+                  ),
+                ),
+                child: Icon(
+                  Icons.color_lens,
+                  color: _selectedColor != null ? Colors.white : Theme.of(context).primaryColor,
+                  size: 25,
+                ),
+              ),
             ),
-            const SizedBox(height: 30),
+            const Spacer(),
 
             // Botones de Cancelar y Guardar
             Row(
