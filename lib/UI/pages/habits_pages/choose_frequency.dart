@@ -118,6 +118,10 @@ class _ChooseFrequencyPageState extends State<ChooseFrequencyPage> {
                     if (selectedDays.isNotEmpty || isDailySelected) {
                       // Convertir selectedDays de List<String> a List<int>
                       List<int> selectedDaysIndices = selectedDays.map((day) => weekDays.indexOf(day) + 1).toList();
+                      if (selectedDaysIndices.length == 7) {
+                        isDailySelected = true;
+                        selectedDaysIndices = [];
+                      }
                       habitController.setFrequency(
                         isDaily: isDailySelected,
                         days: isDailySelected ? null : selectedDaysIndices,
