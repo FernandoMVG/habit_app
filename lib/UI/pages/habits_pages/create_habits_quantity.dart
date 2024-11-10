@@ -21,12 +21,9 @@ class _QuantityHabitPageState extends State<QuantityHabitPage> {
   final TextEditingController unitController = TextEditingController();
   final TextEditingController descriptionController = TextEditingController();
 
-  String selectedQuantificationType = 'Al menos';
+  String selectedQuantificationType = 'Exactamente';
   final List<String> quantificationOptions = [
-    'Al menos',
-    'Menos de',
     'Exactamente',
-    'Más de',
     'Sin especificar',
   ];
 
@@ -129,6 +126,7 @@ class _QuantityHabitPageState extends State<QuantityHabitPage> {
                               controller: quantityController,
                               labelText: 'Cantidad',
                               enabled: selectedQuantificationType != 'Sin especificar',
+                              keyboardType: TextInputType.number, // Add numeric keyboard
                             ),
                           ),
                         ],

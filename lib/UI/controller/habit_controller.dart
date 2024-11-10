@@ -106,28 +106,13 @@ class HabitController extends GetxController {
             habits[index].isCompleted = (habitToUpdate.targetCount != null &&
                 habitToUpdate.completedCount == habitToUpdate.targetCount!);
             break;
-          case 'Al menos':
-            habits[index].isCompleted = (habitToUpdate.targetCount != null &&
-                habitToUpdate.completedCount >= habitToUpdate.targetCount!);
-            break;
-          case 'Menos de':
-            habits[index].isCompleted = (habitToUpdate.targetCount != null &&
-                habitToUpdate.completedCount < habitToUpdate.targetCount!);
-            break;
-          case 'Más de':
-            habits[index].isCompleted = (habitToUpdate.targetCount != null &&
-                habitToUpdate.completedCount > habitToUpdate.targetCount!);
-            break;
           case 'Sin especificar':
             habits[index].isCompleted = true;
-            break;
-          case null:
-            habits[index].isCompleted = false;
             break;
           default:
             habits[index].isCompleted = false;
         }
-        //add experience to quantifiable habits
+        
         if (habitToUpdate.isCompleted) {
           _addExperienceForHabit(habitToUpdate);
         } else {
