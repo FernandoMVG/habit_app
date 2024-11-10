@@ -6,10 +6,13 @@ import 'package:habit_app/UI/pages/category/create_category_page.dart';
 import 'package:habit_app/UI/pages/category/edit_category_page.dart';
 import 'package:habit_app/UI/widgets/home_page/navigation_bar.dart';
 import 'package:habit_app/UI/widgets/shared/app_bar.dart';
+import 'package:habit_app/constants.dart';
 import '/responsive.dart'; // Importar el widget Responsive
 
 class CategoryPage extends StatelessWidget {
   final CategoryController categoryController = Get.find<CategoryController>();
+
+  CategoryPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -41,7 +44,7 @@ class CategoryPage extends StatelessWidget {
         backgroundColor: Theme.of(context).colorScheme.primary,
         child: const Icon(Icons.add),
       ),
-      bottomNavigationBar: CustomBottomNavigationBar(
+      bottomNavigationBar: const CustomBottomNavigationBar(
         currentIndex: 2,
       ),
     );
@@ -67,8 +70,15 @@ class CategoryPage extends StatelessWidget {
           },
           child: Container(
             decoration: BoxDecoration(
-              color: category.color.withOpacity(0.1),
-              borderRadius: BorderRadius.circular(12),
+              color: cardBackgroundColor,
+              borderRadius: BorderRadius.circular(defaultRadius),
+              boxShadow: const [
+                BoxShadow(
+                  color: cardShadowColor,
+                  blurRadius: 4.0,
+                  offset: Offset(0, 2),
+                ),
+              ],
               border: Border.all(color: category.color, width: 2),
             ),
             child: Column(

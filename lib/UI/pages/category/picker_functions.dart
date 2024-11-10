@@ -9,6 +9,7 @@ Future<void> showIconPicker(BuildContext context, IconData? selectedIcon,
     context: context,
     builder: (context) {
       return AlertDialog(
+        backgroundColor: Theme.of(context).colorScheme.secondary,
         title: const Center(child: Text('Selecciona un ícono')),
         content: SizedBox(
           width: 300,
@@ -24,8 +25,8 @@ Future<void> showIconPicker(BuildContext context, IconData? selectedIcon,
               return IconButton(
                 icon: Icon(iconOptions[index],
                     color: selectedIcon == iconOptions[index]
-                        ? Colors.blue
-                        : Colors.grey),
+                        ? Theme.of(context).primaryColor
+                        : Theme.of(context).iconTheme.color),
                 onPressed: () {
                   onIconSelected(iconOptions[index]);
                   Navigator.pop(context);
@@ -46,6 +47,7 @@ Future<void> showColorPicker(BuildContext context, Color? selectedColor,
     context: context,
     builder: (context) {
       return AlertDialog(
+        backgroundColor: Theme.of(context).colorScheme.secondary,
         title: const Center(child: Text('Selecciona un color')),
         content: SizedBox(
           width: 300,
@@ -68,7 +70,7 @@ Future<void> showColorPicker(BuildContext context, Color? selectedColor,
                     color: colorOptions[index],
                     shape: BoxShape.circle,
                     border: selectedColor == colorOptions[index]
-                        ? Border.all(color: Colors.blue, width: 3)
+                        ? Border.all(color: Theme.of(context).primaryColor, width: 3)
                         : null,
                   ),
                   width: 40,

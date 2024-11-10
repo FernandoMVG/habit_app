@@ -1,20 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:habit_app/ui/controller/habit_controller.dart';
-import 'package:habit_app/ui/pages/Welcome/welcome_screen.dart';
+import 'package:habit_app/UI/controller/habit_controller.dart';
+import 'package:habit_app/UI/pages/Welcome/welcome_screen.dart';
 import 'package:habit_app/constants.dart'; // Importar las constantes
-import 'package:provider/provider.dart'; // Importar Provider para AuthController
 import 'package:habit_app/UI/controller/auth_controller.dart';
+import 'package:habit_app/UI/controller/user_controller.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final HabitController habitController = Get.find<HabitController>();
+  final AuthController authController = Get.find<AuthController>(); // Usar GetX para AuthController
+  final UserController userController = Get.find<UserController>();
 
   CustomAppBar({super.key});
 
   @override
   Widget build(BuildContext context) {
     // Obtener el email del usuario autenticado desde AuthController
-    final authController = Provider.of<AuthController>(context);
+    // final authController = Provider.of<AuthController>(context); // Eliminar uso de Provider
 
     // Obtener solo la parte del email antes del '@'
     final String userEmail = authController.user?.email ?? 'Usuario';
@@ -28,7 +30,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
         children: [
           // Menú de opciones para avanzar o retroceder día y cerrar sesión
           PopupMenuButton<String>(
-            icon: Icon(
+            icon: const Icon(
               Icons.menu,
               color: onSurfaceColor, // Usamos onSurfaceColor para el icono
             ),
@@ -43,14 +45,14 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
               }
             },
             itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
-              PopupMenuItem<String>(
+              const PopupMenuItem<String>(
                 value: 'Avanzar día',
                 child: ListTile(
                   leading: Icon(Icons.arrow_forward, color: onSurfaceColor),
                   title: Text('Avanzar día', style: bodyTextStyle),
                 ),
               ),
-              PopupMenuItem<String>(
+              const PopupMenuItem<String>(
                 value: 'Retroceder día',
                 child: ListTile(
                   leading: Icon(Icons.arrow_back, color: onSurfaceColor),
@@ -60,7 +62,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
               PopupMenuItem<String>(
                 value: 'Cerrar sesión',
                 child: ListTile(
-                  leading: Icon(Icons.logout, color: errorColor),
+                  leading: const Icon(Icons.logout, color: errorColor),
                   title: Text(
                     'Cerrar sesión',
                     style: bodyTextStyle.copyWith(
@@ -83,11 +85,11 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
               const SizedBox(width: 10),
 
               // Contenedor de Nivel
-              _buildInfoContainer('Lvl. 0', context),
+              Obx(() => _buildInfoContainer('Lvl. ${userController.level}', context)),
               const SizedBox(width: 10),
 
               // Contenedor de EXP
-              _buildInfoContainer('EXP 0', context),
+              Obx(() => _buildInfoContainer('EXP ${userController.experience}', context)),
             ],
           ),
         ],

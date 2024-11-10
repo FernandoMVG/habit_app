@@ -1,6 +1,6 @@
 // signup_form.dart
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:get/get.dart';
 import '/constants.dart';
 import '/UI/controller/auth_controller.dart';
 import '/components/already_have_an_account_acheck.dart';
@@ -8,8 +8,8 @@ import '../../Login/login_screen.dart';
 
 class SignUpForm extends StatefulWidget {
   const SignUpForm({
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   _SignUpFormState createState() => _SignUpFormState();
@@ -82,10 +82,10 @@ class _SignUpFormState extends State<SignUpForm> {
               // Verificar si el formulario es válido antes de registrar al usuario
               if (_formKey.currentState!.validate()) {
                 // Registro del usuario si las validaciones pasan
-                context.read<AuthController>().signUp(
-                      emailController.text,
-                      passwordController.text,
-                    );
+                Get.find<AuthController>().signUp(
+                  emailController.text,
+                  passwordController.text,
+                );
                 Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(

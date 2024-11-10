@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:habit_app/UI/pages/category/category_page.dart';
-import 'package:habit_app/ui/pages/home.dart';
-import 'package:habit_app/ui/pages/habits.dart';
+import 'package:habit_app/UI/pages/home.dart';
+import 'package:habit_app/UI/pages/habits.dart';
 import 'package:habit_app/constants.dart'; // Importa las constantes
 
 class CustomBottomNavigationBar extends StatelessWidget {
@@ -76,10 +76,6 @@ class CustomBottomNavigationBar extends StatelessWidget {
           BottomNavigationBarItem(
             icon: Icon(Icons.category, size: 28),
             label: 'Categorías',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.flag, size: 28),
-            label: 'Retos',
           ),
         ],
         selectedLabelStyle: navBarTextStyle.copyWith(

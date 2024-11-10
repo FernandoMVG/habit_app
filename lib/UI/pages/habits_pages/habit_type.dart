@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:habit_app/ui/controller/habit_controller.dart';
-import 'package:habit_app/ui/pages/habits_pages/create_habits.dart';
-import 'package:habit_app/ui/widgets/shared/buttons.dart';
-import 'package:habit_app/ui/pages/habits_pages/create_habits_quantity.dart';
+import 'package:habit_app/UI/controller/habit_controller.dart';
+import 'package:habit_app/UI/pages/habits_pages/create_habits.dart';
+import 'package:habit_app/UI/widgets/shared/buttons.dart';
+import 'package:habit_app/UI/pages/habits_pages/create_habits_quantity.dart';
 
 class HabitTypeSelectionPage extends StatelessWidget {
   final HabitController habitController = Get.find<HabitController>();

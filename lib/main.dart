@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:habit_app/UI/controller/category_controller.dart';
-import 'package:habit_app/ui/pages/home.dart';
+import 'package:habit_app/UI/pages/home.dart';
 import 'package:habit_app/constants.dart';
-import 'package:habit_app/ui/pages/Welcome/welcome_screen.dart';
-import 'package:provider/provider.dart';
+import 'package:habit_app/UI/pages/Welcome/welcome_screen.dart';
+//import 'package:provider/provider.dart';
 import 'package:habit_app/UI/controller/auth_controller.dart';
-import 'package:habit_app/ui/controller/habit_controller.dart';
+import 'package:habit_app/UI/controller/habit_controller.dart';
+import 'package:habit_app/UI/controller/user_controller.dart';
 
 import 'package:intl/date_symbol_data_local.dart'; // Import para formato regional
 
@@ -18,19 +19,13 @@ void main() async {
   await initializeDateFormatting('es');
 
   // Instancias de los controladores usando Get.
+  Get.put(UserController());
   Get.put(HabitController()); // Controlador de hábitos
   Get.lazyPut(() => CategoryController()); // Controlador de categorías
+  Get.put(AuthController()); // Controlador de autenticación
+ // Controlador de usuario
 
-  runApp(
-    MultiProvider(
-      providers: [
-        ChangeNotifierProvider(
-          create: (_) => AuthController(), // Inicializa AuthController
-        ),
-      ],
-      child: const MyApp(),
-    ),
-  );
+  runApp(const MyApp());
 }
 
 class MyApp extends StatefulWidget {

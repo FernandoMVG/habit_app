@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:habit_app/ui/widgets/calendar.dart';
-import 'package:habit_app/ui/widgets/home_page/progress_bar.dart';
-import 'package:habit_app/ui/widgets/routine/daily_routine.dart';
-import 'package:habit_app/ui/widgets/shared/app_bar.dart';
-import 'package:habit_app/ui/widgets/shared/empty_message.dart';
-import 'package:habit_app/ui/widgets/home_page/navigation_bar.dart';
-import 'package:habit_app/ui/pages/habits_pages/habit_type.dart';
-import 'package:habit_app/ui/widgets/shared/fab_button.dart';
-import 'package:habit_app/ui/controller/habit_controller.dart';
+import 'package:habit_app/UI/widgets/calendar.dart';
+import 'package:habit_app/UI/widgets/home_page/progress_bar.dart';
+import 'package:habit_app/UI/widgets/routine/daily_routine.dart';
+import 'package:habit_app/UI/widgets/shared/app_bar.dart';
+import 'package:habit_app/UI/widgets/shared/empty_message.dart';
+import 'package:habit_app/UI/widgets/home_page/navigation_bar.dart';
+import 'package:habit_app/UI/pages/habits_pages/habit_type.dart';
+import 'package:habit_app/UI/widgets/shared/fab_button.dart';
+import 'package:habit_app/UI/controller/habit_controller.dart';
 //import 'package:habit_app/UI/widgets/habit_list.dart';
 
 class HomePage extends StatefulWidget {

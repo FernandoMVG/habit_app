@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:get/get.dart';
-import 'package:habit_app/ui/controller/habit_controller.dart';
+import 'package:habit_app/UI/controller/habit_controller.dart';
 import 'package:habit_app/constants.dart';
 
 class CalendarWidget extends StatelessWidget {
@@ -29,6 +29,7 @@ class CalendarWidget extends StatelessWidget {
             final isToday = _isSameDay(date, today); // Verificar si es el día actual
             final dayAbbreviation = DateFormat.E('es').format(date); // Ej: "Lun"
             final dayNumber = date.day.toString();
+            final monthAbbreviation = DateFormat.MMM('es').format(date); // Ej: "Ene"
 
             return Expanded(
               child: GestureDetector(
@@ -38,6 +39,7 @@ class CalendarWidget extends StatelessWidget {
                 child: _buildCalendarDay(
                   dayAbbreviation,
                   dayNumber,
+                  monthAbbreviation,
                   isToday, // Indica si este día es el actual
                 ),
               ),
@@ -54,19 +56,18 @@ class CalendarWidget extends StatelessWidget {
   }
 
   // Método para construir cada día del calendario
-  Widget _buildCalendarDay(String day, String date, bool isToday) {
+  Widget _buildCalendarDay(String day, String date, String month, bool isToday) {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 4.0, vertical: 8.0),
-      padding: const EdgeInsets.symmetric(vertical: 12.0),
+      padding: const EdgeInsets.all(10.0),
       decoration: BoxDecoration(
         color: isToday ? primaryColor : cardBackgroundColor, // Cambiar color si es el día actual
-        borderRadius: BorderRadius.circular(10),
-        boxShadow: [
+        borderRadius: BorderRadius.circular(defaultRadius),
+        boxShadow: const [
           BoxShadow(
-            color: cardShadowColor.withOpacity(0.5),
-            spreadRadius: 2,
-            blurRadius: 5,
-            offset: const Offset(0, 3), // Sombra sutil debajo del día
+            color: cardShadowColor,
+            blurRadius: 4.0,
+            offset: Offset(0, 2),
           ),
         ],
       ),
@@ -74,15 +75,25 @@ class CalendarWidget extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           Text(
-            day,
+            month,
             style: TextStyle(
-              color: isToday ? onPrimaryColor : blackColor,
+              color: isToday ? onPrimaryColor : onSurfaceColor,
               fontWeight: FontWeight.bold,
+              fontSize: 12,
             ),
           ),
           const SizedBox(height: 5),
           Text(
             date,
+            style: TextStyle(
+              color: isToday ? onPrimaryColor : blackColor,
+              fontWeight: FontWeight.bold,
+              fontSize: 24,
+            ),
+          ),
+          const SizedBox(height: 5),
+          Text(
+            day,
             style: TextStyle(
               color: isToday ? onPrimaryColor : blackColor,
               fontWeight: FontWeight.bold,
