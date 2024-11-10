@@ -33,7 +33,8 @@ class _QuantifiableHabitDialogState extends State<QuantifiableHabitDialog> {
 
   @override
   Widget build(BuildContext context) {
-    int targetCount = widget.habit.targetCount ?? 1;
+    int? targetCount = widget.habit.targetCount;
+    bool isSinEspecificar = widget.habit.frequencyType == 'Sin especificar';
 
     return AlertDialog(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
@@ -94,7 +95,7 @@ class _QuantifiableHabitDialogState extends State<QuantifiableHabitDialog> {
               ),
               IconButton(
                 onPressed: () {
-                  if (currentCount < targetCount) {
+                  if (isSinEspecificar || currentCount < (targetCount ?? 1)) {
                     setState(() {
                       currentCount++;
                       hasUpdated = true;
@@ -113,7 +114,9 @@ class _QuantifiableHabitDialogState extends State<QuantifiableHabitDialog> {
               borderRadius: BorderRadius.circular(8.0),
             ),
             child: Text(
-              'Hoy $currentCount / $targetCount ${widget.habit.unit ?? ''}',
+              isSinEspecificar
+                  ? 'Hoy: $currentCount ${widget.habit.unit ?? ''}'
+                  : 'Hoy $currentCount / $targetCount ${widget.habit.unit ?? ''}',
               style: const TextStyle(
                 fontSize: 14.0,
               ),

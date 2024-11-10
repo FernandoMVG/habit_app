@@ -5,6 +5,7 @@ import 'package:habit_app/UI/widgets/shared/text_field.dart';
 import 'package:habit_app/UI/controller/habit_controller.dart';
 import 'package:habit_app/UI/pages/habits_pages/choose_category.dart';
 import 'package:habit_app/constants.dart'; // Importar los colores y estilos
+import 'package:flutter/services.dart';  // Add this import for TextInputFormatter
 
 class QuantityHabitPage extends StatefulWidget {
   const QuantityHabitPage({super.key});
@@ -21,12 +22,9 @@ class _QuantityHabitPageState extends State<QuantityHabitPage> {
   final TextEditingController unitController = TextEditingController();
   final TextEditingController descriptionController = TextEditingController();
 
-  String selectedQuantificationType = 'Al menos';
+  String selectedQuantificationType = 'Exactamente';
   final List<String> quantificationOptions = [
-    'Al menos',
-    'Menos de',
     'Exactamente',
-    'Más de',
     'Sin especificar',
   ];
 
@@ -129,6 +127,10 @@ class _QuantityHabitPageState extends State<QuantityHabitPage> {
                               controller: quantityController,
                               labelText: 'Cantidad',
                               enabled: selectedQuantificationType != 'Sin especificar',
+                              keyboardType: TextInputType.number, // Add number keyboard
+                              inputFormatters: [
+                                FilteringTextInputFormatter.digitsOnly, // Only allow digits
+                              ],
                             ),
                           ),
                         ],
@@ -140,7 +142,7 @@ class _QuantityHabitPageState extends State<QuantityHabitPage> {
                             child: CustomTextField(
                               controller: unitController,
                               labelText: 'Unidad',
-                              enabled: selectedQuantificationType != 'Sin especificar',
+                              // Remove the enabled property here to keep it always enabled
                             ),
                           ),
                           const SizedBox(width: 10),

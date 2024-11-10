@@ -268,7 +268,7 @@ class HabitController extends GetxController {
       habit.completedCount = 0;   // Reiniciar progreso de hábitos cuantificables
     }
     if (allHabitsCompleted) {
-      userController.addExperience(50); // Daily routine bonus
+      userController.addExperience(10); // Daily routine bonus
     }
     habits.refresh();
   }

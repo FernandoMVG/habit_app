@@ -24,17 +24,30 @@ class CategoryController extends GetxController {
         return;
       }
 
-      // Cerrar la caja anterior si existe
-      if (Hive.isBoxOpen('categoryBox_${userController.currentUserEmail}')) {
-        await Hive.box<CategoryModel>('categoryBox_${userController.currentUserEmail}').close();
+      final boxName = 'categoryBox_${userController.currentUserEmail}';
+      if (Hive.isBoxOpen(boxName)) {
+        await Hive.box<CategoryModel>(boxName).close();
       }
 
-      categoryBox = await Hive.openBox<CategoryModel>('categoryBox_${userController.currentUserEmail}');
-      categories.clear(); // Limpiar categorías existentes
-      _loadCategories();
+      categoryBox = await Hive.openBox<CategoryModel>(boxName);
+      categories.clear();
+      
+      // Si la caja está vacía, cargar las categorías predefinidas
+      if (categoryBox.isEmpty) {
+        await _loadDefaultCategories();
+      } else {
+        _loadCategories();
+      }
     } catch (e) {
       print('Error al abrir la caja de categorías: $e');
     }
+  }
+
+  Future<void> _loadDefaultCategories() async {
+    for (var category in defaultCategories) {
+      await categoryBox.put(category.name, category);
+    }
+    _loadCategories();
   }
 
   Future<void> reloadCategories() async {

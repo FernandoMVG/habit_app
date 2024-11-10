@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart'; // Add this import
 
 /// CustomTextField: Un campo de texto reutilizable y personalizable.
 class CustomTextField extends StatelessWidget {
@@ -8,6 +9,7 @@ class CustomTextField extends StatelessWidget {
   final TextInputType keyboardType; // Tipo de entrada de teclado.
   final bool enabled; // Define si el campo está habilitado.
   final double borderRadius; // Radio de los bordes.
+  final List<TextInputFormatter>? inputFormatters; // Add this parameter
 
   /// Constructor del `CustomTextField`.
   const CustomTextField({
@@ -18,6 +20,7 @@ class CustomTextField extends StatelessWidget {
     this.keyboardType = TextInputType.text, // Tipo de texto por defecto.
     this.enabled = true, // Habilitado por defecto.
     this.borderRadius = 15.0, // Radio de los bordes por defecto.
+    this.inputFormatters, // Add this to constructor
   });
 
   @override
@@ -27,6 +30,7 @@ class CustomTextField extends StatelessWidget {
       controller: controller, // Controlador del campo de texto.
       obscureText: isObscureText, // Define si el texto es oculto.
       keyboardType: keyboardType, // Define el tipo de entrada del teclado.
+      inputFormatters: inputFormatters, // Add this to TextField
       decoration: InputDecoration(
         labelText: labelText, // Texto del label.
         labelStyle: const TextStyle(

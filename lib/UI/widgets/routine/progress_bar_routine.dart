@@ -3,10 +3,14 @@ import 'package:habit_app/constants.dart';
 
 class CustomProgressBar extends StatelessWidget {
   final double progress;
+  final bool isSinEspecificar;
+  final int currentCount;
 
   const CustomProgressBar({
     super.key,
     required this.progress,
+    this.isSinEspecificar = false,
+    this.currentCount = 0,
   });
 
   @override
@@ -21,7 +25,7 @@ class CustomProgressBar extends StatelessWidget {
               color: navBarInactiveColor, // Fondo gris claro
             ),
             child: FractionallySizedBox(
-              widthFactor: progress,
+              widthFactor: isSinEspecificar ? (currentCount > 0 ? 1.0 : 0.0) : progress,
               alignment: Alignment.centerLeft,
               child: Container(
                 decoration: BoxDecoration(
@@ -38,7 +42,9 @@ class CustomProgressBar extends StatelessWidget {
         ),
         const SizedBox(width: 8), // Espacio entre la barra y el porcentaje
         Text(
-          '${(progress * 100).toStringAsFixed(0)}%',
+          isSinEspecificar 
+              ? currentCount.toString()
+              : '${(progress * 100).toStringAsFixed(0)}%',
           style: bodyTextStyle.copyWith(
             color: primaryColor,
             fontWeight: FontWeight.bold,
