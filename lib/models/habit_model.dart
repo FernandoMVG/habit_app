@@ -1,27 +1,50 @@
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
 
+part 'habit_model.g.dart';
+
+@HiveType(typeId: 0)
 class Habit {
+  @HiveField(0)
   final String id;
+  @HiveField(1)
   final String name;
   final String? description;
+  @HiveField(2)
   final Color categoryColor;
+  @HiveField(3)
   final String categoryName;
+  @HiveField(4)
   final bool isQuantifiable;
+  @HiveField(5)
   final List<int>? selectedDays; 
+  @HiveField(6)
   final bool isDaily;
+  @HiveField(7)
   final int? targetCount; 
+  @HiveField(8)
   int completedCount;
+  @HiveField(9)
   final String? frequencyType; 
+  @HiveField(10)
   final String? unit; 
+  @HiveField(11)
   final IconData categoryIcon;
+  @HiveField(12)
   bool isCompleted;
+  @HiveField(13)
   bool isMissed;
   // Propiedades para manejar las rachas
+  @HiveField(14)
   int streakCount; // Racha actual
+  @HiveField(15)
   int longestStreak; // Racha más larga registrada
+  @HiveField(16)
   List<DateTime> completionDates; // Fechas en las que se completó el hábito
   DateTime? lastCompleted; // Última vez que se completó el hábito
+  @HiveField(17)
   final int experience; // Add this line
+  @HiveField(18)
   int? gainedExperience; // Add this line
 
   Habit({

@@ -41,31 +41,31 @@ class LoginForm extends StatelessWidget {
           ),
           const SizedBox(height: defaultPadding),
           ElevatedButton(
-            onPressed: () {
-              // Verificar las credenciales
-              bool isLoggedIn = Get.find<AuthController>().logIn(
-                emailController.text,
-                passwordController.text,
-              );
-              if (isLoggedIn) {
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) {
-                      return const HomePage(); // Lleva a la página de inicio si el login es exitoso
-                    },
-                  ),
-                );
-              } else {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text("Invalid credentials"),
-                  ),
-                );
-              }
-            },
-            child: Text("Login".toUpperCase()),
-          ),
+  onPressed: () async {
+    // Verificar las credenciales
+    bool isLoggedIn = await Get.find<AuthController>().logIn(
+      emailController.text,
+      passwordController.text,
+    );
+    if (isLoggedIn) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) {
+            return const HomePage(); // Lleva a la página de inicio si el login es exitoso
+          },
+        ),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("Invalid credentials"),
+        ),
+      );
+    }
+  },
+  child: Text("Login".toUpperCase()),
+),
           const SizedBox(height: defaultPadding),
           AlreadyHaveAnAccountCheck(
             press: () {

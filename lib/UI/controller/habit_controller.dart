@@ -3,6 +3,7 @@ import 'package:habit_app/models/habit_model.dart';
 import 'package:flutter/material.dart';
 import 'dart:math';
 import 'user_controller.dart';
+import 'package:hive/hive.dart';
 
 class HabitController extends GetxController {
   // Lista observable de hábitos
@@ -15,6 +16,42 @@ class HabitController extends GetxController {
   Habit? habit;
 
   final UserController userController = Get.find<UserController>();
+
+  late Box<Habit> habitBox;
+
+  @override
+  void onInit() {
+    super.onInit();
+    _openHabitBox();
+  }
+
+  Future<void> _openHabitBox() async {
+    try {
+      if (userController.currentUserEmail.isEmpty) {
+        habits.clear();
+        return;
+      }
+      
+      // Cerrar la caja anterior si existe
+      if (Hive.isBoxOpen('habitBox_${userController.currentUserEmail}')) {
+        await Hive.box<Habit>('habitBox_${userController.currentUserEmail}').close();
+      }
+      
+      habitBox = await Hive.openBox<Habit>('habitBox_${userController.currentUserEmail}');
+      habits.clear(); // Limpiar hábitos existentes
+      _loadHabits();
+    } catch (e) {
+      print('Error al abrir la caja de hábitos: $e');
+    }
+  }
+
+  Future<void> reloadHabits() async {
+    await _openHabitBox();
+  }
+
+  void _loadHabits() {
+    habits.addAll(habitBox.values);
+  }
 
   // Inicializa un nuevo hábito antes de que se empiece a construir
   void initHabit({
@@ -50,6 +87,7 @@ class HabitController extends GetxController {
   void addHabit() {
     if (habit != null && habit!.name.isNotEmpty) {
       habits.add(habit!);
+      habitBox.put(habit!.id, habit!); // Guardar hábito en Hive
       habit = null; // Limpiar la instancia temporal
     }
   }
@@ -57,6 +95,7 @@ class HabitController extends GetxController {
   // Eliminar un hábito
   void removeHabit(Habit habit) {
     habits.removeWhere((h) => h.id == habit.id); // Usar id para encontrar y eliminar el hábito
+    habitBox.delete(habit.id); // Eliminar hábito de Hive
   }
 
   // Actualizar un hábito específico
@@ -68,6 +107,7 @@ class HabitController extends GetxController {
         name: newName,
         description: newDescription.isNotEmpty ? newDescription : '',
       );
+      habitBox.put(habitToUpdate.id, habits[habitIndex]); // Actualizar hábito en Hive
       habits.refresh(); // Refrescar la lista de hábitos
     }
   }

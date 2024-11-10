@@ -4,26 +4,41 @@ import 'package:habit_app/UI/controller/category_controller.dart';
 import 'package:habit_app/UI/pages/home.dart';
 import 'package:habit_app/constants.dart';
 import 'package:habit_app/UI/pages/Welcome/welcome_screen.dart';
-//import 'package:provider/provider.dart';
 import 'package:habit_app/UI/controller/auth_controller.dart';
 import 'package:habit_app/UI/controller/habit_controller.dart';
 import 'package:habit_app/UI/controller/user_controller.dart';
-
+import 'package:hive_flutter/hive_flutter.dart';
+import 'package:habit_app/models/habit_model.dart';
+import 'package:habit_app/models/user_model.dart';
+import 'package:habit_app/models/category_model.dart';
 import 'package:intl/date_symbol_data_local.dart'; // Import para formato regional
 
 void main() async {
   // Asegura que los bindings se inicializan correctamente.
   WidgetsFlutterBinding.ensureInitialized();
 
+  // Inicializa Hive.
+  await Hive.initFlutter();
+
+  // Register custom adapters for Color and IconData
+  Hive.registerAdapter(ColorAdapter());
+  Hive.registerAdapter(IconDataAdapter());
+  // Register adapters here
+  Hive.registerAdapter(HabitAdapter());
+  Hive.registerAdapter(UserModelAdapter());
+  Hive.registerAdapter(CategoryModelAdapter());
+
+  // Abre las cajas de Hive.
+  await Hive.openBox<UserModel>('userBox');
+
   // Inicializa la configuración regional para español.
   await initializeDateFormatting('es');
 
   // Instancias de los controladores usando Get.
   Get.put(UserController());
-  Get.put(HabitController()); // Controlador de hábitos
-  Get.lazyPut(() => CategoryController()); // Controlador de categorías
   Get.put(AuthController()); // Controlador de autenticación
- // Controlador de usuario
+  Get.put(HabitController()); // Controlador de hábitos
+  Get.put(CategoryController()); // Controlador de categorías
 
   runApp(const MyApp());
 }
@@ -105,7 +120,37 @@ class _MyAppState extends State<MyApp> {
       ),
 
       // Pantalla inicial
-      home: const HomePage(), // Página de inicio
+      home: const WelcomeScreen(), // Página de inicio
     );
+  }
+}
+
+class ColorAdapter extends TypeAdapter<Color> {
+  @override
+  final int typeId = 3;
+
+  @override
+  Color read(BinaryReader reader) {
+    return Color(reader.readInt());
+  }
+
+  @override
+  void write(BinaryWriter writer, Color obj) {
+    writer.writeInt(obj.value);
+  }
+}
+
+class IconDataAdapter extends TypeAdapter<IconData> {
+  @override
+  final int typeId = 4;
+
+  @override
+  IconData read(BinaryReader reader) {
+    return IconData(reader.readInt(), fontFamily: 'MaterialIcons');
+  }
+
+  @override
+  void write(BinaryWriter writer, IconData obj) {
+    writer.writeInt(obj.codePoint);
   }
 }
