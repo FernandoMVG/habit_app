@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:habit_app/models/habit_model.dart';
-import 'package:habit_app/ui/widgets/category_icon.dart';
-import 'package:habit_app/ui/widgets/box_color.dart';
+import 'package:habit_app/UI/widgets/category_icon.dart';
+import 'package:habit_app/UI/widgets/box_color.dart';
 import 'package:habit_app/constants.dart'; // Importa las constantes
 
 class HabitDetailsWidget extends StatelessWidget {
@@ -44,7 +44,7 @@ class HabitDetailsWidget extends StatelessWidget {
         const SizedBox(height: 10),
         if (habit.selectedDays != null && habit.selectedDays!.isNotEmpty)
           Text(
-            'Días: ${habit.selectedDays?.join(' - ') ?? 'Todos los días'}',
+            'Días: ${_getFormattedDays(habit.selectedDays!)}',
             style: bodyTextStyle.copyWith(fontSize: 16),
           ),
         const SizedBox(height: 20),
@@ -112,5 +112,16 @@ class HabitDetailsWidget extends StatelessWidget {
         ),
       ],
     );
+  }
+
+  // Helper method to convert day numbers to day names
+  String _getFormattedDays(List<int> selectedDays) {
+    if (selectedDays.length == 7) {
+      return 'Diario';
+    }
+    const daysOfWeek = [
+      'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'
+    ];
+    return selectedDays.map((day) => daysOfWeek[day - 1]).join(' - ');
   }
 }

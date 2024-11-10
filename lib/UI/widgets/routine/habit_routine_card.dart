@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:habit_app/models/habit_model.dart';
-import 'package:habit_app/ui/controller/habit_controller.dart';
-import 'package:habit_app/ui/widgets/category_icon.dart';
-import 'package:habit_app/ui/widgets/routine/quantifable_dialog.dart';
-import 'package:habit_app/ui/widgets/routine/progress_bar_routine.dart';
+import 'package:habit_app/UI/controller/habit_controller.dart';
+import 'package:habit_app/UI/widgets/category_icon.dart';
+import 'package:habit_app/UI/widgets/routine/quantifable_dialog.dart';
+import 'package:habit_app/UI/widgets/routine/progress_bar_routine.dart';
 import 'package:habit_app/constants.dart';
 
 class HabitRoutineCard extends StatefulWidget {
@@ -31,8 +31,7 @@ class _HabitRoutineCardState extends State<HabitRoutineCard> {
           _showQuantifiableHabitDialog();
         } else {
           setState(() {
-            widget.habit.toggleCompleted();
-            habitController.updateHabitCompletion(widget.habit);
+            habitController.toggleHabitCompletion(widget.habit);
           });
         }
       },
@@ -117,9 +116,7 @@ class _HabitRoutineCardState extends State<HabitRoutineCard> {
           habitController: habitController,
           onProgressUpdated: (int updatedCount) {
             setState(() {
-              widget.habit.completedCount = updatedCount;
-              widget.habit.isCompleted = widget.habit.isHabitCompleted();
-              habitController.updateHabitCompletion(widget.habit);
+              habitController.updateQuantifiableHabitProgress(widget.habit, updatedCount);
             });
           },
         );

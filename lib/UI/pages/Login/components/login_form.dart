@@ -1,6 +1,6 @@
 // login_form.dart
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:get/get.dart';
 import '/constants.dart';
 import '/UI/controller/auth_controller.dart';
 import '../../Signup/signup_screen.dart';
@@ -9,8 +9,8 @@ import '/components/already_have_an_account_acheck.dart';
 
 class LoginForm extends StatelessWidget {
   const LoginForm({
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -42,12 +42,11 @@ class LoginForm extends StatelessWidget {
           const SizedBox(height: defaultPadding),
           ElevatedButton(
             onPressed: () {
-              print('entra');
               // Verificar las credenciales
-              bool isLoggedIn = context.read<AuthController>().logIn(
-                    emailController.text,
-                    passwordController.text,
-                  );
+              bool isLoggedIn = Get.find<AuthController>().logIn(
+                emailController.text,
+                passwordController.text,
+              );
               if (isLoggedIn) {
                 Navigator.pushReplacement(
                   context,

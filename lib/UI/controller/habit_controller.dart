@@ -1,6 +1,8 @@
 import 'package:get/get.dart';
 import 'package:habit_app/models/habit_model.dart';
 import 'package:flutter/material.dart';
+import 'dart:math';
+import 'user_controller.dart';
 
 class HabitController extends GetxController {
   // Lista observable de hábitos
@@ -12,29 +14,35 @@ class HabitController extends GetxController {
   // Propiedad temporal para almacenar los datos de un hábito en construcción
   Habit? habit;
 
+  final UserController userController = Get.find<UserController>();
+
   // Inicializa un nuevo hábito antes de que se empiece a construir
   void initHabit({
-    required String name,
+    required String name, //
     required String categoryName,
     required Color categoryColor,
     required IconData categoryIcon,
     bool isQuantifiable = false,
   }) {
     habit = Habit(
+      id: _generateId(),
       name: name,
       categoryName: categoryName,
       categoryColor: categoryColor,
       categoryIcon: categoryIcon,
       isQuantifiable: isQuantifiable,
       completionDates: [],
+      experience: Random().nextInt(6) + 5, // 5 to 10 points
     );
   }
 
   // Setters para configurar atributos del hábito
   void setHabitName(String? name) => habit = habit?.copyWith(name: name);
+  
   void setHabitDescription(String? description) =>
       habit = habit?.copyWith(description: description);
-  void setFrequency({bool isDaily = false, List<String>? days}) {
+
+  void setFrequency({bool isDaily = false, List<int>? days}) {
     habit = habit?.copyWith(isDaily: isDaily, selectedDays: isDaily ? null : days);
   }
 
@@ -48,12 +56,12 @@ class HabitController extends GetxController {
 
   // Eliminar un hábito
   void removeHabit(Habit habit) {
-    habits.remove(habit);
+    habits.removeWhere((h) => h.id == habit.id); // Usar id para encontrar y eliminar el hábito
   }
 
   // Actualizar un hábito específico
   void updateHabit(Habit habitToUpdate, String newName, String newDescription) {
-    final habitIndex = habits.indexOf(habitToUpdate);
+    final habitIndex = habits.indexWhere((h) => h.id == habitToUpdate.id); // Usar id para encontrar el hábito
     if (habitIndex != -1) {
       // Actualiza el hábito permitiendo que la descripción esté vacía
       habits[habitIndex] = habitToUpdate.copyWith(
@@ -86,7 +94,7 @@ class HabitController extends GetxController {
 
   // Marcar un hábito como completado, manteniendo lógica para hábitos cuantificables
   void updateHabitCompletion(Habit habitToUpdate) {
-    final index = habits.indexWhere((h) => h.name == habitToUpdate.name);
+    final index = habits.indexWhere((h) => h.id == habitToUpdate.id);
     if (index != -1) {
       habits[index] = habitToUpdate;
 
@@ -98,26 +106,17 @@ class HabitController extends GetxController {
             habits[index].isCompleted = (habitToUpdate.targetCount != null &&
                 habitToUpdate.completedCount == habitToUpdate.targetCount!);
             break;
-          case 'Al menos':
-            habits[index].isCompleted = (habitToUpdate.targetCount != null &&
-                habitToUpdate.completedCount >= habitToUpdate.targetCount!);
-            break;
-          case 'Menos de':
-            habits[index].isCompleted = (habitToUpdate.targetCount != null &&
-                habitToUpdate.completedCount < habitToUpdate.targetCount!);
-            break;
-          case 'Más de':
-            habits[index].isCompleted = (habitToUpdate.targetCount != null &&
-                habitToUpdate.completedCount > habitToUpdate.targetCount!);
-            break;
           case 'Sin especificar':
             habits[index].isCompleted = true;
             break;
-          case null:
-            habits[index].isCompleted = false;
-            break;
           default:
             habits[index].isCompleted = false;
+        }
+        
+        if (habitToUpdate.isCompleted) {
+          _addExperienceForHabit(habitToUpdate);
+        } else {
+          _subtractExperienceForHabit(habitToUpdate);
         }
       }
 
@@ -135,6 +134,48 @@ class HabitController extends GetxController {
     }
   }
 
+  // Método para alternar el estado completado en hábitos binarios
+  void toggleHabitCompletion(Habit habit) {
+    if (!habit.isQuantifiable) {
+      if (habit.isCompleted) {
+        _subtractExperienceForHabit(habit);
+      } else {
+        _addExperienceForHabit(habit);
+      }
+      habit.isCompleted = !habit.isCompleted;
+      updateHabitCompletion(habit);
+    }
+  }
+
+  // Método para actualizar el progreso de un hábito cuantificable
+  void updateQuantifiableHabitProgress(Habit habit, int updatedCount) {
+    habit.completedCount = updatedCount;
+    if (habit.isQuantifiable) {
+      if(habit.isCompleted){
+        _subtractExperienceForHabit(habit);
+      } else {
+        _addExperienceForHabit(habit);
+      }
+      habit.isCompleted = !habit.isCompleted;
+      updateHabitCompletion(habit);
+    }
+  }
+
+  void _addExperienceForHabit(Habit habit) {
+    int baseExperience = habit.experience;
+    int streakMultiplier = (1 + habit.streakCount * 0.1).toInt();
+    int totalExperience = (baseExperience * streakMultiplier).toInt();
+    habit.gainedExperience = totalExperience; // Store the gained experience
+    userController.addExperience(totalExperience);
+  }
+
+  void _subtractExperienceForHabit(Habit habit) {
+    if (habit.gainedExperience != null) {
+      userController.subtractExperience(habit.gainedExperience!);
+      habit.gainedExperience = null; // Reset the gained experience
+    }
+  }
+
   // Avanzar la fecha simulada
   void advanceDate() {
     simulatedDate.value = simulatedDate.value.add(const Duration(days: 1));
@@ -149,7 +190,7 @@ class HabitController extends GetxController {
 
   // Obtener los hábitos de hoy
   List<Habit> getTodayHabits() {
-    String today = _weekdayToString(simulatedDate.value.weekday);
+    int today = simulatedDate.value.weekday;
     return habits.where((habit) {
       return habit.isDaily || (habit.selectedDays?.contains(today) ?? false);
     }).toList();
@@ -157,6 +198,7 @@ class HabitController extends GetxController {
 
   // Método para verificar las rachas al cambiar la fecha
   void _onDateChange() {
+    bool allHabitsCompleted = true;
     for (var habit in habits) {
       if (!habit.isDaily) {
         verifyStreakForSpecificDays(habit);
@@ -164,8 +206,14 @@ class HabitController extends GetxController {
         // Verificamos si el hábito diario fue completado ayer.
         _updateDailyStreak(habit);
       }
+      if (!habit.isCompleted) {
+        allHabitsCompleted = false;
+      }
       habit.isCompleted = false; // Reiniciar estado al cambiar de día
       habit.completedCount = 0;   // Reiniciar progreso de hábitos cuantificables
+    }
+    if (allHabitsCompleted) {
+      userController.addExperience(50); // Daily routine bonus
     }
     habits.refresh();
   }
@@ -185,16 +233,14 @@ class HabitController extends GetxController {
         habit.isCompleted) {
       habit.streakCount++; // Incrementa la racha.
     } else {
-      // Si no fue completado ayer o hoy no está completado, reinicia la racha.
       habit.streakCount = 0; 
     }
 
     // Si el hábito fue completado hoy, actualizamos la última vez completada.
     if (habit.isCompleted) {
       habit.lastCompleted = today;
-      print("Actualizando última vez completado a: $today");
     } else {
-      print("El hábito no fue completado hoy, no se actualiza la última vez completado.");
+      //print("El hábito no fue completado hoy, no se actualiza la última vez completado.");
     }
 
     // Actualizamos la racha más larga si es necesario.
@@ -202,108 +248,79 @@ class HabitController extends GetxController {
         ? habit.streakCount
         : habit.longestStreak;
 
-    //print("Racha actual: ${habit.streakCount}");
-    //print("Racha más larga: ${habit.longestStreak}");
-    //print("--------------------FIN DIA---------------------");
-    habits.refresh(); // Refrescamos para que los cambios se reflejen en la UI.
+    habits.refresh();
   }
 
 // Verifica la racha para hábitos de días específicos
 void verifyStreakForSpecificDays(Habit habit) {
   if (habit.selectedDays == null || habit.selectedDays!.isEmpty) return;
-  //print('Dia actual: "${simulatedDate.value}"');
 
-  // Convertir los días programados a enteros (números de días de la semana)
-  List<int> scheduledWeekdays = habit.selectedDays!
-      .map((dayStr) => _weekdayFromString(dayStr))
-      .toList();
-  //print('Días programados para el hábito "${habit.name}": $scheduledWeekdays');
+  List<int> scheduledWeekdays = habit.selectedDays!;
+  print('Días programados para "${habit.name}": $scheduledWeekdays');
 
-  // Crear un conjunto de fechas de completación para búsqueda eficiente
   Set<DateTime> completionDatesSet = habit.completionDates
       .map((date) => DateTime(date.year, date.month, date.day))
       .toSet();
-  //print('Fechas de completación ordenadas para el hábito "${habit.name}": ${completionDatesSet.toList()..sort()}');
+  print('Fechas de completación para "${habit.name}": $completionDatesSet');
 
   int streak = 0;
-  DateTime currentDate = DateTime(simulatedDate.value.year, simulatedDate.value.month, simulatedDate.value.day);
+  DateTime currentDate = DateTime(
+    simulatedDate.value.year,
+    simulatedDate.value.month,
+    simulatedDate.value.day,
+  );
+  print('Fecha actual: $currentDate');
 
-  // Iterar hacia atrás desde la fecha actual
+  // Encontrar el último día completado
+  DateTime? lastCompletedDate;
+  DateTime checkDate = currentDate;
+  
+  // Buscar el último día completado
   while (true) {
-    if (scheduledWeekdays.contains(currentDate.weekday)) {
-      // Es un día programado
-      if (completionDatesSet.contains(currentDate)) {
-        // El hábito fue completado en este día
+    if (scheduledWeekdays.contains(checkDate.weekday) && 
+        completionDatesSet.contains(checkDate)) {
+      lastCompletedDate = checkDate;
+      break;
+    }
+    if (checkDate.difference(currentDate).inDays < -30) break; // Límite de búsqueda
+    checkDate = checkDate.subtract(const Duration(days: 1));
+  }
+
+  // Si no hay días completados, la racha es 0
+  if (lastCompletedDate == null) {
+    habit.streakCount = 0;
+    return;
+  }
+
+  // Contar la racha desde el último día completado
+  DateTime countDate = lastCompletedDate;
+  while (true) {
+    if (scheduledWeekdays.contains(countDate.weekday)) {
+      if (completionDatesSet.contains(countDate)) {
         streak++;
-        //print('Incrementando la racha de "${habit.name}": $streak');
+        print('Hábito completado en $countDate. Racha actual: $streak');
       } else {
-        // El hábito no fue completado en este día programado
-        //print('Racha reiniciada para "${habit.name}" porque no se completó ${currentDate}');
+        print('Racha interrumpida. No se completó el hábito en $countDate');
         break;
       }
     }
-    // Retroceder un día
-    currentDate = currentDate.subtract(const Duration(days: 1));
-
+    countDate = countDate.subtract(const Duration(days: 1));
   }
 
-  // Actualizar la racha actual y la racha más larga
+  print('Racha final para "${habit.name}": $streak');
   habit.streakCount = streak;
   if (streak > habit.longestStreak) {
     habit.longestStreak = streak;
+    print('Nueva racha más larga para "${habit.name}": ${habit.longestStreak}');
   }
-
-  // Refrescar lista de hábitos
-  //print('Racha final para "${habit.name}": ${habit.streakCount}');
-  //print('Racha más larga para "${habit.name}": ${habit.longestStreak}');
-  //print("--------------------FIN ESPECIFICO DIA---------------------");
+  print('Racha final para "${habit.name}": ${habit.streakCount}');
+  print('Racha más larga para "${habit.name}": ${habit.longestStreak}');
+  print("--------------------FIN ESPECIFICO DIA---------------------");
   habits.refresh();
 }
 
-
-
-  // Convertir día de la semana de int a String
-  String _weekdayToString(int weekday) {
-    switch (weekday) {
-      case DateTime.monday:
-        return 'Lun';
-      case DateTime.tuesday:
-        return 'Mar';
-      case DateTime.wednesday:
-        return 'Mie';
-      case DateTime.thursday:
-        return 'Jue';
-      case DateTime.friday:
-        return 'Vie';
-      case DateTime.saturday:
-        return 'Sab';
-      case DateTime.sunday:
-        return 'Dom';
-      default:
-        return '';
-    }
-  }
-
-  // Convertir día de la semana de String a int
-  int _weekdayFromString(String weekdayStr) {
-    switch (weekdayStr) {
-      case 'Lun':
-        return DateTime.monday;
-      case 'Mar':
-        return DateTime.tuesday;
-      case 'Mie':
-        return DateTime.wednesday;
-      case 'Jue':
-        return DateTime.thursday;
-      case 'Vie':
-        return DateTime.friday;
-      case 'Sab':
-        return DateTime.saturday;
-      case 'Dom':
-        return DateTime.sunday;
-      default:
-        throw Exception('Día de la semana no válido');
-    }
+  String _generateId() {
+    return DateTime.now().millisecondsSinceEpoch.toString();
   }
 
   // Comparar fechas sin considerar la hora

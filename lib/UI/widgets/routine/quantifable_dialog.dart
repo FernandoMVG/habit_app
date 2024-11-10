@@ -1,8 +1,8 @@
 // Nuevo archivo quantifiable_habit_dialog.dart
 import 'package:flutter/material.dart';
 import 'package:habit_app/models/habit_model.dart';
-import 'package:habit_app/ui/controller/habit_controller.dart';
-import 'package:habit_app/ui/widgets/category_icon.dart';
+import 'package:habit_app/UI/controller/habit_controller.dart';
+import 'package:habit_app/UI/widgets/category_icon.dart';
 
 class QuantifiableHabitDialog extends StatefulWidget {
   final Habit habit;
@@ -33,7 +33,8 @@ class _QuantifiableHabitDialogState extends State<QuantifiableHabitDialog> {
 
   @override
   Widget build(BuildContext context) {
-    int targetCount = widget.habit.targetCount ?? 1;
+    final bool isSinEspecificar = widget.habit.frequencyType == 'Sin especificar';
+    final String? unit = widget.habit.unit;
 
     return AlertDialog(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
@@ -94,12 +95,10 @@ class _QuantifiableHabitDialogState extends State<QuantifiableHabitDialog> {
               ),
               IconButton(
                 onPressed: () {
-                  if (currentCount < targetCount) {
-                    setState(() {
-                      currentCount++;
-                      hasUpdated = true;
-                    });
-                  }
+                  setState(() {
+                    currentCount++;
+                    hasUpdated = true;
+                  });
                 },
                 icon: const Icon(Icons.add, color: Colors.black),
               ),
@@ -113,10 +112,10 @@ class _QuantifiableHabitDialogState extends State<QuantifiableHabitDialog> {
               borderRadius: BorderRadius.circular(8.0),
             ),
             child: Text(
-              'Hoy $currentCount / $targetCount ${widget.habit.unit ?? ''}',
-              style: const TextStyle(
-                fontSize: 14.0,
-              ),
+              isSinEspecificar
+                  ? 'Hoy: $currentCount ${unit ?? ''}'
+                  : 'Hoy $currentCount / ${widget.habit.targetCount} ${unit ?? ''}',
+              style: const TextStyle(fontSize: 14.0),
             ),
           )
         ],
@@ -133,7 +132,7 @@ class _QuantifiableHabitDialogState extends State<QuantifiableHabitDialog> {
           onPressed: () {
             if (hasUpdated) {
               widget.habit.completedCount = currentCount;
-              widget.habit.isCompleted = widget.habit.isHabitCompleted();
+              //widget.habit.isCompleted = widget.habit.isHabitCompleted;
               widget.habitController.updateHabitCompletion(widget.habit);
               widget.onProgressUpdated(currentCount);
             }

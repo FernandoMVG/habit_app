@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:habit_app/ui/widgets/shared/buttons.dart';
-import 'package:habit_app/ui/pages/habits.dart';
-import 'package:habit_app/ui/controller/habit_controller.dart';
+import 'package:habit_app/UI/widgets/shared/buttons.dart';
+import 'package:habit_app/UI/pages/habits.dart';
+import 'package:habit_app/UI/controller/habit_controller.dart';
 
 class ChooseFrequencyPage extends StatefulWidget {
   final Color categoryColor;
@@ -17,7 +17,6 @@ class _ChooseFrequencyPageState extends State<ChooseFrequencyPage> {
   bool isDailySelected = false; // Para el botón de "Todos los días"
   List<String> selectedDays = []; // Para los días seleccionados de la semana
   final List<String> weekDays = ['Lun', 'Mar', 'Mie', 'Jue', 'Vie', 'Sab', 'Dom'];
-
   final HabitController habitController = Get.find<HabitController>();
 
   @override
@@ -117,9 +116,15 @@ class _ChooseFrequencyPageState extends State<ChooseFrequencyPage> {
                   text: 'Finalizar',
                   onPressed: () {
                     if (selectedDays.isNotEmpty || isDailySelected) {
+                      // Convertir selectedDays de List<String> a List<int>
+                      List<int> selectedDaysIndices = selectedDays.map((day) => weekDays.indexOf(day) + 1).toList();
+                      if (selectedDaysIndices.length == 7) {
+                        isDailySelected = true;
+                        selectedDaysIndices = [];
+                      }
                       habitController.setFrequency(
                         isDaily: isDailySelected,
-                        days: isDailySelected ? null : selectedDays,
+                        days: isDailySelected ? null : selectedDaysIndices,
                       );
                       habitController.addHabit();
                       Get.off(() => const HabitPage());

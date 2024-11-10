@@ -1,31 +1,31 @@
 import 'package:flutter/material.dart';
 
 class Habit {
+  final String id;
   final String name;
   final String? description;
   final Color categoryColor;
   final String categoryName;
   final bool isQuantifiable;
-  final List<String>? selectedDays; 
+  final List<int>? selectedDays; 
   final bool isDaily;
-
   final int? targetCount; 
   int completedCount;
-
   final String? frequencyType; 
   final String? unit; 
   final IconData categoryIcon;
-
   bool isCompleted;
   bool isMissed;
-
   // Propiedades para manejar las rachas
   int streakCount; // Racha actual
   int longestStreak; // Racha más larga registrada
   List<DateTime> completionDates; // Fechas en las que se completó el hábito
   DateTime? lastCompleted; // Última vez que se completó el hábito
+  final int experience; // Add this line
+  int? gainedExperience; // Add this line
 
   Habit({
+    required this.id,
     required this.name,
     this.description,
     required this.categoryColor,
@@ -44,15 +44,18 @@ class Habit {
     this.longestStreak = 0,
     this.completionDates = const [],
     this.lastCompleted,
+    required this.experience, // Add this line
+    this.gainedExperience, // Add this line
   });
 
   Habit copyWith({
+    String? id,
     String? name,
     String? description,
     Color? categoryColor,
     String? categoryName,
     bool? isQuantifiable,
-    List<String>? selectedDays,
+    List<int>? selectedDays,
     bool? isDaily,
     int? targetCount,
     int? completedCount,
@@ -65,8 +68,11 @@ class Habit {
     int? longestStreak,
     List<DateTime>? completionDates,
     DateTime? lastCompleted,
+    int? experience, // Add this line
+    int? gainedExperience, // Add this line
   }) {
     return Habit(
+      id: id ?? this.id,
       name: name ?? this.name,
       description: description ?? this.description,
       categoryColor: categoryColor ?? this.categoryColor,
@@ -85,31 +91,9 @@ class Habit {
       longestStreak: longestStreak ?? this.longestStreak,  // Aseguramos que no sea null
       completionDates: completionDates ?? this.completionDates,
       lastCompleted: lastCompleted ?? this.lastCompleted,
+      experience: experience ?? this.experience, // Add this line
+      gainedExperience: gainedExperience ?? this.gainedExperience, // Add this line
     );
   }
 
-  // Método que calcula si el hábito cuantificable se ha completado en función de `frequencyType`
-  bool isHabitCompleted() {
-    switch (frequencyType) {
-      case 'Al menos':
-        return completedCount >= targetCount!;
-      case 'Menos de':
-        return completedCount < targetCount!;
-      case 'Exactamente':
-        return completedCount == targetCount!;
-      case 'Más de':
-        return completedCount > targetCount!;
-      case 'Sin especificar':
-        return true;
-      default:
-        return false;
-    }
-  }
-
-   // Método para alternar el estado completado en hábitos binarios
-  void toggleCompleted() {
-    if (!isQuantifiable) {
-      isCompleted = !isCompleted;
-    }
-  }
 }

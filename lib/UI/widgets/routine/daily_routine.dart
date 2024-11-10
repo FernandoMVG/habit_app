@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:habit_app/ui/controller/habit_controller.dart';
+import 'package:habit_app/UI/controller/habit_controller.dart';
 import 'package:habit_app/models/habit_model.dart';
-import 'package:habit_app/ui/widgets/routine/habit_routine_card.dart';
+import 'package:habit_app/UI/widgets/routine/habit_routine_card.dart';
 
 class DailyRoutineWidget extends StatelessWidget {
   final habitController = Get.find<HabitController>();

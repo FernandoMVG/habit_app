@@ -2,10 +2,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:habit_app/UI/controller/category_controller.dart';
-import 'package:habit_app/ui/controller/habit_controller.dart';
-import 'package:habit_app/ui/pages/habits_pages/choose_frequency.dart';
+import 'package:habit_app/UI/controller/habit_controller.dart';
+import 'package:habit_app/UI/pages/habits_pages/choose_frequency.dart';
+import 'package:habit_app/constants.dart';
 import '/responsive.dart'; // Importar el widget Responsive
-import '/ui/widgets/shared/buttons.dart';
+import '/UI/widgets/shared/buttons.dart';
 
 class ChooseCategoryPage extends StatefulWidget {
   const ChooseCategoryPage({super.key});
@@ -117,8 +118,15 @@ class _ChooseCategoryPageState extends State<ChooseCategoryPage> {
           },
           child: Container(
             decoration: BoxDecoration(
-              color: category.color.withOpacity(0.1),
-              borderRadius: BorderRadius.circular(12),
+              color: cardBackgroundColor,
+              borderRadius: BorderRadius.circular(defaultRadius),
+              boxShadow: const [
+                BoxShadow(
+                  color: cardShadowColor,
+                  blurRadius: 4.0,
+                  offset: Offset(0, 2),
+                ),
+              ],
               border: Border.all(
                 color: selectedCategory == category.name
                     ? category.color

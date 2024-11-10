@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:habit_app/ui/widgets/box_color.dart';
+import 'package:habit_app/UI/widgets/box_color.dart';
 
 class HabitFrequencyWidget extends StatelessWidget {
   final bool isDaily;

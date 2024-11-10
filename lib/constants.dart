@@ -48,6 +48,11 @@ const TextStyle subtitleTextStyle = TextStyle(
   color: Colors.grey,
 );
 
+const TextStyle subtitle2TextStyle = TextStyle(
+  fontSize: 24,
+  color: onPrimaryColor,
+);
+
 const TextStyle labelTextStyle = TextStyle(
   fontSize: 14,
   fontWeight: FontWeight.bold,

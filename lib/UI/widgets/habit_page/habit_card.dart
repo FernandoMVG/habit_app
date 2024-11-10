@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:habit_app/ui/widgets/habit_page/habit_frequency.dart';
+import 'package:habit_app/UI/widgets/habit_page/habit_frequency.dart';
 //import 'package:habit_app/ui/widgets/habit_page/habit_progress.dart';
-import 'package:habit_app/ui/widgets/category_icon.dart';
+import 'package:habit_app/UI/widgets/category_icon.dart';
+import 'package:habit_app/constants.dart';
 
 class HabitCardWidget extends StatelessWidget {
   final String habitName;
@@ -12,7 +13,7 @@ class HabitCardWidget extends StatelessWidget {
   final int? currentProgress;
   final int? totalProgress;
   final bool isDaily;
-  final List<String>? selectedDays;
+  final List<int>? selectedDays;
   final VoidCallback onEdit;
   final VoidCallback onDelete;
 
@@ -34,19 +35,27 @@ class HabitCardWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // Ordenar los días seleccionados antes de mostrarlos
-    List<String> orderedDays = ['Lun', 'Mar', 'Mie', 'Jue', 'Vie', 'Sab', 'Dom'];
-    selectedDays?.sort((a, b) => orderedDays.indexOf(a).compareTo(orderedDays.indexOf(b)));
+    List<String> weekDays = ['Lun', 'Mar', 'Mie', 'Jue', 'Vie', 'Sab', 'Dom'];
+    List<String> selectedDaysStrings = selectedDays != null
+        ? selectedDays!.map((day) => weekDays[day - 1]).toList()
+        : [];
 
-    
+    // Ordenar los días seleccionados antes de mostrarlos
+    selectedDaysStrings.sort((a, b) => weekDays.indexOf(a).compareTo(weekDays.indexOf(b)));
 
-    return Card(
-      elevation: 0.5,
+    return Container(
       margin: const EdgeInsets.symmetric(vertical: 5.0, horizontal: 16.0),
-      shadowColor: Theme.of(context).primaryColorLight,
-      color: Theme.of(context).colorScheme.onPrimary,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(15),
-        side: BorderSide(color: Theme.of(context).colorScheme.onSurface, width: 0.1),
+      padding: const EdgeInsets.all(10.0),
+      decoration: BoxDecoration(
+        color: cardBackgroundColor,
+        borderRadius: BorderRadius.circular(defaultRadius),
+        boxShadow: const [
+          BoxShadow(
+            color: cardShadowColor,
+            blurRadius: 4.0,
+            offset: Offset(0, 2),
+          ),
+        ],
       ),
       child: Padding(
         padding: const EdgeInsets.all(12.0),
@@ -62,11 +71,13 @@ class HabitCardWidget extends StatelessWidget {
                   children: [
                     Text(
                       habitName, 
-                      style: Theme.of(context).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.w700)
+                      style: titleTextStyle.copyWith(fontSize: 20),
                       ),
                     Text(
                       categoryName, 
-                      style: TextStyle(fontSize: 14, color: categoryColor)
+                      style: labelTextStyle.copyWith(
+                        color: categoryColor,
+                      ),
                       ),
                   ],
                 ),
@@ -78,7 +89,7 @@ class HabitCardWidget extends StatelessWidget {
             // Widget de frecuencia del hábito
             HabitFrequencyWidget(
               isDaily: isDaily,
-              selectedDays: selectedDays,
+              selectedDays: selectedDaysStrings,
               categoryColor: categoryColor,
             ),
             const SizedBox(height: 10),
