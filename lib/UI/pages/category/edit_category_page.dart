@@ -42,8 +42,10 @@ class _EditCategoryPageState extends State<EditCategoryPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text("Edita el nombre",
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            const Text(
+              "Edita el nombre",
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
             const SizedBox(height: 10),
             CustomTextField(
               controller: _nameController,
@@ -52,8 +54,10 @@ class _EditCategoryPageState extends State<EditCategoryPage> {
             const SizedBox(height: 20),
 
             // Sección para seleccionar un ícono
-            const Text("Escoge un ícono",
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            const Text(
+              "Escoge un ícono",
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
             GestureDetector(
               onTap: () {
                 showIconPicker(context, _selectedIcon, (icon) {
@@ -83,8 +87,10 @@ class _EditCategoryPageState extends State<EditCategoryPage> {
             const SizedBox(height: 20),
 
             // Sección para seleccionar un color
-            const Text("Elige un color",
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            const Text(
+              "Elige un color",
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
             GestureDetector(
               onTap: () {
                 showColorPicker(context, _selectedColor, (color) {
@@ -97,7 +103,8 @@ class _EditCategoryPageState extends State<EditCategoryPage> {
                 height: 50,
                 width: 100,
                 decoration: BoxDecoration(
-                  color: _selectedColor ?? Theme.of(context).primaryColor.withOpacity(0.1),
+                  color: _selectedColor ??
+                      Theme.of(context).primaryColor.withOpacity(0.1),
                   borderRadius: BorderRadius.circular(10),
                   border: Border.all(
                     color: _selectedColor ?? Theme.of(context).primaryColor,
@@ -106,14 +113,16 @@ class _EditCategoryPageState extends State<EditCategoryPage> {
                 ),
                 child: Icon(
                   Icons.color_lens,
-                  color: _selectedColor != null ? Colors.white : Theme.of(context).primaryColor,
+                  color: _selectedColor != null
+                      ? Colors.white
+                      : Theme.of(context).primaryColor,
                   size: 25,
                 ),
               ),
             ),
             const Spacer(),
 
-            // Botones de Cancelar y Guardar
+            // Botones de Cancelar, Guardar y Eliminar
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -122,37 +131,81 @@ class _EditCategoryPageState extends State<EditCategoryPage> {
                 }),
                 NavigateButton(
                   text: "Guardar",
-                  onPressed: () {
-                    if (_nameController.text.isNotEmpty &&
-                        _selectedIcon != null &&
-                        _selectedColor != null) {
-                      bool isUpdated =
-                          Get.find<CategoryController>().updateCategory(
-                        widget.category,
-                        _nameController.text,
-                        _selectedIcon!,
-                        _selectedColor!,
-                        context,
-                      );
-
-                      if (isUpdated) {
-                        Get.back(); // Navegar de vuelta solo si la categoría se actualizó con éxito
-                      }
-                    } else {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content:
-                              Text('Por favor, completa todos los campos.'),
-                        ),
-                      );
-                    }
-                  },
+                  onPressed: _onSave,
+                ),
+                IconButton(
+                  icon: const Icon(Icons.delete, color: Colors.red),
+                  onPressed: _onDelete,
+                  tooltip: "Eliminar categoría",
                 ),
               ],
             ),
           ],
         ),
       ),
+    );
+  }
+
+  Future<void> _onSave() async {
+    if (_nameController.text.isNotEmpty &&
+        _selectedIcon != null &&
+        _selectedColor != null) {
+      // Intentar actualizar la categoría
+      bool isUpdated = await Get.find<CategoryController>().updateCategory(
+        widget.category,
+        _nameController.text,
+        _selectedIcon!,
+        _selectedColor!,
+        context,
+      );
+
+      if (isUpdated) {
+        Get.back(); // Navegar de vuelta solo si la categoría se actualizó con éxito
+      }
+    } else {
+      // Mostrar mensaje si faltan campos
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Por favor, completa todos los campos.'),
+        ),
+      );
+    }
+  }
+
+  void _onDelete() {
+    Get.defaultDialog(
+      title: "Eliminar categoría",
+      titleStyle: TextStyle(
+          color: errorColor), // Color del título del cuadro de diálogo
+      middleText: "¿Estás seguro de que deseas eliminar esta categoría?",
+      middleTextStyle:
+          TextStyle(color: blackColor), // Color del texto del cuadro de diálogo
+      backgroundColor: secondaryColor, // Fondo del cuadro de diálogo
+      barrierDismissible: false, // Evita cerrar el diálogo al tocar fuera de él
+      actions: [
+        TextButton(
+          onPressed: () => Get.back(),
+          style: TextButton.styleFrom(
+            backgroundColor:
+                Colors.transparent, // Fondo transparente para "Cancelar"
+            foregroundColor: primaryColor, // Color del texto para "Cancelar"
+            shadowColor: Colors.transparent, // Sin sombra
+            elevation: 0, // Sin elevación
+          ),
+          child: const Text("Cancelar"),
+        ),
+        ElevatedButton(
+          onPressed: () {
+            Get.find<CategoryController>().removeCategory(widget.category);
+            Get.back(); // Cerrar el diálogo de confirmación
+            Get.back(); // Regresar a la pantalla anterior
+          },
+          style: ElevatedButton.styleFrom(
+            backgroundColor: errorColor, // Color de fondo del botón de eliminar
+          ),
+          child: const Text("Eliminar"),
+        ),
+      ],
     );
   }
 }

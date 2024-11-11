@@ -31,8 +31,10 @@ class _CreateCategoryPageState extends State<CreateCategoryPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text("Ingresa un nombre",
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            const Text(
+              "Ingresa un nombre",
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
             CustomTextField(
               controller: _nameController,
               labelText: "Nombre de la categoría",
@@ -40,8 +42,10 @@ class _CreateCategoryPageState extends State<CreateCategoryPage> {
             const SizedBox(height: 20),
 
             // Sección para seleccionar un ícono
-            const Text("Escoge un ícono",
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            const Text(
+              "Escoge un ícono",
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
             IconButton(
               icon: Icon(_selectedIcon ?? Icons.add, color: primaryColor),
               onPressed: () {
@@ -55,8 +59,10 @@ class _CreateCategoryPageState extends State<CreateCategoryPage> {
             const SizedBox(height: 20),
 
             // Sección para seleccionar un color
-            const Text("Elige un color",
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            const Text(
+              "Elige un color",
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
             IconButton(
               icon:
                   Icon(Icons.color_lens, color: _selectedColor ?? primaryColor),
@@ -79,31 +85,7 @@ class _CreateCategoryPageState extends State<CreateCategoryPage> {
                 }),
                 NavigateButton(
                   text: "Continuar",
-                  onPressed: () {
-                    if (_nameController.text.isNotEmpty &&
-                        _selectedIcon != null &&
-                        _selectedColor != null) {
-                      // Intentar agregar la categoría
-                      bool isAdded = Get.find<CategoryController>().addCategory(
-                        _nameController.text,
-                        _selectedIcon!,
-                        _selectedColor!,
-                        context,
-                      );
-
-                      if (isAdded) {
-                        Get.back(); // Solo navegar hacia atrás si la categoría fue creada exitosamente
-                      }
-                    } else {
-                      // Mostrar mensaje si faltan campos
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content:
-                              Text('Por favor, completa todos los campos.'),
-                        ),
-                      );
-                    }
-                  },
+                  onPressed: _onSubmit,
                   isEnabled: _nameController.text.isNotEmpty &&
                       _selectedIcon != null &&
                       _selectedColor != null,
@@ -114,5 +96,30 @@ class _CreateCategoryPageState extends State<CreateCategoryPage> {
         ),
       ),
     );
+  }
+
+  Future<void> _onSubmit() async {
+    if (_nameController.text.isNotEmpty &&
+        _selectedIcon != null &&
+        _selectedColor != null) {
+      // Intentar agregar la categoría
+      bool isAdded = await Get.find<CategoryController>().addCategory(
+        _nameController.text,
+        _selectedIcon!,
+        _selectedColor!,
+        context,
+      );
+
+      if (isAdded) {
+        Get.back(); // Solo navegar hacia atrás si la categoría fue creada exitosamente
+      }
+    } else {
+      // Mostrar mensaje si faltan campos
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Por favor, completa todos los campos.'),
+        ),
+      );
+    }
   }
 }

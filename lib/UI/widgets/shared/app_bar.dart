@@ -3,44 +3,38 @@ import 'package:get/get.dart';
 import 'package:habit_app/UI/controller/habit_controller.dart';
 import 'package:habit_app/UI/pages/Welcome/welcome_screen.dart';
 import 'package:habit_app/constants.dart'; // Importar las constantes
-import 'package:habit_app/UI/controller/auth_controller.dart';
+import 'package:habit_app/services/auth_service.dart';
 import 'package:habit_app/UI/controller/user_controller.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final HabitController habitController = Get.find<HabitController>();
-  final AuthController authController = Get.find<AuthController>(); // Usar GetX para AuthController
+  final AuthService authService =
+      AuthService(); // Usar AuthService para cerrar sesión
   final UserController userController = Get.find<UserController>();
 
   CustomAppBar({super.key});
 
   @override
   Widget build(BuildContext context) {
-    // Obtener el email del usuario autenticado desde AuthController
-    // final authController = Provider.of<AuthController>(context); // Eliminar uso de Provider
-
-    // Obtener solo la parte del email antes del '@'
-    final String userEmail = authController.user?.email ?? 'Usuario';
-    final String userName = userEmail.split('@').first;
-
     return AppBar(
       backgroundColor: surfaceColor,
       automaticallyImplyLeading: false,
       title: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          // Menú de opciones para avanzar o retroceder día y cerrar sesión
           PopupMenuButton<String>(
             icon: const Icon(
               Icons.menu,
-              color: onSurfaceColor, // Usamos onSurfaceColor para el icono
+              color: onSurfaceColor,
             ),
-            onSelected: (String value) {
+            onSelected: (String value) async {
               if (value == 'Avanzar día') {
                 habitController.advanceDate();
               } else if (value == 'Retroceder día') {
                 habitController.goBackDate();
               } else if (value == 'Cerrar sesión') {
-                authController.logOut(); // Cerrar sesión
+                // Llama al método logOut de AuthService y redirige al usuario a la pantalla de bienvenida
+                await authService.signOut(context);
                 Get.offAll(() => const WelcomeScreen());
               }
             },
@@ -66,8 +60,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                   title: Text(
                     'Cerrar sesión',
                     style: bodyTextStyle.copyWith(
-                      color:
-                          errorColor, // Usamos errorColor para "Cerrar sesión"
+                      color: errorColor,
                     ),
                   ),
                 ),
@@ -76,20 +69,21 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
           ),
           Row(
             children: [
-              // Mostrar el nombre del usuario antes del '@'
-              Text(
-                '¡Hola, $userName!', // Mostrar solo la parte antes del @
-                style:
-                    subtitle2TextStyle, // Usar subtitleTextStyle de constants.dart
-              ),
+              // Mostrar el nombre del usuario obtenido de Firestore
+              Obx(() => Text(
+                    '¡Hola, ${userController.username}!',
+                    style: subtitle2TextStyle,
+                  )),
               const SizedBox(width: 10),
 
               // Contenedor de Nivel
-              Obx(() => _buildInfoContainer('Lvl. ${userController.level}', context)),
+              Obx(() =>
+                  _buildInfoContainer('Lvl. ${userController.level}', context)),
               const SizedBox(width: 10),
 
               // Contenedor de EXP
-              Obx(() => _buildInfoContainer('EXP ${userController.experience}', context)),
+              Obx(() => _buildInfoContainer(
+                  'EXP ${userController.experience}', context)),
             ],
           ),
         ],

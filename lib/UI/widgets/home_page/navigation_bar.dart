@@ -1,9 +1,10 @@
+// lib/UI/widgets/home_page/navigation_bar.dart
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:habit_app/UI/pages/category/category_page.dart';
 import 'package:habit_app/UI/pages/home.dart';
 import 'package:habit_app/UI/pages/habits.dart';
-import 'package:habit_app/constants.dart'; // Importa las constantes
+import 'package:habit_app/constants.dart';
 
 class CustomBottomNavigationBar extends StatelessWidget {
   final int currentIndex;
@@ -14,15 +15,17 @@ class CustomBottomNavigationBar extends StatelessWidget {
   });
 
   void _navigateToPage(int index) {
+    if (index == currentIndex) return;
+
     switch (index) {
       case 0:
-        Get.to(() => const HomePage()); // Navegar a la página de Home
+        Get.offAll(() => const HomePage()); // Navegar a la página de Home
         break;
       case 1:
-        Get.to(() => const HabitPage()); // Navegar a la página de Hábitos
+        Get.offAll(() => const HabitPage()); // Navegar a la página de Hábitos
         break;
       case 2:
-        Get.to(() => CategoryPage()); // Navegar a la página de Categorías
+        Get.offAll(() => CategoryPage()); // Navegar a la página de Categorías
         break;
       case 3:
         //Get.offAll(() => const AchievementsPage());
@@ -47,7 +50,7 @@ class CustomBottomNavigationBar extends StatelessWidget {
     return Container(
       height: navBarHeight,
       decoration: const BoxDecoration(
-        color: navBarBackgroundColor, // Color de fondo de la navbar
+        color: navBarBackgroundColor,
         border: Border(
           top: BorderSide(color: cardShadowColor, width: 1.0), // Borde superior
         ),
@@ -58,15 +61,10 @@ class CustomBottomNavigationBar extends StatelessWidget {
         selectedItemColor: navBarActiveColor, // Íconos activos
         unselectedItemColor: navBarInactiveColor, // Íconos inactivos
         currentIndex: currentIndex,
-        onTap: (index) {
-          if (index != currentIndex) {
-            _navigateToPage(index);
-          }
-        },
+        onTap: _navigateToPage,
         items: const [
           BottomNavigationBarItem(
-            icon: Icon(Icons.schedule,
-                size: 28), // Ajusta el tamaño de los íconos
+            icon: Icon(Icons.schedule, size: 28),
             label: 'Rutina',
           ),
           BottomNavigationBarItem(
@@ -81,12 +79,12 @@ class CustomBottomNavigationBar extends StatelessWidget {
         selectedLabelStyle: navBarTextStyle.copyWith(
           fontSize: 13,
           color: navBarActiveColor,
-        ), // Estilo para el ítem seleccionado
+        ),
         unselectedLabelStyle: navBarTextStyle.copyWith(
           fontSize: 12,
           color: navBarInactiveColor,
-        ), // Estilo para los ítems no seleccionados
-        showUnselectedLabels: true, // Mostrar los ítems no seleccionados
+        ),
+        showUnselectedLabels: true,
       ),
     );
   }

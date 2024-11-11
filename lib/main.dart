@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:habit_app/UI/controller/category_controller.dart';
-import 'package:habit_app/UI/pages/home.dart';
 import 'package:habit_app/constants.dart';
 import 'package:habit_app/UI/pages/Welcome/welcome_screen.dart';
 //import 'package:provider/provider.dart';
 import 'package:habit_app/UI/controller/auth_controller.dart';
 import 'package:habit_app/UI/controller/habit_controller.dart';
 import 'package:habit_app/UI/controller/user_controller.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:habit_app/firebase_options.dart';
 
 import 'package:intl/date_symbol_data_local.dart'; // Import para formato regional
 
@@ -15,15 +16,18 @@ void main() async {
   // Asegura que los bindings se inicializan correctamente.
   WidgetsFlutterBinding.ensureInitialized();
 
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+
   // Inicializa la configuración regional para español.
   await initializeDateFormatting('es');
 
   // Instancias de los controladores usando Get.
-  Get.put(UserController());
+  Get.put(UserController()); // Controlador de usuario
   Get.put(HabitController()); // Controlador de hábitos
-  Get.lazyPut(() => CategoryController()); // Controlador de categorías
+  Get.put(CategoryController()); // Controlador de categorías (uso de Get.put)
   Get.put(AuthController()); // Controlador de autenticación
- // Controlador de usuario
 
   runApp(const MyApp());
 }

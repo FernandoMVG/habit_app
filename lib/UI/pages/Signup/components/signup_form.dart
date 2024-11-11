@@ -1,15 +1,12 @@
 // signup_form.dart
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:habit_app/services/auth_service.dart';
 import '/constants.dart';
-import '/UI/controller/auth_controller.dart';
 import '/components/already_have_an_account_acheck.dart';
 import '../../Login/login_screen.dart';
 
 class SignUpForm extends StatefulWidget {
-  const SignUpForm({
-    super.key,
-  });
+  const SignUpForm({super.key});
 
   @override
   _SignUpFormState createState() => _SignUpFormState();
@@ -19,6 +16,8 @@ class _SignUpFormState extends State<SignUpForm> {
   final _formKey = GlobalKey<FormState>(); // Clave para el formulario
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
+  final nombreController =
+      TextEditingController(); // Controlador para el nombre de usuario
 
   // Expresión regular para validar un correo electrónico
   final RegExp emailRegExp = RegExp(
@@ -28,75 +27,87 @@ class _SignUpFormState extends State<SignUpForm> {
   @override
   Widget build(BuildContext context) {
     return Form(
-      key: _formKey, // Asignar la clave al formulario
+      key: _formKey,
       child: Column(
         children: [
+          TextFormField(
+            controller: nombreController,
+            keyboardType: TextInputType.name,
+            textInputAction: TextInputAction.next,
+            cursorColor: primaryColor,
+            decoration: const InputDecoration(
+              hintText: "Tu nombre",
+              prefixIcon: Padding(
+                padding: EdgeInsets.all(defaultPadding),
+                child: Icon(Icons.person),
+              ),
+            ),
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return 'Por favor, ingresa tu nombre';
+              } else if (value.length > 10) {
+                return 'Usa un nombre corto, máximo 10 caracteres';
+              }
+              return null;
+            },
+          ),
+          const SizedBox(height: defaultPadding), // Espacio entre campos
           TextFormField(
             controller: emailController,
             keyboardType: TextInputType.emailAddress,
             textInputAction: TextInputAction.next,
             cursorColor: primaryColor,
             decoration: const InputDecoration(
-              hintText: "Your email",
+              hintText: "Tu correo electrónico",
               prefixIcon: Padding(
                 padding: EdgeInsets.all(defaultPadding),
-                child: Icon(Icons.person),
+                child: Icon(Icons.email),
               ),
             ),
-            // Validación del correo
             validator: (value) {
               if (value == null || value.isEmpty) {
-                return 'Please enter your email';
+                return 'Por favor, ingresa tu correo electrónico';
               } else if (!emailRegExp.hasMatch(value)) {
-                return 'Enter a valid email';
+                return 'Ingresa un correo electrónico válido';
               }
               return null;
             },
           ),
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: defaultPadding),
-            child: TextFormField(
-              controller: passwordController,
-              textInputAction: TextInputAction.done,
-              obscureText: true,
-              cursorColor: primaryColor,
-              decoration: const InputDecoration(
-                hintText: "Your password",
-                prefixIcon: Padding(
-                  padding: EdgeInsets.all(defaultPadding),
-                  child: Icon(Icons.lock),
-                ),
+          const SizedBox(height: defaultPadding), // Espacio entre campos
+          TextFormField(
+            controller: passwordController,
+            textInputAction: TextInputAction.done,
+            obscureText: true,
+            cursorColor: primaryColor,
+            decoration: const InputDecoration(
+              hintText: "Tu contraseña",
+              prefixIcon: Padding(
+                padding: EdgeInsets.all(defaultPadding),
+                child: Icon(Icons.lock),
               ),
-              // Validación de contraseña (opcional)
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Please enter your password';
-                }
-                return null;
-              },
             ),
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return 'Por favor, ingresa tu contraseña';
+              } else if (value.length < 6) {
+                return 'La contraseña debe tener al menos 6 caracteres';
+              }
+              return null;
+            },
           ),
-          const SizedBox(height: defaultPadding / 2),
+          const SizedBox(height: defaultPadding), // Espacio antes del botón
           ElevatedButton(
-            onPressed: () {
-              // Verificar si el formulario es válido antes de registrar al usuario
+            onPressed: () async {
               if (_formKey.currentState!.validate()) {
-                // Registro del usuario si las validaciones pasan
-                Get.find<AuthController>().signUp(
-                  emailController.text,
-                  passwordController.text,
-                );
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) {
-                      return const LoginScreen(); // Lleva al login después de registrarse
-                    },
-                  ),
+                await AuthService().signUp(
+                  email: emailController.text,
+                  password: passwordController.text,
+                  nombre: nombreController.text, // Pasa el nombre a AuthService
+                  context: context,
                 );
               }
             },
-            child: Text("Sign Up".toUpperCase()),
+            child: Text("Registrarse".toUpperCase()),
           ),
           const SizedBox(height: defaultPadding),
           AlreadyHaveAnAccountCheck(
