@@ -19,10 +19,10 @@ class CustomBottomNavigationBar extends StatelessWidget {
 
     switch (index) {
       case 0:
-        Get.offAll(() => const HomePage()); // Navegar a la página de Home
+        Get.offAll(() => HomePage()); // Navegar a la página de Home
         break;
       case 1:
-        Get.offAll(() => const HabitPage()); // Navegar a la página de Hábitos
+        Get.offAll(() => HabitPage()); // Navegar a la página de Hábitos
         break;
       case 2:
         Get.offAll(() => CategoryPage()); // Navegar a la página de Categorías
@@ -34,7 +34,7 @@ class CustomBottomNavigationBar extends StatelessWidget {
         //Get.offAll(() => const ChallengesPage());
         break;
       default:
-        Get.offAll(() => const HomePage());
+        Get.offAll(() => HomePage());
         break;
     }
   }

@@ -48,7 +48,7 @@ class AuthService {
       // Navega a la pantalla de inicio solo después de que los datos estén disponibles
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => const HomePage()),
+        MaterialPageRoute(builder: (context) => HomePage()),
       );
     } on FirebaseAuthException catch (e) {
       String message = '';
@@ -100,7 +100,7 @@ class AuthService {
 
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => const HomePage()),
+        MaterialPageRoute(builder: (context) => HomePage()),
       );
     } on FirebaseAuthException catch (e) {
       String message = '';

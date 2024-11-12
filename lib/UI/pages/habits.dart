@@ -20,7 +20,8 @@ class HabitPage extends StatefulWidget {
 }
 
 class _HabitPageState extends State<HabitPage> {
-  final habitController = Get.find<HabitController>(); // Instanciamos el controlador
+  final habitController =
+      Get.find<HabitController>(); // Instanciamos el controlador
   final int _currentIndex = 1; // Índice seleccionado
 
   @override
@@ -34,33 +35,39 @@ class _HabitPageState extends State<HabitPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Título de la sección que solo aparece si hay habitos
-            Obx(() {
-              if (habitController.habits.isNotEmpty) {
-                return Text(
-                  'Mis hábitos',
-                  style: Theme.of(context).textTheme.titleLarge?.copyWith(fontSize: 18),
-                );
-              } else {
-                return const SizedBox.shrink();
-              }
-            }),
+            // Título de la sección
+            Text(
+              'Mis hábitos',
+              style: Theme.of(context)
+                  .textTheme
+                  .titleLarge
+                  ?.copyWith(fontSize: 18),
+            ),
             // Verificar si hay hábitos y mostrar el contenido
             Expanded(
-              child: Obx(() {
-                
-                if (habitController.habits.isEmpty) {
-                  return const EmptyStateMessageWidget(
-                    message: 'No tienes ningún hábito...',
-                    subMessage: 'Prueba agregando uno nuevo :D',
-                    icon: Icons.check_circle_outline,
-                  );
-                } else {
+              child: StreamBuilder<List<Habit>>(
+                stream: habitController.getHabitsStream(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(child: CircularProgressIndicator());
+                  } else if (snapshot.hasError) {
+                    return const Center(
+                        child: Text('Error al cargar los hábitos.'));
+                  } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                    return const EmptyStateMessageWidget(
+                      message: 'No tienes ningún hábito...',
+                      subMessage: 'Prueba agregando uno nuevo :D',
+                      icon: Icons.check_circle_outline,
+                    );
+                  }
+
+                  final habits = snapshot.data!;
+
                   return ListView.builder(
                     padding: const EdgeInsets.only(top: 8),
-                    itemCount: habitController.habits.length,
+                    itemCount: habits.length,
                     itemBuilder: (context, index) {
-                      final habit = habitController.habits[index];
+                      final habit = habits[index];
 
                       return GestureDetector(
                         onTap: () {
@@ -75,9 +82,8 @@ class _HabitPageState extends State<HabitPage> {
                           currentProgress: habit.isQuantifiable
                               ? habit.completedCount
                               : null,
-                          totalProgress: habit.isQuantifiable
-                              ? habit.targetCount
-                              : null,
+                          totalProgress:
+                              habit.isQuantifiable ? habit.targetCount : null,
                           isDaily: habit.isDaily,
                           selectedDays: habit.selectedDays,
                           onEdit: () {
@@ -90,8 +96,8 @@ class _HabitPageState extends State<HabitPage> {
                       );
                     },
                   );
-                }
-              }),
+                },
+              ),
             ),
           ],
         ),
@@ -99,7 +105,8 @@ class _HabitPageState extends State<HabitPage> {
 
       floatingActionButton: CustomFabButton(
         onPressed: () {
-          Get.to(() => HabitTypeSelectionPage()); // Navegar a la página de selección
+          Get.to(() =>
+              HabitTypeSelectionPage()); // Navegar a la página de selección
         },
       ),
 
@@ -137,11 +144,11 @@ class _HabitPageState extends State<HabitPage> {
           },
           onSave: () {
             // Asegura que se puede guardar una descripción vacía
-          habitController.updateHabit(
-            habit,
-            nameController.text.isNotEmpty ? nameController.text : habit.name,
-            descriptionController.text,  // Permitir valor vacío
-          );
+            habitController.updateHabit(
+              habit,
+              nameController.text.isNotEmpty ? nameController.text : habit.name,
+              descriptionController.text, // Permitir valor vacío
+            );
             Get.back(); // Cierra el BottomSheet después de guardar
           },
         );

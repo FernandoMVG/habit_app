@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
 import 'package:habit_app/models/habit_model.dart';
 import 'package:flutter/material.dart';
@@ -5,20 +6,125 @@ import 'dart:math';
 import 'user_controller.dart';
 
 class HabitController extends GetxController {
-  // Lista observable de hábitos
-  var habits = <Habit>[].obs;
+  final FirebaseFirestore _db = FirebaseFirestore.instance;
+  final UserController userController = Get.find<UserController>();
 
   // Fecha simulada para pruebas de rachas
   var simulatedDate = DateTime.now().obs;
+  var lastSimulatedDate = DateTime.now();
 
   // Propiedad temporal para almacenar los datos de un hábito en construcción
   Habit? habit;
 
-  final UserController userController = Get.find<UserController>();
+  @override
+  void onInit() {
+    super.onInit();
+    userController.userId.listen((uid) {
+      if (uid != null) {
+        // Aquí podrías iniciar otras operaciones si es necesario
+      }
+    });
+  }
 
-  // Inicializa un nuevo hábito antes de que se empiece a construir
+  // Método para obtener los hábitos de Firestore en tiempo real
+  Stream<List<Habit>> getHabitsStream() {
+    final String userId = userController.userId.value ?? '';
+    if (userId.isEmpty) return const Stream.empty();
+
+    return _db
+        .collection('users')
+        .doc(userId)
+        .collection('habits')
+        .snapshots()
+        .map((querySnapshot) {
+      return querySnapshot.docs.map((doc) {
+        return Habit.fromFirestore(doc.data(), doc.id);
+      }).toList();
+    });
+  }
+
+  void setCategory(
+      String categoryName, Color categoryColor, IconData categoryIcon) {
+    habit = habit?.copyWith(
+      categoryName: categoryName,
+      categoryColor: categoryColor,
+      categoryIcon: categoryIcon,
+    );
+  }
+
+  // Método para establecer el tipo de cuantificación
+  void setQuantificationType(String? quantificationType) {
+    habit = habit?.copyWith(frequencyType: quantificationType);
+  }
+
+  // Definir en HabitController
+  void setHabitName(String name) {
+    habit = habit?.copyWith(name: name);
+  }
+
+  void setHabitDescription(String? description) {
+    habit = habit?.copyWith(description: description);
+  }
+
+  // Definición en HabitController
+  void setFrequency({required bool isDaily, List<int>? days}) {
+    habit =
+        habit?.copyWith(isDaily: isDaily, selectedDays: isDaily ? null : days);
+  }
+
+  void setQuantity(int? quantity) {
+    habit = habit?.copyWith(targetCount: quantity);
+  }
+
+  void setUnit(String? unit) {
+    habit = habit?.copyWith(unit: unit);
+  }
+
+  // Añadir un hábito a Firestore
+  Future<void> addHabit() async {
+    if (habit != null && habit!.name.isNotEmpty) {
+      final String userId = userController.userId.value ?? '';
+      if (userId.isEmpty) return;
+
+      final docRef = await _db
+          .collection('users')
+          .doc(userId)
+          .collection('habits')
+          .add(habit!.toMap());
+
+      habit = habit!.copyWith(id: docRef.id);
+      habit = null; // Limpiar la instancia temporal
+    }
+  }
+
+  // Eliminar un hábito de Firestore
+  Future<void> removeHabit(Habit habit) async {
+    final String? userId = userController.userId.value;
+    await _db
+        .collection('users')
+        .doc(userId)
+        .collection('habits')
+        .doc(habit.id)
+        .delete();
+  }
+
+  // Actualizar un hábito específico en Firestore
+  Future<void> updateHabit(
+      Habit habitToUpdate, String newName, String newDescription) async {
+    final String? userId = userController.userId.value;
+    await _db
+        .collection('users')
+        .doc(userId)
+        .collection('habits')
+        .doc(habitToUpdate.id)
+        .update({
+      'name': newName,
+      'description': newDescription.isNotEmpty ? newDescription : '',
+    });
+  }
+
   void initHabit({
-    required String name, //
+    required String name,
     required String categoryName,
     required Color categoryColor,
     required IconData categoryIcon,
@@ -32,193 +138,280 @@ class HabitController extends GetxController {
       categoryIcon: categoryIcon,
       isQuantifiable: isQuantifiable,
       completionDates: [],
-      experience: Random().nextInt(6) + 5, // 5 to 10 points
+      experience: Random().nextInt(6) + 5, // 5 a 10 puntos de experiencia
     );
   }
 
-  // Setters para configurar atributos del hábito
-  void setHabitName(String? name) => habit = habit?.copyWith(name: name);
-  
-  void setHabitDescription(String? description) =>
-      habit = habit?.copyWith(description: description);
+  List<Habit> getTodayHabits(List<Habit> habits) {
+    DateTime today = DateTime(simulatedDate.value.year,
+        simulatedDate.value.month, simulatedDate.value.day);
+    String todayKey = "${today.year}-${today.month}-${today.day}";
 
-  void setFrequency({bool isDaily = false, List<int>? days}) {
-    habit = habit?.copyWith(isDaily: isDaily, selectedDays: isDaily ? null : days);
+    return habits.map((habit) {
+      int progressForToday = habit.dailyProgress[todayKey] ?? 0;
+      habit.completedCount = progressForToday;
+      habit.isCompleted = habit.isQuantifiable && habit.targetCount != null
+          ? progressForToday >= habit.targetCount!
+          : habit.completionDates.contains(today);
+
+      return habit;
+    }).toList();
   }
 
-  // Añadir un hábito a la lista observable
-  void addHabit() {
-    if (habit != null && habit!.name.isNotEmpty) {
-      habits.add(habit!);
-      habit = null; // Limpiar la instancia temporal
-    }
-  }
+  Stream<List<Habit>> getTodayHabitsStream() {
+    final String userId = userController.userId.value ?? '';
 
-  // Eliminar un hábito
-  void removeHabit(Habit habit) {
-    habits.removeWhere((h) => h.id == habit.id); // Usar id para encontrar y eliminar el hábito
-  }
+    if (userId.isEmpty) return const Stream.empty();
 
-  // Actualizar un hábito específico
-  void updateHabit(Habit habitToUpdate, String newName, String newDescription) {
-    final habitIndex = habits.indexWhere((h) => h.id == habitToUpdate.id); // Usar id para encontrar el hábito
-    if (habitIndex != -1) {
-      // Actualiza el hábito permitiendo que la descripción esté vacía
-      habits[habitIndex] = habitToUpdate.copyWith(
-        name: newName,
-        description: newDescription.isNotEmpty ? newDescription : '',
+    return _db
+        .collection('users')
+        .doc(userId)
+        .collection('habits')
+        .snapshots()
+        .map((querySnapshot) {
+      int todayWeekday = simulatedDate.value.weekday;
+      DateTime todayDate = DateTime(
+        simulatedDate.value.year,
+        simulatedDate.value.month,
+        simulatedDate.value.day,
       );
-      habits.refresh(); // Refrescar la lista de hábitos
-    }
+
+      return querySnapshot.docs
+          .map((doc) {
+            final habit = Habit.fromFirestore(doc.data(), doc.id);
+            bool isTodayCompleted = habit.completionDates.contains(todayDate);
+            habit.isCompleted = isTodayCompleted;
+            if (habit.isDaily ||
+                (habit.selectedDays?.contains(todayWeekday) ?? false)) {
+              return habit;
+            }
+            return null;
+          })
+          .whereType<Habit>()
+          .toList();
+    });
   }
 
-// Comprobar si hay hábitos
-  bool hasHabits() => habits.isNotEmpty;
+  Future<void> updateQuantifiableHabitProgress(
+      Habit habit, int updatedCount) async {
+    final String userId = userController.userId.value ?? '';
+    if (userId.isEmpty) return;
 
-  // Setters adicionales
-  void setUnit(String? unit) => habit = habit?.copyWith(unit: unit);
-  void setQuantificationType(String? quantificationType) => habit = habit?.copyWith(frequencyType: quantificationType);
-  void setQuantity(int? quantity) => habit = habit?.copyWith(targetCount: quantity);
-  void setCategory(String name, Color color, IconData icon) {
-    habit = habit?.copyWith(categoryName: name, categoryColor: color, categoryIcon: icon);
-  }
+    DateTime today = DateTime(simulatedDate.value.year,
+        simulatedDate.value.month, simulatedDate.value.day);
+    String todayKey = "${today.year}-${today.month}-${today.day}";
 
-  // Reiniciar hábitos al final del día
-  void resetDailyHabits() {
-    for (var habit in habits) {
+    // Actualizamos el progreso del día específico
+    habit.dailyProgress[todayKey] = updatedCount;
+
+    print(habit.dailyProgress[todayKey]);
+
+    // Verificar si el hábito se debe marcar como completado
+    if (habit.frequencyType == 'Sin especificar' && updatedCount > 0) {
+      habit.isCompleted = true;
+    } else if (habit.targetCount != null &&
+        updatedCount >= habit.targetCount!) {
+      habit.isCompleted = true;
+    } else {
       habit.isCompleted = false;
-      habit.completedCount = 0;
     }
-    habits.refresh();
+
+    // Actualizar en Firestore
+    await _db
+        .collection('users')
+        .doc(userId)
+        .collection('habits')
+        .doc(habit.id)
+        .update({
+      'dailyProgress':
+          habit.dailyProgress.isNotEmpty ? habit.dailyProgress : null,
+      'isCompleted': habit.isCompleted,
+    });
   }
 
-  // Marcar un hábito como completado, manteniendo lógica para hábitos cuantificables
-  void updateHabitCompletion(Habit habitToUpdate) {
-    final index = habits.indexWhere((h) => h.id == habitToUpdate.id);
-    if (index != -1) {
-      habits[index] = habitToUpdate;
-
-      if (!habitToUpdate.isQuantifiable) {
-        habits[index].isCompleted = habitToUpdate.isCompleted;
-      } else {
-        switch (habitToUpdate.frequencyType) {
-          case 'Exactamente':
-            habits[index].isCompleted = (habitToUpdate.targetCount != null &&
-                habitToUpdate.completedCount == habitToUpdate.targetCount!);
-            break;
-          case 'Sin especificar':
-            habits[index].isCompleted = true;
-            break;
-          default:
-            habits[index].isCompleted = false;
-        }
-        
-        if (habitToUpdate.isCompleted) {
-          _addExperienceForHabit(habitToUpdate);
-        } else {
-          _subtractExperienceForHabit(habitToUpdate);
-        }
-      }
-
-      if (habits[index].isCompleted) {
-        habits[index] = habits[index].copyWith(
-          lastCompleted: DateTime(simulatedDate.value.year, simulatedDate.value.month, simulatedDate.value.day),
-          completionDates: [
-            ...habits[index].completionDates,
-            DateTime(simulatedDate.value.year, simulatedDate.value.month, simulatedDate.value.day),
-          ],
-        );
-      }
-
-      habits.refresh();
-    }
+  // Método para calcular la experiencia total ganada
+  int _calculateTotalGainedExperience(Habit habit) {
+    return habit.dailyExperience.values.fold(0, (sum, exp) => sum + exp);
   }
 
-  // Método para alternar el estado completado en hábitos binarios
-  void toggleHabitCompletion(Habit habit) {
-    if (!habit.isQuantifiable) {
-      if (habit.isCompleted) {
-        _subtractExperienceForHabit(habit);
-      } else {
-        _addExperienceForHabit(habit);
-      }
-      habit.isCompleted = !habit.isCompleted;
-      updateHabitCompletion(habit);
-    }
+  void _updateGainedExperience(Habit habit) {
+    habit.gainedExperience = _calculateTotalGainedExperience(habit);
+
+    // Actualiza Firestore para mantener la ganancia total de experiencia
+    _updateHabitExperienceInFirestore(habit);
   }
 
-  // Método para actualizar el progreso de un hábito cuantificable
-  void updateQuantifiableHabitProgress(Habit habit, int updatedCount) {
-    habit.completedCount = updatedCount;
-    if (habit.isQuantifiable) {
-      if(habit.isCompleted){
-        _subtractExperienceForHabit(habit);
-      } else {
-        _addExperienceForHabit(habit);
-      }
-      habit.isCompleted = !habit.isCompleted;
-      updateHabitCompletion(habit);
+  Future<void> toggleHabitCompletion(Habit habit) async {
+    final String userId = userController.userId.value ?? '';
+    if (userId.isEmpty) return;
+
+    DateTime today = DateTime(
+      simulatedDate.value.year,
+      simulatedDate.value.month,
+      simulatedDate.value.day,
+    );
+    String todayKey = "${today.year}-${today.month}-${today.day}";
+
+    bool isTodayCompleted = habit.dailyProgress[todayKey] != null &&
+        habit.dailyProgress[todayKey]! > 0;
+
+    if (isTodayCompleted) {
+      // Si ya está marcado como completado, lo desmarcamos para el día actual
+      habit.dailyProgress.remove(todayKey);
+      habit.isCompleted = false;
+      habit.lastCompleted = null; // Restablecer la fecha de último completado
+    } else {
+      // Si no está completado, lo marcamos como completado
+      habit.dailyProgress[todayKey] =
+          habit.targetCount != null ? habit.targetCount! : 1;
+      habit.isCompleted = true;
+      habit.lastCompleted = today; // Actualizamos la fecha de último completado
+      _updateDailyStreak(habit); // Llamamos para actualizar la racha
     }
+
+    await _db
+        .collection('users')
+        .doc(userId)
+        .collection('habits')
+        .doc(habit.id)
+        .update({
+      'dailyProgress': habit.dailyProgress,
+      'isCompleted': habit.isCompleted,
+      'lastCompleted': habit.lastCompleted,
+      'streakCount': habit.streakCount,
+      'longestStreak': habit.longestStreak,
+    });
   }
 
+  // HabitController
+
+  Future<void> updateHabitCompletion(Habit habitToUpdate) async {
+    final String userId = userController.userId.value ?? '';
+    if (userId.isEmpty) return;
+
+    bool isCompleted = habitToUpdate.isCompleted;
+    if (habitToUpdate.isQuantifiable) {
+      switch (habitToUpdate.frequencyType) {
+        case 'Exactamente':
+          isCompleted = (habitToUpdate.targetCount != null &&
+              habitToUpdate.completedCount == habitToUpdate.targetCount!);
+          break;
+        case 'Sin especificar':
+          // Marcar como completado si tiene al menos una unidad completada
+          isCompleted = habitToUpdate.completedCount >= 1;
+          break;
+        default:
+          isCompleted = false;
+      }
+    }
+
+    habitToUpdate = habitToUpdate.copyWith(isCompleted: isCompleted);
+
+    await _db
+        .collection('users')
+        .doc(userId)
+        .collection('habits')
+        .doc(habitToUpdate.id)
+        .update({
+      'isCompleted': isCompleted,
+      'completedCount': habitToUpdate.completedCount,
+      'lastCompleted': habitToUpdate.completedCount > 0 ? DateTime.now() : null,
+    });
+  }
+
+  // Método para otorgar experiencia diaria con control
   void _addExperienceForHabit(Habit habit) {
     int baseExperience = habit.experience;
     int streakMultiplier = (1 + habit.streakCount * 0.1).toInt();
     int totalExperience = (baseExperience * streakMultiplier).toInt();
-    habit.gainedExperience = totalExperience; // Store the gained experience
+
+    // Obtener la fecha actual en formato "YYYY-MM-DD"
+    String todayKey =
+        "${simulatedDate.value.year}-${simulatedDate.value.month}-${simulatedDate.value.day}";
+
+    // Evitar sumar experiencia más de una vez por día
+    if (habit.dailyExperience[todayKey] != null) return;
+
+    // Actualizar la experiencia diaria
+    habit.dailyExperience[todayKey] = totalExperience;
+
+    // Recalcular gainedExperience
+    _updateGainedExperience(habit);
+
+    // Añadir experiencia al usuario
     userController.addExperience(totalExperience);
   }
 
+  // Método para restar experiencia diaria
   void _subtractExperienceForHabit(Habit habit) {
-    if (habit.gainedExperience != null) {
-      userController.subtractExperience(habit.gainedExperience!);
-      habit.gainedExperience = null; // Reset the gained experience
+    String todayKey =
+        "${simulatedDate.value.year}-${simulatedDate.value.month}-${simulatedDate.value.day}";
+
+    if (habit.dailyExperience.containsKey(todayKey)) {
+      int experienceToSubtract = habit.dailyExperience[todayKey]!;
+      userController.subtractExperience(experienceToSubtract);
+      habit.dailyExperience.remove(todayKey);
+
+      // Recalcular gainedExperience
+      _updateGainedExperience(habit);
     }
   }
 
-  // Avanzar la fecha simulada
+  Future<void> _updateHabitExperienceInFirestore(Habit habit) async {
+    final String userId = userController.userId.value ?? '';
+    if (userId.isEmpty) return;
+
+    await _db
+        .collection('users')
+        .doc(userId)
+        .collection('habits')
+        .doc(habit.id)
+        .update({
+      'dailyExperience': habit.dailyExperience,
+    });
+  }
+
+  // Avanzar y retroceder fecha simulada
   void advanceDate() {
     simulatedDate.value = simulatedDate.value.add(const Duration(days: 1));
     _onDateChange();
   }
 
-  // Retroceder la fecha simulada
   void goBackDate() {
     simulatedDate.value = simulatedDate.value.subtract(const Duration(days: 1));
     _onDateChange();
   }
 
-  // Obtener los hábitos de hoy
-  List<Habit> getTodayHabits() {
-    int today = simulatedDate.value.weekday;
-    return habits.where((habit) {
-      return habit.isDaily || (habit.selectedDays?.contains(today) ?? false);
-    }).toList();
-  }
-
-  // Método para verificar las rachas al cambiar la fecha
+  // Método de cambio de fecha que controla la racha al avanzar los días
   void _onDateChange() {
-    bool allHabitsCompleted = true;
-    for (var habit in habits) {
-      if (!habit.isDaily) {
-        verifyStreakForSpecificDays(habit);
-      } else {
-        // Verificamos si el hábito diario fue completado ayer.
-        _updateDailyStreak(habit);
+    final habitsStream = getHabitsStream();
+    habitsStream.listen((habits) {
+      bool allHabitsCompleted = true;
+      for (var habit in habits) {
+        if (!habit.isDaily) {
+          verifyStreakForSpecificDays(habit);
+        } else {
+          // Reiniciar racha si no fue completado el día anterior
+          DateTime yesterday =
+              simulatedDate.value.subtract(const Duration(days: 1));
+          if (habit.lastCompleted == null ||
+              !isSameDate(habit.lastCompleted!, yesterday)) {
+            habit.streakCount = 0;
+          }
+          _updateDailyStreak(habit);
+        }
+
+        if (!habit.isCompleted) {
+          allHabitsCompleted = false;
+        }
       }
-      if (!habit.isCompleted) {
-        allHabitsCompleted = false;
+      if (allHabitsCompleted) {
+        userController.addExperience(50);
       }
-      habit.isCompleted = false; // Reiniciar estado al cambiar de día
-      habit.completedCount = 0;   // Reiniciar progreso de hábitos cuantificables
-    }
-    if (allHabitsCompleted) {
-      userController.addExperience(50); // Daily routine bonus
-    }
-    habits.refresh();
+    });
   }
 
-  //Método para actualizar la racha diaria
+  // Método para verificar y actualizar la racha diaria
   void _updateDailyStreak(Habit habit) {
     DateTime today = DateTime(
       simulatedDate.value.year,
@@ -227,106 +420,105 @@ class HabitController extends GetxController {
     );
 
     DateTime yesterday = today.subtract(const Duration(days: 1));
-    // Verificar si fue completado ayer y si está marcado como completado hoy
+
+    // Verificar si el hábito fue completado ayer para mantener la continuidad de la racha
     if (habit.lastCompleted != null &&
-        isSameDate(habit.lastCompleted!, yesterday) &&
-        habit.isCompleted) {
-      habit.streakCount++; // Incrementa la racha.
+        isSameDate(habit.lastCompleted!, yesterday)) {
+      habit.streakCount++;
     } else {
-      habit.streakCount = 0; 
+      // Si el hábito no fue completado ayer, reiniciar la racha
+      habit.streakCount = 0;
     }
 
-    // Si el hábito fue completado hoy, actualizamos la última vez completada.
-    if (habit.isCompleted) {
-      habit.lastCompleted = today;
-    } else {
-      //print("El hábito no fue completado hoy, no se actualiza la última vez completado.");
-    }
-
-    // Actualizamos la racha más larga si es necesario.
+    // Actualizar la racha más larga si la racha actual es mayor
     habit.longestStreak = habit.streakCount > habit.longestStreak
         ? habit.streakCount
         : habit.longestStreak;
 
-    habits.refresh();
+    // Registrar la fecha de último completado
+    habit.lastCompleted = today;
+
+    _updateHabitCompletionInFirestore(habit);
   }
 
-// Verifica la racha para hábitos de días específicos
-void verifyStreakForSpecificDays(Habit habit) {
-  if (habit.selectedDays == null || habit.selectedDays!.isEmpty) return;
+// Método auxiliar para actualizar el hábito en Firestore
+  Future<void> _updateHabitCompletionInFirestore(Habit habit) async {
+    final String userId = userController.userId.value ?? '';
+    if (userId.isEmpty) return;
 
-  List<int> scheduledWeekdays = habit.selectedDays!;
-  print('Días programados para "${habit.name}": $scheduledWeekdays');
-
-  Set<DateTime> completionDatesSet = habit.completionDates
-      .map((date) => DateTime(date.year, date.month, date.day))
-      .toSet();
-  print('Fechas de completación para "${habit.name}": $completionDatesSet');
-
-  int streak = 0;
-  DateTime currentDate = DateTime(
-    simulatedDate.value.year,
-    simulatedDate.value.month,
-    simulatedDate.value.day,
-  );
-  print('Fecha actual: $currentDate');
-
-  // Encontrar el último día completado
-  DateTime? lastCompletedDate;
-  DateTime checkDate = currentDate;
-  
-  // Buscar el último día completado
-  while (true) {
-    if (scheduledWeekdays.contains(checkDate.weekday) && 
-        completionDatesSet.contains(checkDate)) {
-      lastCompletedDate = checkDate;
-      break;
-    }
-    if (checkDate.difference(currentDate).inDays < -30) break; // Límite de búsqueda
-    checkDate = checkDate.subtract(const Duration(days: 1));
+    await _db
+        .collection('users')
+        .doc(userId)
+        .collection('habits')
+        .doc(habit.id)
+        .update({
+      'isCompleted': habit.isCompleted,
+      'completedCount': habit.completedCount,
+      'lastCompleted': habit.lastCompleted,
+      'streakCount': habit.streakCount,
+      'longestStreak': habit.longestStreak,
+    });
   }
 
-  // Si no hay días completados, la racha es 0
-  if (lastCompletedDate == null) {
-    habit.streakCount = 0;
-    return;
-  }
-
-  // Contar la racha desde el último día completado
-  DateTime countDate = lastCompletedDate;
-  while (true) {
-    if (scheduledWeekdays.contains(countDate.weekday)) {
-      if (completionDatesSet.contains(countDate)) {
-        streak++;
-        print('Hábito completado en $countDate. Racha actual: $streak');
-      } else {
-        print('Racha interrumpida. No se completó el hábito en $countDate');
-        break;
-      }
-    }
-    countDate = countDate.subtract(const Duration(days: 1));
-  }
-
-  print('Racha final para "${habit.name}": $streak');
-  habit.streakCount = streak;
-  if (streak > habit.longestStreak) {
-    habit.longestStreak = streak;
-    print('Nueva racha más larga para "${habit.name}": ${habit.longestStreak}');
-  }
-  print('Racha final para "${habit.name}": ${habit.streakCount}');
-  print('Racha más larga para "${habit.name}": ${habit.longestStreak}');
-  print("--------------------FIN ESPECIFICO DIA---------------------");
-  habits.refresh();
-}
-
-  String _generateId() {
-    return DateTime.now().millisecondsSinceEpoch.toString();
-  }
-
-  // Comparar fechas sin considerar la hora
   bool isSameDate(DateTime date1, DateTime date2) {
     return date1.year == date2.year &&
         date1.month == date2.month &&
         date1.day == date2.day;
+  }
+
+  void verifyStreakForSpecificDays(Habit habit) {
+    if (habit.selectedDays == null || habit.selectedDays!.isEmpty) return;
+
+    List<int> scheduledWeekdays = habit.selectedDays!;
+    Set<DateTime> completionDatesSet = habit.completionDates
+        .map((date) => DateTime(date.year, date.month, date.day))
+        .toSet();
+
+    int streak = 0;
+    DateTime currentDate = DateTime(
+      simulatedDate.value.year,
+      simulatedDate.value.month,
+      simulatedDate.value.day,
+    );
+
+    DateTime? lastCompletedDate;
+    DateTime checkDate = currentDate;
+
+    while (true) {
+      if (scheduledWeekdays.contains(checkDate.weekday) &&
+          completionDatesSet.contains(checkDate)) {
+        lastCompletedDate = checkDate;
+        break;
+      }
+      if (checkDate.difference(currentDate).inDays < -30) break;
+      checkDate = checkDate.subtract(const Duration(days: 1));
+    }
+
+    if (lastCompletedDate == null) {
+      habit.streakCount = 0;
+      return;
+    }
+
+    DateTime countDate = lastCompletedDate;
+    while (true) {
+      if (scheduledWeekdays.contains(countDate.weekday)) {
+        if (completionDatesSet.contains(countDate)) {
+          streak++;
+        } else {
+          break;
+        }
+      }
+      countDate = countDate.subtract(const Duration(days: 1));
+    }
+
+    habit.streakCount = streak;
+    if (streak > habit.longestStreak) {
+      habit.longestStreak = streak;
+    }
+    _updateHabitCompletionInFirestore(habit);
+  }
+
+  String _generateId() {
+    return DateTime.now().millisecondsSinceEpoch.toString();
   }
 }

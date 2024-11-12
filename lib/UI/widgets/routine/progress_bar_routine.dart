@@ -11,17 +11,20 @@ class CustomProgressBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Asegura que el progreso no supere 1.0 (100%)
+    final adjustedProgress = progress > 1.0 ? 1.0 : progress;
+
     return Row(
       children: [
         Expanded(
           child: Container(
-            height: 8, // Altura reducida de la barra
+            height: 8, // Altura de la barra
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(6),
               color: navBarInactiveColor, // Fondo gris claro
             ),
             child: FractionallySizedBox(
-              widthFactor: progress,
+              widthFactor: adjustedProgress,
               alignment: Alignment.centerLeft,
               child: Container(
                 decoration: BoxDecoration(
@@ -38,7 +41,7 @@ class CustomProgressBar extends StatelessWidget {
         ),
         const SizedBox(width: 8), // Espacio entre la barra y el porcentaje
         Text(
-          '${(progress * 100).toStringAsFixed(0)}%',
+          '${(adjustedProgress * 100).toStringAsFixed(0)}%',
           style: bodyTextStyle.copyWith(
             color: primaryColor,
             fontWeight: FontWeight.bold,

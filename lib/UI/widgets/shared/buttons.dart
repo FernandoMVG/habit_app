@@ -8,7 +8,7 @@ class CancelButton extends StatelessWidget {
 
   const CancelButton({
     super.key,
-    this.label = 'Cancelar',  // Texto por defecto es "Cancelar"
+    this.label = 'Cancelar', // Texto por defecto es "Cancelar"
     this.onPressed,
   });
 
@@ -17,20 +17,21 @@ class CancelButton extends StatelessWidget {
     return Align(
       alignment: Alignment.bottomLeft,
       child: ElevatedButton(
-        onPressed: onPressed ?? () {
-          Get.off(const HomePage()); // Elimina el 
-        },
+        onPressed: onPressed ??
+            () {
+              Get.off(HomePage()); // Elimina el
+            },
         style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.red[100],  // Fondo rojo claro
+          backgroundColor: Colors.red[100], // Fondo rojo claro
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10),  // Esquinas redondeadas
+            borderRadius: BorderRadius.circular(10), // Esquinas redondeadas
           ),
         ),
         child: Text(
           label,
           style: const TextStyle(
             fontWeight: FontWeight.bold,
-            color: Colors.red,  // Texto en rojo fuerte
+            color: Colors.red, // Texto en rojo fuerte
           ),
         ),
       ),
@@ -44,25 +45,26 @@ class BackButtonWidget extends StatelessWidget {
 
   const BackButtonWidget({
     super.key,
-    this.label = 'Atrás',  // Texto por defecto es "Atrás"
+    this.label = 'Atrás', // Texto por defecto es "Atrás"
     this.onPressed,
   });
 
   @override
   Widget build(BuildContext context) {
     return TextButton(
-      onPressed: onPressed ?? () {
-        Get.back();  // Vuelve a la página anterior
-      },
-      style: ElevatedButton.styleFrom(          
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10),  // Esquinas redondeadas
-          ),
+      onPressed: onPressed ??
+          () {
+            Get.back(); // Vuelve a la página anterior
+          },
+      style: ElevatedButton.styleFrom(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10), // Esquinas redondeadas
         ),
+      ),
       child: Text(
         label,
         style: Theme.of(context).textTheme.labelLarge?.copyWith(
-              color: Theme.of(context).colorScheme.primary,  // Color primario
+              color: Theme.of(context).colorScheme.primary, // Color primario
             ),
       ),
     );
@@ -72,8 +74,8 @@ class BackButtonWidget extends StatelessWidget {
 class NavigateButton extends StatelessWidget {
   final String text;
   final VoidCallback onPressed;
-  final bool isEnabled;  // Esto permitirá habilitar o deshabilitar el botón
-  
+  final bool isEnabled; // Esto permitirá habilitar o deshabilitar el botón
+
   const NavigateButton({
     super.key,
     required this.text,
@@ -84,10 +86,14 @@ class NavigateButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
-      onPressed: isEnabled ? onPressed : null,  // Ejecuta la función pasada o desactiva el botón
+      onPressed: isEnabled
+          ? onPressed
+          : null, // Ejecuta la función pasada o desactiva el botón
       style: ElevatedButton.styleFrom(
-        foregroundColor: Theme.of(context).colorScheme.onPrimary, 
-        backgroundColor: Theme.of(context).colorScheme.primary,  // Color del texto en el botón
+        foregroundColor: Theme.of(context).colorScheme.onPrimary,
+        backgroundColor: Theme.of(context)
+            .colorScheme
+            .primary, // Color del texto en el botón
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10),
         ),

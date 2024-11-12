@@ -10,10 +10,19 @@ class UserController extends GetxController {
   var experience = 0.obs;
   var level = 1.obs;
 
+  RxnString userId = RxnString();
+
+  String? get userIdValue => userId.value;
+
   @override
   void onInit() {
     super.onInit();
-    listenToUserData(); // Escuchar cambios en tiempo real cuando el controlador se inicializa
+    _auth.authStateChanges().listen((user) {
+      if (user != null) {
+        userId.value = user.uid;
+        listenToUserData();
+      }
+    });
   }
 
   // Método para escuchar cambios en tiempo real en el documento del usuario en Firestore
@@ -37,17 +46,19 @@ class UserController extends GetxController {
   }
 
   // Método para añadir experiencia y verificar si el usuario sube de nivel
-  void addExperience(int points) {
+  void addExperience(int points) async {
     experience.value += points;
+    await _updateUserExperienceInFirestore(); // Actualizar en Firestore
     _checkLevelUp();
   }
 
   // Método para restar experiencia
-  void subtractExperience(int points) {
+  void subtractExperience(int points) async {
     experience.value -= points;
     if (experience.value < 0) {
       experience.value = 0;
     }
+    await _updateUserExperienceInFirestore(); // Actualizar en Firestore
   }
 
   // Método privado para verificar y manejar el nivel del usuario
@@ -60,6 +71,22 @@ class UserController extends GetxController {
 
       // Actualizar el nivel en Firestore si sube de nivel
       _updateUserLevelInFirestore();
+    }
+  }
+
+  // Método para actualizar el nivel y experiencia del usuario en Firestore
+  Future<void> _updateUserExperienceInFirestore() async {
+    final user = _auth.currentUser;
+    if (user == null) return;
+
+    String userId = user.uid;
+
+    try {
+      await _db.collection("users").doc(userId).update({
+        'experience': experience.value,
+      });
+    } catch (e) {
+      print("Error al actualizar la experiencia del usuario en Firestore: $e");
     }
   }
 
