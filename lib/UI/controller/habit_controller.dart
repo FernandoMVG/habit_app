@@ -185,6 +185,8 @@ class HabitController extends GetxController {
         );
       }
 
+      // Guardar los cambios en Hive
+      habitUseCase.updateHabit(userController.currentUserEmail.value, habits[index]);
       habits.refresh();
     }
   }
@@ -266,6 +268,9 @@ class HabitController extends GetxController {
       }
       habit.isCompleted = false; // Reiniciar estado al cambiar de día
       habit.completedCount = 0;   // Reiniciar progreso de hábitos cuantificables
+      
+      // Guardar los cambios en Hive para cada hábito
+      habitUseCase.updateHabit(userController.currentUserEmail.value, habit);
     }
     if (allHabitsCompleted) {
       userController.addExperience(10); // Daily routine bonus
@@ -303,6 +308,8 @@ class HabitController extends GetxController {
         ? habit.streakCount
         : habit.longestStreak;
 
+    // Guardar los cambios en Hive después de actualizar la racha
+    habitUseCase.updateHabit(userController.currentUserEmail.value, habit);
     habits.refresh();
   }
 
@@ -370,8 +377,11 @@ void verifyStreakForSpecificDays(Habit habit) {
   }
   print('Racha final para "${habit.name}": ${habit.streakCount}');
   print('Racha más larga para "${habit.name}": ${habit.longestStreak}');
-  print("--------------------FIN ESPECIFICO DIA---------------------");
+  
+  // Guardar los cambios en Hive después de actualizar la racha
+  habitUseCase.updateHabit(userController.currentUserEmail.value, habit);
   habits.refresh();
+  print("--------------------FIN ESPECIFICO DIA---------------------");
 }
 
   String _generateId() {

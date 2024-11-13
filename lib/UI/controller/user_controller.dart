@@ -2,6 +2,8 @@ import 'package:get/get.dart';
 import 'package:habit_app/domain/models/user_model.dart';
 import 'package:habit_app/domain/use_case/user_use_case.dart';
 import 'auth_controller.dart';
+import 'package:flutter/material.dart';
+import 'package:habit_app/UI/widgets/level_up_dialog.dart';
 
 class UserController extends GetxController {
   var experience = 0.obs;
@@ -58,6 +60,12 @@ class UserController extends GetxController {
       level.value++;
       requiredExperience = level.value * 100;
       _authController?.updateUserProgress();
+      
+      // Mostrar el diálogo de nivel usando Get.dialog
+      Get.dialog(
+        LevelUpDialog(level: level.value),
+        barrierDismissible: false,
+      );
     }
   }
 

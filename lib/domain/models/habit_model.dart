@@ -41,6 +41,7 @@ class Habit {
   int longestStreak; // Racha más larga registrada
   @HiveField(16)
   List<DateTime> completionDates; // Fechas en las que se completó el hábito
+  @HiveField(19) // Agregar este campo a Hive
   DateTime? lastCompleted; // Última vez que se completó el hábito
   @HiveField(17)
   final int experience; // Add this line
