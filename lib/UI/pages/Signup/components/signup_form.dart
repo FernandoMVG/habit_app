@@ -32,6 +32,7 @@ class _SignUpFormState extends State<SignUpForm> {
       child: Column(
         children: [
           TextFormField(
+            key: const Key('email_field'),  // Add this key
             controller: emailController,
             keyboardType: TextInputType.emailAddress,
             textInputAction: TextInputAction.next,
@@ -56,6 +57,7 @@ class _SignUpFormState extends State<SignUpForm> {
           Padding(
             padding: const EdgeInsets.symmetric(vertical: defaultPadding),
             child: TextFormField(
+              key: const Key('password_field'),  // Add this key
               controller: passwordController,
               textInputAction: TextInputAction.done,
               obscureText: true,
@@ -78,6 +80,7 @@ class _SignUpFormState extends State<SignUpForm> {
           ),
           const SizedBox(height: defaultPadding / 2),
           ElevatedButton(
+            key: const Key('signup_button'),  // Add this key
             onPressed: () {
               // Verificar si el formulario es válido antes de registrar al usuario
               if (_formKey.currentState!.validate()) {
