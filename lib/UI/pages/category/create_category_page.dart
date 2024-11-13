@@ -79,12 +79,11 @@ class _CreateCategoryPageState extends State<CreateCategoryPage> {
                 }),
                 NavigateButton(
                   text: "Continuar",
-                  onPressed: () {
+                  onPressed: () async {
                     if (_nameController.text.isNotEmpty &&
                         _selectedIcon != null &&
                         _selectedColor != null) {
-                      // Intentar agregar la categoría
-                      bool isAdded = Get.find<CategoryController>().addCategory(
+                      bool isAdded = await Get.find<CategoryController>().addCategory(
                         _nameController.text,
                         _selectedIcon!,
                         _selectedColor!,
@@ -92,14 +91,12 @@ class _CreateCategoryPageState extends State<CreateCategoryPage> {
                       );
 
                       if (isAdded) {
-                        Get.back(); // Solo navegar hacia atrás si la categoría fue creada exitosamente
+                        Get.back();
                       }
                     } else {
-                      // Mostrar mensaje si faltan campos
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
-                          content:
-                              Text('Por favor, completa todos los campos.'),
+                          content: Text('Por favor, completa todos los campos.'),
                         ),
                       );
                     }

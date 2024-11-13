@@ -1,11 +1,14 @@
 import 'package:get/get.dart';
-import 'package:habit_app/models/habit_model.dart';
+import 'package:habit_app/domain/models/habit_model.dart';
 import 'package:flutter/material.dart';
 import 'dart:math';
 import 'user_controller.dart';
 import 'package:hive/hive.dart';
+import 'package:habit_app/domain/use_case/habit_use_case.dart';
 
 class HabitController extends GetxController {
+  final HabitUseCase habitUseCase;
+  
   // Lista observable de hábitos
   var habits = <Habit>[].obs;
 
@@ -19,6 +22,8 @@ class HabitController extends GetxController {
 
   late Box<Habit> habitBox;
 
+  HabitController(this.habitUseCase);
+
   @override
   void onInit() {
     super.onInit();
@@ -27,18 +32,13 @@ class HabitController extends GetxController {
 
   Future<void> _openHabitBox() async {
     try {
-      if (userController.currentUserEmail.isEmpty) {
+      if (userController.currentUserEmail.value.isEmpty) {
         habits.clear();
         return;
       }
       
-      // Cerrar la caja anterior si existe
-      if (Hive.isBoxOpen('habitBox_${userController.currentUserEmail}')) {
-        await Hive.box<Habit>('habitBox_${userController.currentUserEmail}').close();
-      }
-      
-      habitBox = await Hive.openBox<Habit>('habitBox_${userController.currentUserEmail}');
-      habits.clear(); // Limpiar hábitos existentes
+      habitBox = await habitUseCase.openHabitBox(userController.currentUserEmail.value);
+      habits.clear();
       _loadHabits();
     } catch (e) {
       print('Error al abrir la caja de hábitos: $e');
@@ -50,7 +50,7 @@ class HabitController extends GetxController {
   }
 
   void _loadHabits() {
-    habits.addAll(habitBox.values);
+    habits.addAll(habitUseCase.getHabits(userController.currentUserEmail.value));
   }
 
   // Inicializa un nuevo hábito antes de que se empiece a construir
@@ -87,15 +87,15 @@ class HabitController extends GetxController {
   void addHabit() {
     if (habit != null && habit!.name.isNotEmpty) {
       habits.add(habit!);
-      habitBox.put(habit!.id, habit!); // Guardar hábito en Hive
-      habit = null; // Limpiar la instancia temporal
+      habitUseCase.createHabit(userController.currentUserEmail.value, habit!);
+      habit = null;
     }
   }
 
   // Eliminar un hábito
   void removeHabit(Habit habit) {
     habits.removeWhere((h) => h.id == habit.id); // Usar id para encontrar y eliminar el hábito
-    habitBox.delete(habit.id); // Eliminar hábito de Hive
+    habitUseCase.deleteHabit(userController.currentUserEmail.value, habit.id);
   }
 
   // Actualizar un hábito específico
@@ -107,7 +107,7 @@ class HabitController extends GetxController {
         name: newName,
         description: newDescription.isNotEmpty ? newDescription : '',
       );
-      habitBox.put(habitToUpdate.id, habits[habitIndex]); // Actualizar hábito en Hive
+      habitUseCase.updateHabit(userController.currentUserEmail.value, habits[habitIndex]);
       habits.refresh(); // Refrescar la lista de hábitos
     }
   }

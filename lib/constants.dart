@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:habit_app/models/category_model.dart';
+import 'package:habit_app/domain/models/category_model.dart';
 
 // Paleta de colores
 const Color primaryColor = Color(0xFF2980B9); // Azul primario

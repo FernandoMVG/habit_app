@@ -1,6 +1,6 @@
 // Nuevo archivo quantifiable_habit_dialog.dart
 import 'package:flutter/material.dart';
-import 'package:habit_app/models/habit_model.dart';
+import 'package:habit_app/domain/models/habit_model.dart';
 import 'package:habit_app/UI/controller/habit_controller.dart';
 import 'package:habit_app/UI/widgets/category_icon.dart';
 

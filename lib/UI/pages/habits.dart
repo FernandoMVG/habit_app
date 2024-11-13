@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:habit_app/models/habit_model.dart';
+import 'package:habit_app/domain/models/habit_model.dart';
 import 'package:habit_app/UI/controller/habit_controller.dart';
 import 'package:habit_app/UI/widgets/home_page/navigation_bar.dart';
 import 'package:habit_app/UI/widgets/shared/empty_message.dart';

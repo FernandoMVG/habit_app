@@ -6,7 +6,7 @@ import 'package:habit_app/UI/pages/category/picker_functions.dart';
 import 'package:habit_app/UI/widgets/shared/buttons.dart';
 import 'package:habit_app/UI/widgets/shared/text_field.dart';
 import 'package:habit_app/constants.dart';
-import 'package:habit_app/models/category_model.dart';
+import 'package:habit_app/domain/models/category_model.dart';
 
 class EditCategoryPage extends StatefulWidget {
   final CategoryModel category;
@@ -122,12 +122,11 @@ class _EditCategoryPageState extends State<EditCategoryPage> {
                 }),
                 NavigateButton(
                   text: "Guardar",
-                  onPressed: () {
+                  onPressed: () async {
                     if (_nameController.text.isNotEmpty &&
                         _selectedIcon != null &&
                         _selectedColor != null) {
-                      bool isUpdated =
-                          Get.find<CategoryController>().updateCategory(
+                      bool isUpdated = await Get.find<CategoryController>().updateCategory(
                         widget.category,
                         _nameController.text,
                         _selectedIcon!,
@@ -136,13 +135,12 @@ class _EditCategoryPageState extends State<EditCategoryPage> {
                       );
 
                       if (isUpdated) {
-                        Get.back(); // Navegar de vuelta solo si la categoría se actualizó con éxito
+                        Get.back();
                       }
                     } else {
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
-                          content:
-                              Text('Por favor, completa todos los campos.'),
+                          content: Text('Por favor, completa todos los campos.'),
                         ),
                       );
                     }

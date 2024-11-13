@@ -1,32 +1,29 @@
-import '/models/user_model.dart';
+import '../../domain/models/user_model.dart';
+import '../../domain/use_case/auth_use_case.dart';
 import 'package:get/get.dart';
 import 'user_controller.dart';
-import 'package:hive/hive.dart';
 import 'package:habit_app/UI/controller/habit_controller.dart';
 import 'package:habit_app/UI/controller/category_controller.dart';
 
 class AuthController extends GetxController {
-  late Box<UserModel> userBox;
+  final AuthUseCase _authUseCase;
   UserModel? _user;
   UserModel? get user => _user;
 
   final UserController userController = Get.find<UserController>();
 
+  AuthController(this._authUseCase);
+
   @override
   void onInit() {
     super.onInit();
-    _openUserBox();
+    _loadCurrentUser();
   }
 
-  Future<void> _openUserBox() async {
-    try {
-      userBox = await Hive.openBox<UserModel>('userBox');
-      if (userBox.isNotEmpty) {
-        _user = userBox.get('currentUser');
-        update();
-      }
-    } catch (e) {
-      print('Error al abrir la caja de usuarios: $e');
+  void _loadCurrentUser() {
+    _user = _authUseCase.getCurrentUser();
+    if (_user != null) {
+      update();
     }
   }
 
@@ -39,12 +36,8 @@ class AuthController extends GetxController {
         level: 1,
       );
 
-      await userBox.put(email.trim().toLowerCase(), _user!);
-
-      print('Usuario registrado: ${_user?.email}');
-      print('Usuarios en Hive: ${userBox.length}');
-      print('¿userBox está vacío?: ${userBox.isEmpty}');
-      print('Usuario almacenado: ${userBox.get(email.trim().toLowerCase())?.email}');
+      await _authUseCase.signup(_user!);
+      await _authUseCase.setCurrentUser(_user!);
 
       userController.experience.value = 0;
       userController.level.value = 1;
@@ -56,44 +49,28 @@ class AuthController extends GetxController {
 
   Future<bool> logIn(String email, String password) async {
     try {
-      print('Estado inicial del box:');
-      print('Box está vacío: ${userBox.isEmpty}');
-      print('Número de usuarios: ${userBox.length}');
+      print('=== INICIANDO LOGIN ===');
+      final success = await _authUseCase.login(email, password);
+      
+      if (success) {
+        _user = _authUseCase.getCurrentUser();
+        if (_user != null) {
+          print('Login exitoso para: ${_user!.email}');
+          print('Experiencia: ${_user!.experience}, Nivel: ${_user!.level}');
+          
+          userController.experience.value = _user!.experience;
+          userController.level.value = _user!.level;
+          userController.setCurrentUserEmail(email.trim().toLowerCase());
+          userController.setAuthController(this);
 
-      final storedUser = userBox.get(email.trim().toLowerCase());
+          await Get.find<HabitController>().reloadHabits();
+          await Get.find<CategoryController>().reloadCategories();
 
-      if (storedUser == null) {
-        print('No hay usuarios registrados con ese email');
-        return false;
+          update();
+          return true;
+        }
       }
-
-      print('Datos de login - Email: $email, Password: $password');
-      print('Usuario almacenado - Email: ${storedUser.email}, Password: ${storedUser.password}');
-
-      bool emailMatches = storedUser.email.trim().toLowerCase() == email.trim().toLowerCase();
-      bool passwordMatches = storedUser.password == password;
-
-      print('Email coincide: $emailMatches');
-      print('Password coincide: $passwordMatches');
-
-      if (emailMatches && passwordMatches) {
-        _user = storedUser;
-        userController.experience.value = storedUser.experience;
-        userController.level.value = storedUser.level;
-        userController.setCurrentUserEmail(email.trim().toLowerCase());
-        userController.setAuthController(this);  // Nuevo: pasar referencia del AuthController
-
-        // Recargar datos específicos del usuario
-        await Get.find<HabitController>().reloadHabits();
-        await Get.find<CategoryController>().reloadCategories();
-
-        print('Login exitoso - Exp: ${userController.experience.value}, Level: ${userController.level.value}');
-
-        update();
-        return true;
-      }
-
-      print('Error: Credenciales no coinciden');
+      print('Login fallido');
       return false;
     } catch (e) {
       print('Error en login: $e');
@@ -103,36 +80,33 @@ class AuthController extends GetxController {
 
   Future<void> logOut() async {
     try {
-      print('Iniciando cierre de sesión...');
-      print('Usuario actual: ${_user?.email}');
-      print('Experiencia actual: ${userController.experience.value}');
-      print('Nivel actual: ${userController.level.value}');
+      print('=== INICIANDO LOGOUT ===');
+      
+      // Actualizar progreso antes de cerrar sesión
+      if (_user != null) {
+        print('Guardando progreso final para: ${_user!.email}');
+        updateUserProgress();
+      }
 
+      // Solo limpiar la sesión actual
+      await _authUseCase.clearCurrentUser();
+      
+      // Limpiar estado local
       _user = null;
       userController.experience.value = 0;
       userController.level.value = 1;
       userController.setCurrentUserEmail('');
 
-      // Limpiar datos del usuario actual
+      // Limpiar datos en memoria
       await Get.find<HabitController>().reloadHabits();
       await Get.find<CategoryController>().reloadCategories();
 
-      print('Usuario después de logout: ${_user?.email}');
-      print('Experiencia después de logout: ${userController.experience.value}');
-      print('Nivel después de logout: ${userController.level.value}');
-
       update();
-      print('Actualización completada, antes de la navegación');
+      print('=== LOGOUT COMPLETADO ===');
 
-      // Simplificar la navegación para ver si el problema persiste
-      try {
-        Get.offAllNamed('/welcome');
-        print('Cierre de sesión completado y navegación a /welcome');
-      } catch (e) {
-        print('Error durante el cierre de sesión: $e');
-      }
+      Get.offAllNamed('/welcome');
     } catch (e) {
-      print('Error durante el cierre de sesión: $e');
+      print('ERROR durante el cierre de sesión: $e');
     }
   }
 
@@ -144,7 +118,7 @@ class AuthController extends GetxController {
         experience: userController.experience.value,
         level: userController.level.value,
       );
-      userBox.put(_user!.email, _user!);
+      _authUseCase.updateUserProgress(_user!);
     }
   }
 }

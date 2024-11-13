@@ -8,10 +8,18 @@ import 'package:habit_app/UI/controller/auth_controller.dart';
 import 'package:habit_app/UI/controller/habit_controller.dart';
 import 'package:habit_app/UI/controller/user_controller.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:habit_app/models/habit_model.dart';
-import 'package:habit_app/models/user_model.dart';
-import 'package:habit_app/models/category_model.dart';
+import 'package:habit_app/domain/models/habit_model.dart';
+import 'package:habit_app/domain/models/user_model.dart';
+import 'package:habit_app/domain/models/category_model.dart';
 import 'package:intl/date_symbol_data_local.dart'; // Import para formato regional
+import 'package:habit_app/domain/repositories/user_repository.dart';
+import 'package:habit_app/domain/repositories/habit_repository.dart';
+import 'package:habit_app/domain/repositories/category_repository.dart';
+import 'package:habit_app/domain/use_case/user_use_case.dart';
+import 'package:habit_app/domain/use_case/habit_use_case.dart';
+import 'package:habit_app/domain/use_case/category_use_case.dart';
+import 'package:habit_app/domain/repositories/auth_repository.dart';
+import 'package:habit_app/domain/use_case/auth_use_case.dart';
 
 void main() async {
   // Asegura que los bindings se inicializan correctamente.
@@ -34,11 +42,23 @@ void main() async {
   // Inicializa la configuración regional para español.
   await initializeDateFormatting('es');
 
-  // Instancias de los controladores usando Get.
-  Get.put(UserController());
-  Get.put(AuthController()); // Controlador de autenticación
-  Get.put(HabitController()); // Controlador de hábitos
-  Get.put(CategoryController()); // Controlador de categorías
+  // Initialize repositories
+  final userRepository = UserRepositoryImpl();
+  final habitRepository = HabitRepositoryImpl();
+  final categoryRepository = HiveCategoryRepository();
+  final authRepository = AuthRepositoryImpl();
+
+  // Initialize use cases
+  final userUseCase = UserUseCase(userRepository);
+  final habitUseCase = HabitUseCase(habitRepository);
+  final categoryUseCase = CategoryUseCase(categoryRepository);
+  final authUseCase = AuthUseCase(authRepository);
+
+  // Initialize controllers with their dependencies
+  Get.put(UserController(userUseCase));
+  Get.put(AuthController(authUseCase));
+  Get.put(HabitController(habitUseCase));
+  Get.put(CategoryController(categoryUseCase));
 
   runApp(const MyApp());
 }

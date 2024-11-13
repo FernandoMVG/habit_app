@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:habit_app/models/habit_model.dart';
+import 'package:habit_app/domain/models/habit_model.dart';
 import 'package:habit_app/UI/widgets/category_icon.dart';
 import 'package:habit_app/UI/widgets/box_color.dart';
 import 'package:habit_app/constants.dart'; // Importa las constantes
