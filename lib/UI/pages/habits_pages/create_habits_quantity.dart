@@ -221,8 +221,7 @@ class _QuantityHabitPageState extends State<QuantityHabitPage> {
           : null,
     );
     habitController.setUnit(
-      selectedQuantificationType != 'Sin especificar' &&
-              unitController.text.isNotEmpty
+      unitController.text.isNotEmpty
           ? unitController.text
           : null,
     );

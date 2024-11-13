@@ -77,10 +77,6 @@ class CustomBottomNavigationBar extends StatelessWidget {
             icon: Icon(Icons.category, size: 28),
             label: 'Categorías',
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.flag, size: 28),
-            label: 'Retos',
-          ),
         ],
         selectedLabelStyle: navBarTextStyle.copyWith(
           fontSize: 13,
