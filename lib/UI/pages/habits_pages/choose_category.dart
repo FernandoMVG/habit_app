@@ -25,7 +25,11 @@ class _ChooseCategoryPageState extends State<ChooseCategoryPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      // Quitamos el AppBar y mantenemos solo el cuerpo
+      appBar: AppBar(
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        automaticallyImplyLeading: false,
+        elevation: 0,
+      ),
       body: Obx(() {
         // Verificar si hay categorías disponibles
         if (categoryController.categories.isEmpty) {

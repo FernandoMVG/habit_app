@@ -58,8 +58,8 @@ class CalendarWidget extends StatelessWidget {
   // Método para construir cada día del calendario
   Widget _buildCalendarDay(String day, String date, String month, bool isToday) {
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 4.0, vertical: 8.0),
-      padding: const EdgeInsets.all(10.0),
+      margin: const EdgeInsets.symmetric(horizontal: 2.0, vertical: 4.0), // Adjust margins for better fit
+      padding: const EdgeInsets.all(8.0), // Adjust padding for better fit
       decoration: BoxDecoration(
         color: isToday ? primaryColor : cardBackgroundColor, // Cambiar color si es el día actual
         borderRadius: BorderRadius.circular(defaultRadius),
@@ -79,25 +79,25 @@ class CalendarWidget extends StatelessWidget {
             style: TextStyle(
               color: isToday ? onPrimaryColor : onSurfaceColor,
               fontWeight: FontWeight.bold,
-              fontSize: 12,
+              fontSize: 10, // Adjust font size for better fit
             ),
           ),
-          const SizedBox(height: 5),
+          const SizedBox(height: 3), // Adjust spacing for better fit
           Text(
             date,
             style: TextStyle(
               color: isToday ? onPrimaryColor : blackColor,
               fontWeight: FontWeight.bold,
-              fontSize: 24,
+              fontSize: 20, // Adjust font size for better fit
             ),
           ),
-          const SizedBox(height: 5),
+          const SizedBox(height: 3), // Adjust spacing for better fit
           Text(
             day,
             style: TextStyle(
               color: isToday ? onPrimaryColor : blackColor,
               fontWeight: FontWeight.bold,
-              fontSize: 16,
+              fontSize: 14, // Adjust font size for better fit
             ),
           ),
         ],

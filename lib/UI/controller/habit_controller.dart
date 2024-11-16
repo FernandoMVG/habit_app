@@ -260,7 +260,7 @@ class HabitController extends GetxController {
       // Guardar los cambios en Hive para cada hábito
       habitUseCase.updateHabit(userController.currentUserEmail.value, habit);
     }
-    if (allHabitsCompleted) {
+    if (allHabitsCompleted && habits.isNotEmpty) {
       userController.addExperience(10); // Daily routine bonus
     }
     habits.refresh();

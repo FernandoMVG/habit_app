@@ -1,4 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:habit_app/UI/pages/category/create_category_page.dart';
+import 'package:habit_app/UI/pages/habits_pages/choose_category.dart';
+import 'package:habit_app/UI/pages/habits_pages/choose_frequency.dart';
+import 'package:habit_app/UI/pages/habits_pages/create_habits.dart';
+import 'package:habit_app/UI/pages/habits_pages/habit_type.dart';
+import 'package:habit_app/UI/widgets/shared/text_field.dart';
 import 'package:integration_test/integration_test.dart';  // Add this import
 import 'package:flutter_test/flutter_test.dart';
 import 'package:get/get.dart';
@@ -21,6 +27,9 @@ import 'package:habit_app/domain/use_case/habit_use_case.dart';
 import 'package:habit_app/domain/use_case/category_use_case.dart';
 import 'package:habit_app/domain/use_case/auth_use_case.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import 'package:habit_app/UI/pages/home.dart';
+import 'package:habit_app/UI/pages/habits.dart';
+import 'package:habit_app/UI/pages/category/category_page.dart';
 
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
@@ -89,7 +98,55 @@ void main() {
       await tester.enterText(find.byKey(const Key('login_password_field')), 'password123');
       await tester.tap(find.byKey(const Key('login_button')));
       await tester.pumpAndSettle();
-      
+
+      // Verify HomePage is displayed
+      expect(find.byType(HomePage), findsOneWidget);
+
+      // Navigate to HabitPage using the navigation bar
+      await tester.tap(find.text('Hábitos'));
+      await tester.pumpAndSettle();
+      expect(find.byType(HabitPage), findsOneWidget);
+
+      // Navigate to CategoryPage using the navigation bar
+      await tester.tap(find.text('Categorías'));
+      await tester.pumpAndSettle();
+      expect(find.byType(CategoryPage), findsOneWidget);
+
+      // Navigate back to HomePage using the navigation bar
+      await tester.tap(find.text('Rutina'));
+      await tester.pumpAndSettle();
+      expect(find.byType(HomePage), findsOneWidget);
+
+      // Click on FAB to navigate to HabitTypeSelectionPage
+      await tester.tap(find.byType(FloatingActionButton));
+      await tester.pumpAndSettle();
+      expect(find.byType(HabitTypeSelectionPage), findsOneWidget);
+
+      // Select "Sí o No" option
+      await tester.tap(find.text('Sí o No'));
+      await tester.pumpAndSettle();
+      expect(find.byType(CreateHabitPage), findsOneWidget);
+
+      // Fill habit name and description
+      await tester.enterText(find.byType(TextField).at(0), 'Estudiar Flutter');
+      await tester.enterText(find.byType(TextField).at(1), 'Repasar conceptos básicos');
+      await tester.tap(find.text('Continuar'));
+      await tester.pumpAndSettle();
+      expect(find.byType(ChooseCategoryPage), findsOneWidget);
+
+      // Select a category
+      await tester.tap(find.byType(GestureDetector).first);
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Continuar'));
+      await tester.pumpAndSettle();
+      expect(find.byType(ChooseFrequencyPage), findsOneWidget);
+
+      // Select "Todos los días" and finalize
+      await tester.tap(find.text('Todos los días'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Finalizar'));
+      await tester.pumpAndSettle();
+      expect(find.byType(HabitPage), findsOneWidget);
 
     });
   });
