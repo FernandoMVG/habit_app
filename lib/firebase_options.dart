@@ -58,7 +58,7 @@ class DefaultFirebaseOptions {
   );
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyCbCDjKlerk1H0NvKWZRB6MzgA4eVYfeAw',
+    apiKey: 'API_KEY',
     appId: '1:551997777073:web:cdfa765f5d849d5b3b2e90',
     messagingSenderId: '551997777073',
     projectId: 'habit-app-9652b',
